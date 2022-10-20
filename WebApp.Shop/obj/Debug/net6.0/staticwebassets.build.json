@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "Hash": "tS4TmhxNTiFlSmEiCtK/nDNfBpu5qj/NWnQs59gEIhA=",
+  "Source": "WebApp.Shop",
+  "BasePath": "_content/WebApp.Shop",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "WebApp.Shop\\wwwroot",
+      "Source": "WebApp.Shop",
+      "ContentRoot": "D:\\SofaShop\\WebApp.Shop\\wwwroot\\",
+      "BasePath": "_content/WebApp.Shop",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "D:\\SofaShop\\WebApp.Shop\\wwwroot\\favicon.ico",
+      "SourceId": "WebApp.Shop",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\SofaShop\\WebApp.Shop\\wwwroot\\",
+      "BasePath": "_content/WebApp.Shop",
+      "RelativePath": "favicon.ico",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\favicon.ico"
+    }
+  ]
+}
