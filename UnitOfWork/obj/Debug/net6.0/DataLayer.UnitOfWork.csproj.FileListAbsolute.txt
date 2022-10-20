@@ -1,0 +1,12 @@
+D:\SofaShop\UnitOfWork\bin\Debug\net6.0\DataLayer.UnitOfWork.deps.json
+D:\SofaShop\UnitOfWork\bin\Debug\net6.0\DataLayer.UnitOfWork.dll
+D:\SofaShop\UnitOfWork\bin\Debug\net6.0\DataLayer.UnitOfWork.pdb
+D:\SofaShop\UnitOfWork\obj\Debug\net6.0\DataLayer.UnitOfWork.csproj.AssemblyReference.cache
+D:\SofaShop\UnitOfWork\obj\Debug\net6.0\DataLayer.UnitOfWork.GeneratedMSBuildEditorConfig.editorconfig
+D:\SofaShop\UnitOfWork\obj\Debug\net6.0\DataLayer.UnitOfWork.AssemblyInfoInputs.cache
+D:\SofaShop\UnitOfWork\obj\Debug\net6.0\DataLayer.UnitOfWork.AssemblyInfo.cs
+D:\SofaShop\UnitOfWork\obj\Debug\net6.0\DataLayer.UnitOfWork.csproj.CoreCompileInputs.cache
+D:\SofaShop\UnitOfWork\obj\Debug\net6.0\DataLayer.UnitOfWork.dll
+D:\SofaShop\UnitOfWork\obj\Debug\net6.0\refint\DataLayer.UnitOfWork.dll
+D:\SofaShop\UnitOfWork\obj\Debug\net6.0\DataLayer.UnitOfWork.pdb
+D:\SofaShop\UnitOfWork\obj\Debug\net6.0\ref\DataLayer.UnitOfWork.dll

@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayer.Domin", "DataLayer.Domin\DataLayer.Domin.csproj", "{302B569D-C8A2-4DBB-822B-5DB163727D84}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayer.UnitOfWork", "UnitOfWork\DataLayer.UnitOfWork.csproj", "{97400AB9-34EB-4E09-BE21-76A59ABAC65E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayer.Access", "DataLayer.Access\DataLayer.Access.csproj", "{C933ECA5-D4BF-4A01-8228-AB50BE3ADA4C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{812E4361-8AA6-4E95-A4A6-D6CB0D2D21D0}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayer.Infrastructure", "DataLayer.Infrastructure\DataLayer.Infrastructure.csproj", "{13380822-F202-4C2E-B82A-6E3A2ADBFCC3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoxonaSound", "RoxonaSound\RoxonaSound.csproj", "{98F899E9-7860-4F96-BA22-A270EB987912}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp.Shop", "WebApp.Shop\WebApp.Shop.csproj", "{5F28FA36-391A-425D-92F9-DD36FBA89F2A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{302B569D-C8A2-4DBB-822B-5DB163727D84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{302B569D-C8A2-4DBB-822B-5DB163727D84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{302B569D-C8A2-4DBB-822B-5DB163727D84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{302B569D-C8A2-4DBB-822B-5DB163727D84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97400AB9-34EB-4E09-BE21-76A59ABAC65E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97400AB9-34EB-4E09-BE21-76A59ABAC65E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97400AB9-34EB-4E09-BE21-76A59ABAC65E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97400AB9-34EB-4E09-BE21-76A59ABAC65E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C933ECA5-D4BF-4A01-8228-AB50BE3ADA4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C933ECA5-D4BF-4A01-8228-AB50BE3ADA4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C933ECA5-D4BF-4A01-8228-AB50BE3ADA4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C933ECA5-D4BF-4A01-8228-AB50BE3ADA4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13380822-F202-4C2E-B82A-6E3A2ADBFCC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13380822-F202-4C2E-B82A-6E3A2ADBFCC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13380822-F202-4C2E-B82A-6E3A2ADBFCC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13380822-F202-4C2E-B82A-6E3A2ADBFCC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98F899E9-7860-4F96-BA22-A270EB987912}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98F899E9-7860-4F96-BA22-A270EB987912}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98F899E9-7860-4F96-BA22-A270EB987912}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98F899E9-7860-4F96-BA22-A270EB987912}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F28FA36-391A-425D-92F9-DD36FBA89F2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F28FA36-391A-425D-92F9-DD36FBA89F2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F28FA36-391A-425D-92F9-DD36FBA89F2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F28FA36-391A-425D-92F9-DD36FBA89F2A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {553803A9-C27F-4DAA-8B7B-695AF15F2999}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,190 @@
+/*============form============*/
+
+.epo-form {
+  position: relative;
+  margin: 8px 30px 0 0;
+}
+
+.epo-form-normal {
+  position: relative;
+  margin: 0;
+  margin-top: -25px;
+  width: 95%;
+}
+
+
+/*============label============*/
+@keyframes topStyle {
+  0% {
+    top: 0px;
+  }
+  100% {
+    top: -20px;
+  }
+}
+
+.fm-touched,
+.fm-have-val {
+  animation-name: topStyle;
+  animation-duration: 0.5s;
+  top: -20px;
+}
+
+label.epo,
+label.epo-right {
+  line-height: 3;
+  font-weight: 600;
+  font-size: 16px;
+  position: absolute;
+}
+
+label.epo-right {
+  right: 0;
+}
+
+/*============select============*/
+/*============select============*/
+
+
+select.epo {
+  position: relative;
+  outline: none;
+  margin: 4px 0 0 0;
+  width: 100%;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 7px;
+  border: 1px solid var(--defaultColor);
+  border-radius: 4px;
+}
+
+
+select.epo:focus {
+  outline: none;
+}
+
+/*============textarea============*/
+
+textarea.epo {
+  position: relative;
+  outline: none;
+  margin: 20px 0 0 0;
+  width: 100%;
+  font-weight: 700;
+  height: 140px;
+  width: 98%;
+  font-size: 15px;
+  padding: 1%;
+  border: 1px solid var(--defaultColor);
+  border-radius: 4px;
+}
+
+
+textarea.epo:focus {
+  outline: none;
+}
+
+/*============file============*/
+.epo-file {
+  font-family: 'Font Awesome 6 Pro';
+}
+
+.epo-file.full {
+  min-height: 20px;
+}
+
+.epo-file.full p {
+  display: none;
+}
+
+.epo-file.full::after {
+  content: "\f00c";
+  font-size: 21px;
+  font-weight: 800;
+  color: cadetblue;
+  right: 11px;
+  position: absolute;
+  top: 0;
+}
+
+.epo-file p {
+  line-height: 0;
+  cursor: context-menu;
+}
+
+/*============input============*/
+input.epo {
+  border: none;
+  position: relative;
+  outline: none;
+  margin: 20px 0 0 0;
+  width: 100%;
+  font-weight: 700;
+  font-size: 15px;
+  background-color: transparent;
+  color: var(--color_002)
+}
+
+input.epo:focus+.epo-border::before {
+  width: 100%
+}
+
+input.epo:focus {
+  outline: none;
+}
+
+/*============epo border============*/
+.epo-border {
+  position: relative;
+  direction: rtl;
+  height: 20px;
+}
+
+.epo-border::before {
+  position: absolute;
+  content: "";
+  top: 1px;
+  width: 10%;
+  direction: rtl;
+  height: 4px;
+  background-color: var(--color_001);
+  z-index: 1;
+  transition: 0.7s !important;
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+
+.epo-border::after {
+  top: 2px;
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 2px;
+  background-color: var(--color_002);
+}
+
+/*============colors============*/
+
+.error-box {
+  min-height: 30px !important;
+  width: 100% !important;
+  margin: 0px 0 0 0;
+  color: var(--color_003);
+  font-weight: 600;
+}
+
+/*============btn============*/
+.btn-well {
+  width: 200px
+}
+
+.btn-outline-001 {
+  color: var(--color_001);
+  border-color: var(--color_001);
+}
+
+.btn-outline-001:hover {
+  color: white;
+  background-color: var(--color_001);
+  border-color: var(--color_001);
+}

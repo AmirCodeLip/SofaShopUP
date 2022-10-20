@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "I+7SB1iMEO1TJ4w0SBIBnio+GvWBC8UE6A5eeUQlTCYm3W+4zWexqQs+3OrwMmVY5LwPaXwOlaO1c5h5LNRVjQ==",
+  "success": true,
+  "projectFilePath": "D:\\SofaShop\\RoxonaSound\\RoxonaSound.csproj",
+  "expectedPackageFiles": [],
+  "logs": [
+    {
+      "code": "NU1803",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "You are running the 'restore' operation with an 'HTTP' source, 'http://api.nuget.org/v3/index.json'. Non-HTTPS access will be removed in a future version. Consider migrating to an 'HTTPS' source."
+    }
+  ]
+}
