@@ -16,7 +16,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.10" />
-		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.9" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.10" />
 	</ItemGroup>
 
 
@@ -26,6 +26,10 @@
 
 
 	<ItemGroup>
+		<Folder Include="Areas\FileManager\Controllers\" />
+		<Folder Include="Areas\FileManager\Data\" />
+		<Folder Include="Areas\FileManager\Models\" />
+		<Folder Include="Areas\FileManager\Views\" />
 		<Folder Include="SqlScripts\" />
 	</ItemGroup>
 
