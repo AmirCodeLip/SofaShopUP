@@ -1,4 +1,6 @@
 import * as React from 'react'
+import FileManagerOnLoadData from './../../../webModels/FileManager/FileManagerOnLoadData'
+import FolderInfo from './../../../webModels/FileManager/FolderInfo'
 
 export function FolderLogo() {
     return (
@@ -11,8 +13,12 @@ export function FolderLogo() {
 }
 
 export class FileManagerProps {
-
+    model: FileManagerOnLoadData
 }
 
 export class FileManagerState {
+    showContextMenu: boolean = false;
+}
+export enum ClickedSection {
+        driveBar
 }

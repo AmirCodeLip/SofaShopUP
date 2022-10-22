@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Home } from "./root/Home";
 import { Login } from './root/identity/Login'
 import { LoginLoader } from './Services/IdentityServices'
+import { FileManagerLoader } from './Services/FileManagerServices'
 import { PageLoader } from "./model_structure/implements/PageLoader";
 import FileManager from './root/file_manager/FileManager'
 const AppRoutes = [
@@ -15,7 +16,7 @@ const AppRoutes = [
   },
   {
     path: '/manage_files',
-    element: <FileManager></FileManager>
+    element: <PageLoader PageContainer={FileManager} Loading={FileManagerLoader} />
   },
   // {
   //   path: '/counter',

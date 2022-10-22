@@ -18,16 +18,21 @@ export class FormHandler {
     }
 
     formModelItems: Array<FormModelItem>;
+    isInited: boolean = false;
 
     addError(key: string, error: string) {
         this.formModelItems.find(x => x.name === key).addError(error);
     }
+
     initRef(refInfo: userRefType) {
         this.formModelItems.forEach(formModelItem => formModelItem.initRef(refInfo));
     }
+
     init() {
+        this.isInited = true;
         this.formModelItems.forEach(formModelItem => formModelItem.init());
     }
+
     isValid() {
         let valid = true;
         for (let formModelItem of this.formModelItems) {
@@ -38,6 +43,18 @@ export class FormHandler {
             }
         }
         return valid;
+    }
+
+    getFormData<FormType>() {
+        var model: any = {};
+        for (let formModelItem of this.formModelItems) {
+            switch (formModelItem.dataType) {
+                case AspDataType.Text:
+                    model[formModelItem.name] = formModelItem.getValue();
+                    break;
+            }
+        }
+        return model as FormType;
     }
 }
 
@@ -81,6 +98,7 @@ abstract class FormModelItem {
     requiredErrorMsg: string;
     dataType: AspDataType | undefined;
     abstract isValid: boolean;
+    abstract getValue(): any;
     abstract validate(): void;
     abstract initRef(refInfo: userRefType): void;
     abstract init(): void;
@@ -127,19 +145,20 @@ export class FormModeInput extends FormModelItem {
         this.refError = refInfo<HTMLDivElement>();
         this.refInput = refInfo<HTMLInputElement>();
         this.refLabel = refInfo<HTMLLabelElement>();
-        // refInput: React.RefObject<HTMLInputElement>, refError: React.RefObject<HTMLDivElement>, refLabel: React.RefObject<HTMLLabelElement>
     }
 
     init() {
         if (this.displayName) {
             this.refLabel.current.textContent = this.displayName;
         }
+        if (!this.dataType)
+            this.dataType = AspDataType.Text;
         if (this.dataType) {
             switch (this.dataType) {
-                case AspDataType.Text:
-                    this.refInput.current.type = "text";
                 case AspDataType.Password:
                     this.refInput.current.type = "password";
+                case AspDataType.Text:
+                    this.refInput.current.type = "text";
             }
         }
         this.refInput.current.addEventListener("focus", () => {
@@ -160,6 +179,10 @@ export class FormModeInput extends FormModelItem {
         let errorBox = document.createElement("span");
         errorBox.innerText = error;
         this.refError.current.appendChild(errorBox);
+    }
+
+    getValue() {
+        return this.refInput.current.value;
     }
 
     validate() {

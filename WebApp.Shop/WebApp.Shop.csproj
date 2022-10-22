@@ -26,7 +26,6 @@
 
 
 	<ItemGroup>
-		<Folder Include="Areas\FileManager\Controllers\" />
 		<Folder Include="Areas\FileManager\Data\" />
 		<Folder Include="Areas\FileManager\Models\" />
 		<Folder Include="Areas\FileManager\Views\" />

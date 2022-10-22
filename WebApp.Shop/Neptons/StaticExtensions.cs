@@ -115,11 +115,11 @@ namespace WebApp.Shop.Neptons
                                     : folderInfoProp.webPathLocation;
                                 if (property.PropertyType.BaseType == typeof(Enum))
                                 {
-                                    fileHeaderData.AppendLine(@$"import {{ {property.Name} }} from './{folderInfoProp.webPathLocation}{property.Name}'");
+                                    fileHeaderData.AppendLine(@$"import {{ {property.Name} }} from './{folderInfoPropWPN}{property.Name}'");
                                 }
                                 else
                                 {
-                                    fileHeaderData.AppendLine(@$"import {property.Name} from './{folderInfoProp.webPathLocation}{property.Name}'");
+                                    fileHeaderData.AppendLine(@$"import {property.Name} from './{folderInfoPropWPN}{property.Name}'");
                                 }
                             }
                             else if (defaultModels.Any(x => x.ModelType == property.PropertyType))

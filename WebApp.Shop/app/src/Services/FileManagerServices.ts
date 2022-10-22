@@ -1,7 +1,7 @@
 import DataTransmitter from './DataTransmitter'
-import IFormModel from './../mylibraries/asp-communication/interfaces/IFormModel'
+import FileManagerOnLoadData from './../../webModels/FileManager/FileManagerOnLoadData'
 
 
 export async function FileManagerLoader() {
-    return DataTransmitter.GetRequest<IFormModel>(DataTransmitter.BaseUrl + "Identity/GetLoginForm");
+    return DataTransmitter.GetRequest<FileManagerOnLoadData>(DataTransmitter.BaseUrl + "FileManager/Base/FileManagerOnLoadData");
 }

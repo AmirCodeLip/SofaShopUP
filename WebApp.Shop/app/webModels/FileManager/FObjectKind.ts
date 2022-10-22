@@ -1,4 +1,4 @@
-import { FObjectType } from './FileManager/FObjectType'
+import { FObjectType } from './FObjectType'
 
 export default interface FObjectKind {
     Name: string,
