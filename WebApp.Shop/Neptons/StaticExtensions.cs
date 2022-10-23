@@ -100,6 +100,10 @@ namespace WebApp.Shop.Neptons
                             if (property.PropertyType == typeof(String))
                             {
                                 propertyType = property.PropertyType.Name.ToLower();
+                            } 
+                            if (property.PropertyType == typeof(Guid))
+                            {
+                                propertyType = "string";
                             }
                             else if (property.PropertyType == typeof(int))
                             {

@@ -80,7 +80,7 @@ namespace DataLayer.Access.Services
             {
                 _context.Update(product);
             }
-            await SaveChangesAsync();
+            //await SaveChangesAsync();
         }
     }
 }

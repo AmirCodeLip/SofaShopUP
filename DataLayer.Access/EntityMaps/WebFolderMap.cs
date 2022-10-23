@@ -13,8 +13,8 @@ namespace DataLayer.Access.EntityMaps
     {
         public void Configure(EntityTypeBuilder<WebFolder> builder)
         {
-            builder.HasOne(f => f.Folder).WithMany(f => f.Folders).
-                HasForeignKey(k => k.ParentId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(f => f.Folder).WithMany(f => f.Folders).HasForeignKey(k => k.ParentId).OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+            builder.Property(x => x.CreatedDate).HasDefaultValueSql("getdate()");
         }
     }
 }

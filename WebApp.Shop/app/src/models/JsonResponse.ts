@@ -1,4 +1,4 @@
-export default class JsonResponse<TResult> {
+export class JsonResponse<TResult> {
     status: JsonResponseStatus;
     infoData: { [k in string]: string };
     tResult001: TResult

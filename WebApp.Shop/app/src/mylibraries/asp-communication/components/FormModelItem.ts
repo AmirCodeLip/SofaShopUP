@@ -104,6 +104,32 @@ abstract class FormModelItem {
     abstract init(): void;
     abstract addError(error: string): void;
 }
+export class HiddenModeInput<TType> extends FormModelItem {
+    constructor(formModels: IFormModel, itemName: string) {
+        super(formModels, itemName);
+    }
+    isValid: boolean;
+    private value: TType;
+
+    getValue() {
+        return this.value;
+    }
+
+    setValue(value: TType) {
+        this.value = value;
+    }
+
+    validate(): void {
+        this.isValid = true;
+    }
+    initRef(refInfo: userRefType): void { }
+    init(): void {
+        if (!this.dataType)
+            this.dataType = AspDataType.Text;
+    }
+    addError(error: string): void { }
+
+}
 
 export class FormModeInput extends FormModelItem {
     constructor(formModels: IFormModel, itemName: string) {

@@ -3,8 +3,13 @@ import { FolderLogo, FileManagerProps, FileManagerState, ClickedSection } from '
 import { Col, Row } from 'react-bootstrap';
 import './file-manager.css';
 import { Web_Modal, ModalOptions, ModalType } from './../web_modal/Web_Modal';
-import { FormModeInput, FormHandler } from '../../mylibraries/asp-communication/components/FormModelItem';
+import { FormModeInput, FormHandler, HiddenModeInput } from '../../mylibraries/asp-communication/components/FormModelItem';
 import FolderInfo from './../../../webModels/FileManager/FolderInfo'
+import DataTransmitter from '../../Services/DataTransmitter'
+import { load } from '../../Services/FileManagerServices'
+import { JsonResponseStatus, JsonResponse } from './../../models/JsonResponse';
+
+
 
 type EventClickType = (ev: MouseEvent) => void;
 
@@ -14,14 +19,17 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     folderInfoFormHandler: FormHandler;
     contextMenuMiddleware: ModalOptions;
     folderMenuMiddleware: ModalOptions;
+
     constructor(props: FileManagerProps) {
         super(props);
         this.driveBar = React.createRef<HTMLDivElement>();
-        this.folderInfoModelInput = new FormModeInput(props.model.NewFolderForm, "FolderName");
-        this.folderInfoFormHandler = new FormHandler(this.folderInfoModelInput);
+        this.folderInfoModelInput = new FormModeInput(props.model.EditFolderForm, "FolderName");
+        let id = new HiddenModeInput<string>(props.model.EditFolderForm, "Id");
+        this.folderInfoFormHandler = new FormHandler(this.folderInfoModelInput, id);
         this.state =
         {
-            showContextMenu: false
+            showContextMenu: false,
+            fData: []
         };
         this.contextMenuMiddleware = new ModalOptions(ModalType.contextModal);
         this.folderMenuMiddleware = new ModalOptions(ModalType.defualtModal);
@@ -32,11 +40,11 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         return (
             <>
                 <Row className="drive-bar" ref={this.driveBar}>
-                    {folders.map((o, i) => (
+                    {this.state.fData.map((fData, i) => (
                         <Col md={4} lg={2} className="f-hold" key={i} >
                             <FolderLogo></FolderLogo>
                             <div className="f-hold-title right-item">
-                                فولدر یک
+                                {fData.Name}
                             </div>
                             <div className="select-bar"></div>
                             <div className="hover-bar"></div>
@@ -51,7 +59,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
                             <div className="epo-border"></div>
                             <div className="right-item" ref={this.folderInfoModelInput.refError} ></div>
                         </div>
-                        <div className="epo-form" onClick={() => this.upDateFolder()}>
+                        <div className="epo-form" onClick={() => this.editFolder()}>
                             <button className="btn btn-outline-001 btn-well">
                                 ثبت
                             </button>
@@ -136,10 +144,13 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         }
     }
 
-    upDateFolder(): void {
-        {/* enable={this.state.folderInfo !== undefined} */ }
-        console.log(this.folderInfoFormHandler.getFormData<FolderInfo>());
-
+    async editFolder() {
+        var data = await DataTransmitter.PostRequest<JsonResponse<undefined>>(DataTransmitter.BaseUrl + "FileManager/Base/EditFolder",
+            this.folderInfoFormHandler.getFormData<FolderInfo>());
+        if (data.status === JsonResponseStatus.Success) {
+            this.folderMenuMiddleware.enable = false;
+            await this.loadData();
+        }
     }
     newFolder(): void {
         this.contextMenuMiddleware.enable = false;
@@ -159,6 +170,14 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     componentDidMount(): void {
         document.addEventListener("contextmenu", this.eventRightClick);
         document.addEventListener("click", this.eventLeftClick);
+        this.loadData();
+    }
+
+    async loadData() {
+        let data = await load();
+        this.setState({
+            fData: data
+        });
     }
 
     componentWillUnmount() {

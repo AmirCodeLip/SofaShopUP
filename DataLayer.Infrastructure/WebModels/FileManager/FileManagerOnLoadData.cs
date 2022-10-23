@@ -11,6 +11,6 @@ namespace DataLayer.Infrastructure.WebModels.FileManager
 {
     public class FileManagerOnLoadData
     {
-        public FormModel NewFolderForm { get; set; }
+        public FormModel EditFolderForm { get; set; }
     }
 }

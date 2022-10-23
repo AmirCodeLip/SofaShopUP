@@ -23,7 +23,7 @@ namespace DataLayer.Access.Services
                 us = new WebUserSpecification();
                 us.UserId = userId;
                 Add(us);
-                await SaveChangesAsync();
+                //await SaveChangesAsync();
             }
             return us;
         }

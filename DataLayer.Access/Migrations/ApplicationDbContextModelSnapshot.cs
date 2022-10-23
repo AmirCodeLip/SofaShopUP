@@ -434,7 +434,8 @@ namespace DataLayer.Access.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
@@ -455,7 +456,7 @@ namespace DataLayer.Access.Migrations
                     b.Property<byte[]>("FileData")
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<Guid>("FileId")
+                    b.Property<Guid?>("FileId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
@@ -475,15 +476,18 @@ namespace DataLayer.Access.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
-                    b.Property<Guid>("ParentId")
+                    b.Property<Guid?>("ParentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -714,9 +718,7 @@ namespace DataLayer.Access.Migrations
                 {
                     b.HasOne("DataLayer.Domin.Models.WebFile", "File")
                         .WithMany("WebFileVersions")
-                        .HasForeignKey("FileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FileId");
 
                     b.Navigation("File");
                 });
@@ -726,8 +728,7 @@ namespace DataLayer.Access.Migrations
                     b.HasOne("DataLayer.Domin.Models.WebFolder", "Folder")
                         .WithMany("Folders")
                         .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Folder");
                 });

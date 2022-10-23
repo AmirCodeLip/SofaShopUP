@@ -24,8 +24,6 @@ namespace DataLayer.Access.Services
 
         IQueryable<TEntity> Where(Expression<Func<TEntity, bool>> predicate, bool deleted = false);
 
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
-         
         IQueryable<TEntity> AsQueryable(bool deleted = false);
 
         Task<List<TEntity>> GetListAsync(bool deleted = false);
@@ -37,10 +35,13 @@ namespace DataLayer.Access.Services
         Task<TEntity?> FindAsync(bool deleted = false, params object?[]? keyValues);
 
         Task<TEntity?> FindAsync(params object?[]? keyValues);
-        
+
         Task Delete(int id);
 
         EntityEntry<TEntity> Add(TEntity entity);
+
+        Task<EntityEntry<TEntity>> AddAsync(TEntity entity);
+
         EntityEntry<TEntity> Update(TEntity entity);
     }
 }

@@ -84,7 +84,7 @@ namespace DataLayer.Access.Services
                 var user = await _userManager.GetUserAsync(httpContext.User);
                 user.UserName = _userRepository.GetNewId(userName);
                 _userRepository.Update(user);
-                await _userRepository.SaveChangesAsync();
+                //await _userRepository.SaveChangesAsync();
                 var personalInfo = new PersonalInfo
                 {
                     UserName = user.UserName

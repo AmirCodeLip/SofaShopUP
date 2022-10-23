@@ -44,7 +44,7 @@ namespace DataLayer.Access.Services
             {
                 _context.Update(productCategory);
             }
-            await SaveChangesAsync();
+            //await SaveChangesAsync();
         }
 
         public ShopProductCategory RequestCategory(string id)

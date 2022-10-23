@@ -1,4 +1,4 @@
-Create Database ArchiveDB
+Create Database IOTASystem
 ON
 Primary
 (Name=IOTASystem,FileName = 'D:\FileData\IOTASystem.mdf'),

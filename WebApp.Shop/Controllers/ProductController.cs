@@ -18,7 +18,7 @@ namespace WebApp.Shop.Controllers
         // GET: api/<ProductController>
         [HttpGet]
         [Authorize]
-        public async Task<IEnumerable<string>> Get()
+        public IEnumerable<string> Get()
         {
             //await _defaultCreatorRepository.FastCreate();
             return new string[] { "value1", "value2" };

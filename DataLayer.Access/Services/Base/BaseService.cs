@@ -71,9 +71,6 @@ namespace DataLayer.Access.Services
                 return _dbSet.NotDeleted().Where(predicate);
         }
 
-        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken)) =>
-            await _context.SaveChangesAsync(cancellationToken);
-
         public IQueryable<TEntity> AsQueryable(bool deleted = false)
         {
             if (deleted)
@@ -101,6 +98,11 @@ namespace DataLayer.Access.Services
         public EntityEntry<TEntity> Add(TEntity entity)
         {
             return _dbSet.Add(entity);
+        }
+
+        public async Task<EntityEntry<TEntity>> AddAsync(TEntity entity)
+        {
+            return await _dbSet.AddAsync(entity);
         }
 
         public EntityEntry<TEntity> Update(TEntity entity)
@@ -142,7 +144,7 @@ namespace DataLayer.Access.Services
             {
                 item.Delete();
                 _context.Update(item);
-                await SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
         }
     }
