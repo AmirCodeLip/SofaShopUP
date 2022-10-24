@@ -2,7 +2,10 @@
 using DataLayer.Infrastructure.Infrastructure;
 using DataLayer.Infrastructure.WebModels;
 using DataLayer.Infrastructure.WebModels.FileManager;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using WebApp.Shop.Neptons;
 
 namespace WebApp.Shop.Areas.FileManager.Controllers
 {
@@ -15,10 +18,11 @@ namespace WebApp.Shop.Areas.FileManager.Controllers
             this.fileManagerStructure = fileManagerStructure;
         }
 
+        [Authorize]
         public string FileManagerOnLoadData() => fileManagerStructure.FileManagerOnLoadData();
 
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<IActionResult> EditFolder([FromBody] FolderInfo folderInfo) =>
-           Json(await fileManagerStructure.EditFolder(folderInfo, ModelState));
+           Json(await fileManagerStructure.EditFolder(folderInfo, this.CentralizeDataFiller()));
     }
 }

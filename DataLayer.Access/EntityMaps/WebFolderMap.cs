@@ -15,6 +15,7 @@ namespace DataLayer.Access.EntityMaps
         {
             builder.HasOne(f => f.Folder).WithMany(f => f.Folders).HasForeignKey(k => k.ParentId).OnDelete(DeleteBehavior.Restrict).IsRequired(false);
             builder.Property(x => x.CreatedDate).HasDefaultValueSql("getdate()");
+            builder.HasOne(x => x.WebUser).WithMany(x=>x.Folders).HasForeignKey(k => k.CreatorId).OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

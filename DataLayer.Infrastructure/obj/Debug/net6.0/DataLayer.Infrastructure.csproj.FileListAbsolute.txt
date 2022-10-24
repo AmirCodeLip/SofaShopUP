@@ -1,4 +1,5 @@
 D:\SofaShop\DataLayer.Infrastructure\bin\Debug\net6.0\DataLayer.Infrastructure.deps.json
+D:\SofaShop\DataLayer.Infrastructure\bin\Debug\net6.0\DataLayer.Infrastructure.runtimeconfig.json
 D:\SofaShop\DataLayer.Infrastructure\bin\Debug\net6.0\DataLayer.Infrastructure.dll
 D:\SofaShop\DataLayer.Infrastructure\bin\Debug\net6.0\DataLayer.Infrastructure.pdb
 D:\SofaShop\DataLayer.Infrastructure\bin\Debug\net6.0\DataLayer.Access.dll
@@ -16,6 +17,5 @@ D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\DataLayer.Infrastructure.c
 D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\DataLayer.Infrastructure.dll
 D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\refint\DataLayer.Infrastructure.dll
 D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\DataLayer.Infrastructure.pdb
-D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\ref\DataLayer.Infrastructure.dll
-D:\SofaShop\DataLayer.Infrastructure\bin\Debug\net6.0\DataLayer.Infrastructure.runtimeconfig.json
 D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\DataLayer.Infrastructure.genruntimeconfig.cache
+D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\ref\DataLayer.Infrastructure.dll

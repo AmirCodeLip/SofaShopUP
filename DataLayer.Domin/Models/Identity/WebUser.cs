@@ -18,6 +18,7 @@ namespace DataLayer.Domin.Models.Identity
         [Display(Name = "تلفن همراه")]
         public override string PhoneNumber { get => base.PhoneNumber; set { base.PhoneNumber = value; } }
         public bool IsDeleted { get; set; }
+        public ICollection<WebFolder> Folders { get; set; }
         public virtual ICollection<ShopAddress> Addresses { get; set; }
     }
 }

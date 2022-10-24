@@ -21,11 +21,12 @@ export const Login: React.FC<{ model: IFormModel }> = ({ model }) => {
             });
             if (loginResult.status === JsonResponseStatus.Success) {
                 console.log(loginResult.tResult001);
+                localStorage.setItem("jwt", loginResult.tResult001.token)
             } else {
                 for (let key in loginResult.infoData) {
                     let data = loginResult.infoData[key];
                     formHandler.addError(key, data);
-                } 
+                }
             }
         }
     }

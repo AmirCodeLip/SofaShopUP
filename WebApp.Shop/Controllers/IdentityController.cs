@@ -4,6 +4,8 @@ using DataLayer.Infrastructure.ViewModel.Form;
 using DataLayer.Access.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using DataLayer.Infrastructure.WebModels;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace WebApp.Shop.Controllers
 {
@@ -26,5 +28,7 @@ namespace WebApp.Shop.Controllers
 
         [HttpPost, Authorize]
         public async Task<JsonResponse<UserPersonalInfo>> GetProfileInfo() => await _identityManage.GetUserProfile(User);
+   
     }
+
 }

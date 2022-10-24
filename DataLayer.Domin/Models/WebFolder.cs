@@ -1,4 +1,5 @@
-﻿using DataLayer.Domin.Models.Interfaces;
+﻿using DataLayer.Domin.Models.Identity;
+using DataLayer.Domin.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -19,6 +20,8 @@ namespace DataLayer.Domin.Models
         public bool IsDeleted { get; set; }
         public DateTime CreatedDate { get; set; }
         public WebFolder Folder { get; set; }
+        public Guid CreatorId { get; set; }
+        public WebUser WebUser { get; set; }
         public ICollection<WebFolder> Folders { get; set; }
         public ICollection<WebFile> WebFiles { get; set; }
     }

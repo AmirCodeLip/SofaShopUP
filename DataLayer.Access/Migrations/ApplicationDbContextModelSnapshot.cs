@@ -480,6 +480,9 @@ namespace DataLayer.Access.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getdate()");
 
+                    b.Property<Guid>("CreatorId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -491,6 +494,8 @@ namespace DataLayer.Access.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
 
                     b.HasIndex("ParentId");
 
@@ -725,12 +730,20 @@ namespace DataLayer.Access.Migrations
 
             modelBuilder.Entity("DataLayer.Domin.Models.WebFolder", b =>
                 {
+                    b.HasOne("DataLayer.Domin.Models.Identity.WebUser", "WebUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("DataLayer.Domin.Models.WebFolder", "Folder")
                         .WithMany("Folders")
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Folder");
+
+                    b.Navigation("WebUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

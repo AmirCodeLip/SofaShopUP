@@ -2,6 +2,7 @@
 using Microsoft.OData.ModelBuilder;
 using Microsoft.AspNetCore.OData;
 using DataLayer.Infrastructure.WebModels.FileManager;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApp.Shop.OdataControllers
 {

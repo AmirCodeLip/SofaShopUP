@@ -9,7 +9,8 @@
   --color_008: rgb(73 186 73);
 }
 
-html {
+html,
+#root {
   height: 100%;
 }
 

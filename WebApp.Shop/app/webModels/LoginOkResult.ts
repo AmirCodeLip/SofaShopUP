@@ -1,4 +1,4 @@
 
 export default interface LoginOkResult {
-    Token: string
+    token: string
 }

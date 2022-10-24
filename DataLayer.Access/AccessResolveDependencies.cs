@@ -20,7 +20,7 @@ namespace DataLayer.Access
                     "Repository".Length - 1);
                 var serviceName = baseName + "Service";
                 var service = types.FirstOrDefault(x => x.Name == serviceName);
-                services.AddScoped(repository, service);
+                services.AddTransient(repository, service);
             }
             return services;
         }

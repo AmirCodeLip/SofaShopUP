@@ -8,6 +8,6 @@ namespace DataLayer.Infrastructure.WebModels
 {
     public class LoginOkResult
     {
-        public string Token { get; set; }
+        public string token { get; set; }
     }
 }

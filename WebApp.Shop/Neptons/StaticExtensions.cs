@@ -1,6 +1,8 @@
 ﻿using DataLayer.Infrastructure;
+using DataLayer.Infrastructure.ViewModel;
 using DataLayer.Infrastructure.ViewModel.Form;
 using DataLayer.Infrastructure.WebModels;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Primitives;
@@ -42,6 +44,7 @@ namespace WebApp.Shop.Neptons
             destination += $"\\{model.Name}.ts";
             return (destination, webPathLocation);
         }
+       
         static List<DefaultTSComponent> DefaultModels
         {
             get
@@ -58,6 +61,7 @@ namespace WebApp.Shop.Neptons
                 return defaultModels;
             }
         }
+    
         public static void AddWebModels(IWebHostEnvironment hostingEnv)
         {
             var defaultModels = DefaultModels;
@@ -149,5 +153,9 @@ namespace WebApp.Shop.Neptons
             }
         }
 
+        public static CentralizeData CentralizeDataFiller(this Controller controller)
+        {
+            return new CentralizeData(controller.HttpContext, controller.ModelState);
+        }
     }
 }

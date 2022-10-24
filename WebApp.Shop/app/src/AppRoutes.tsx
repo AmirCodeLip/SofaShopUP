@@ -5,6 +5,8 @@ import { LoginLoader } from './Services/IdentityServices'
 import { FileManagerLoader } from './Services/FileManagerServices'
 import { PageLoader } from "./model_structure/implements/PageLoader";
 import FileManager from './root/file_manager/FileManager'
+ 
+
 const AppRoutes = [
   {
     index: true,
@@ -12,11 +14,11 @@ const AppRoutes = [
   },
   {
     path: '/identity/login',
-    element: <PageLoader PageContainer={Login} Loading={LoginLoader} />
+    element: <PageLoader PageContainer={Login} pageLoaderOtpions={{ Loading: LoginLoader, allowAnonymous: true }} />
   },
   {
     path: '/manage_files',
-    element: <PageLoader PageContainer={FileManager} Loading={FileManagerLoader} />
+    element: <PageLoader PageContainer={FileManager} pageLoaderOtpions={{ Loading: FileManagerLoader, allowAnonymous: false }} />
   },
   // {
   //   path: '/counter',

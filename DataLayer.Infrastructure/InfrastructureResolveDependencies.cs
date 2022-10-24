@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
 using DataLayer.Infrastructure.Services;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DataLayer.Infrastructure
 {
@@ -32,12 +34,16 @@ namespace DataLayer.Infrastructure
             services.Configure<ApplicationSettings>(configuration.GetSection(nameof(ApplicationSettings)));
             services.AddAccessServices();
             services.addInternals();
+        
             services.AddSingleton(new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new MappingProfile());
             }).CreateMapper());
             services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("shopdb"), b => b.MigrationsAssembly("DataLayer.Access")));
+            {
+                options.UseSqlServer(configuration.GetConnectionString("shopdb"),
+                builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
+            });
             services.AddIdentity<WebUser, WebRole>(options =>
             {
                 options.Password.RequireDigit = false;
@@ -65,9 +71,11 @@ namespace DataLayer.Infrastructure
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["ApplicationSettings:JWT"].ToString())),
+                    ClockSkew = TimeSpan.Zero,
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    ClockSkew = TimeSpan.Zero
+                    // ValidAudience = "http://dotnetdetail.net",
+                    // ValidIssuer = "http://dotnetdetail.net",
                 };
             });
             return services;

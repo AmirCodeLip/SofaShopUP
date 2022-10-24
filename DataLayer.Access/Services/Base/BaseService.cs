@@ -55,6 +55,14 @@ namespace DataLayer.Access.Services
                 return _dbSet.NotDeleted().FirstOrDefault(predicate);
         }
 
+        public async Task<TEntity?> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, bool deleted = false)
+        {
+            if (deleted)
+                return await _dbSet.Deleted().SingleOrDefaultAsync(predicate);
+            else
+                return await _dbSet.NotDeleted().SingleOrDefaultAsync(predicate);
+        }
+        
         public async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, bool deleted = false)
         {
             if (deleted)
@@ -74,9 +82,9 @@ namespace DataLayer.Access.Services
         public IQueryable<TEntity> AsQueryable(bool deleted = false)
         {
             if (deleted)
-                return _dbSet.Deleted().AsQueryable();
+                return _dbSet.Deleted();
             else
-                return _dbSet.NotDeleted().AsQueryable();
+                return _dbSet.NotDeleted();
         }
 
         public async Task<List<TEntity>> GetListAsync(bool deleted = false)

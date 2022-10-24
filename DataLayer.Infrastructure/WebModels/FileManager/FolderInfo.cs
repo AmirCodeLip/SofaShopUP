@@ -14,6 +14,7 @@ namespace DataLayer.Infrastructure.WebModels.FileManager
         public Guid Id { get; set; }
         [Display(Name = "نام فولدر")]
         public string FolderName { get; set; }
+        public Guid? FolderId { get; set; }
 
         public static implicit operator WebFolder(FolderInfo folderInfo)
         {
@@ -26,6 +27,7 @@ namespace DataLayer.Infrastructure.WebModels.FileManager
         {
             webFolder.Id = Id;
             webFolder.Name = FolderName;
+            webFolder.ParentId = FolderId;
         }
 
     }

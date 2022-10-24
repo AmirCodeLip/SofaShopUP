@@ -32,11 +32,11 @@ namespace WebApp.Shop.Neptons
             return new Dictionary<string, string>(new FileExtensionContentTypeProvider().Mappings.Where(x => supportedFiles.Contains(x.Key)));
         }
 
-        public async Task<Task> Invoke(HttpContext context)
+        public Task Invoke(HttpContext context)
         {
             if (IsReactFile(context, out var filePath))
             {
-                return await TryServeReactFile(context, filePath);
+                return TryServeReactFile(context, filePath);
             }
             return _next(context);
         }

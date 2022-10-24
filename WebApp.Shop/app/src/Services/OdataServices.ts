@@ -1,9 +1,11 @@
 import DataTransmitter from './DataTransmitter'
+import { DataTransmitterOptions } from './DataTransmitter'
+
 type wherePredicateType<TSource> = (item: TSource) => boolean;
 
 interface IQueryable<TSource> {
     Where(predicate: wherePredicateType<TSource>): IQueryable<TSource>;
-    Execute(): void;
+    Execute(options?: DataTransmitterOptions): void;
 }
 
 class QueryableOption {
@@ -25,10 +27,11 @@ class Queryable<TSource> implements IQueryable<TSource>
         this.qOption.filterSequences.push(compile(predicate.toString()));
         return this;
     }
-    async Execute() {
+
+    async Execute(options?: DataTransmitterOptions) {
         let url = this.qOption.url + "?";
         url += (this.qOption.filterSequences.length === 0) ? "" : `$filter=${execute(this.qOption.filterSequences)}`;
-        return (await DataTransmitter.GetRequest<any>(url)).value;
+        return (await DataTransmitter.GetRequest<any>(url, options)).value;
     }
 }
 

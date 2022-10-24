@@ -5,7 +5,7 @@ import LoginOkResult from '../../webModels/LoginOkResult';
 import { JsonResponse } from '../models/JsonResponse';
 
 export async function loginService(model: LoginModel) {
-    let result = await DataTransmitter.PostRequest<JsonResponse<LoginOkResult>>(`${DataTransmitter.BaseUrl}Identity/PostLogin`, model);
+    let result = await DataTransmitter.PostRequest<JsonResponse<LoginOkResult>>(`${DataTransmitter.BaseUrl}Identity/PostLogin`, { body: model });
     return result;
 }
 

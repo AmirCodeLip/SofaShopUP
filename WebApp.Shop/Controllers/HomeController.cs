@@ -8,9 +8,11 @@ namespace WebApp.Shop.Controllers
     {
         private readonly IWebHostEnvironment _hostingEnv;
         private readonly DefaultCreatorStructure defaultCreatorStructure;
-        public HomeController(IWebHostEnvironment hostingEnv, DefaultCreatorStructure defaultCreatorStructure)
+        private readonly FileManagerStructure fileManagerStructure;
+        public HomeController(IWebHostEnvironment hostingEnv, DefaultCreatorStructure defaultCreatorStructure, FileManagerStructure fileManagerStructure)
         {
             this._hostingEnv = hostingEnv;
+            this.fileManagerStructure = fileManagerStructure;
             this.defaultCreatorStructure = defaultCreatorStructure;
         }
 
@@ -23,5 +25,6 @@ namespace WebApp.Shop.Controllers
 
             return "home";
         }
+       
     }
 }

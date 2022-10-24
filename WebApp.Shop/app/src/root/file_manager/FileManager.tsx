@@ -5,8 +5,7 @@ import './file-manager.css';
 import { Web_Modal, ModalOptions, ModalType } from './../web_modal/Web_Modal';
 import { FormModeInput, FormHandler, HiddenModeInput } from '../../mylibraries/asp-communication/components/FormModelItem';
 import FolderInfo from './../../../webModels/FileManager/FolderInfo'
-import DataTransmitter from '../../Services/DataTransmitter'
-import { load } from '../../Services/FileManagerServices'
+import { load, editForm } from '../../Services/FileManagerServices'
 import { JsonResponseStatus, JsonResponse } from './../../models/JsonResponse';
 
 
@@ -145,13 +144,13 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     }
 
     async editFolder() {
-        var data = await DataTransmitter.PostRequest<JsonResponse<undefined>>(DataTransmitter.BaseUrl + "FileManager/Base/EditFolder",
-            this.folderInfoFormHandler.getFormData<FolderInfo>());
+        var data = await editForm(this.folderInfoFormHandler.getFormData<FolderInfo>());
         if (data.status === JsonResponseStatus.Success) {
             this.folderMenuMiddleware.enable = false;
             await this.loadData();
         }
     }
+    
     newFolder(): void {
         this.contextMenuMiddleware.enable = false;
         this.folderMenuMiddleware.enable = true;
@@ -167,10 +166,11 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         this.folderInfoFormHandler.initRef(React.createRef);
     }
 
-    componentDidMount(): void {
+    async componentDidMount() {
         document.addEventListener("contextmenu", this.eventRightClick);
         document.addEventListener("click", this.eventLeftClick);
-        this.loadData();
+        await this.loadData();
+
     }
 
     async loadData() {

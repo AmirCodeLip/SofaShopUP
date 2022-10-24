@@ -13,6 +13,7 @@ using DataLayer.Infrastructure.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using DataLayer.Infrastructure.WebModels;
+using System.Collections.Generic;
 
 namespace DataLayer.Infrastructure.Infrastructure
 {
@@ -47,7 +48,7 @@ namespace DataLayer.Infrastructure.Infrastructure
             {
                 foreach (var state in modelState)
                 {
-                    result.AddError(state.Key, state.Value.Errors[0].ErrorMessage);                    
+                    result.AddError(state.Key, state.Value.Errors[0].ErrorMessage);
                 }
                 return result;
             }
@@ -82,10 +83,12 @@ namespace DataLayer.Infrastructure.Infrastructure
                 else if (loginResult.Succeeded)
                 {
                     var tokenDescriptor = new SecurityTokenDescriptor
-                    {
+                    { 
                         Subject = new ClaimsIdentity(new Claim[]
                         {
-                            new Claim("UserId",user.Id.ToString())
+                            new Claim("UserId",user.Id.ToString()),
+                            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),  // This line is important.
+
                         }),
                         Expires = DateTime.UtcNow.AddMonths(1),
                         SigningCredentials = new SigningCredentials(
@@ -96,7 +99,7 @@ namespace DataLayer.Infrastructure.Infrastructure
                     var token = tokenHandler.WriteToken(securityToken);
                     result.TResult001 = new LoginOkResult
                     {
-                        Token = token,
+                        token = token,
                     };
                 }
                 else
