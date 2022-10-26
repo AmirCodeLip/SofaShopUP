@@ -26,7 +26,6 @@ export default class DataTransmitter {
         {
             'Content-Type': 'application/json',
         };
-        debugger;
         if (options.authorize) {
             let jwt = localStorage.getItem("jwt");
             if (jwt == null) {

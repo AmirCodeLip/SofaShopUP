@@ -1,62 +1,62 @@
 :root {
-  --color_001: #242582;
-  --color_002: #553D67;
-  --color_003: #F64C72;
-  --color_004: #99738E;
-  --color_005: #2F2FA2;
-  --color_006: #FFFFFF;
-  --color_007: #F3F3F3;
-  --color_008: rgb(73 186 73);
+    --color_001: #242582;
+    --color_002: #553D67;
+    --color_003: #F64C72;
+    --color_004: #99738E;
+    --color_005: #2F2FA2;
+    --color_006: #FFFFFF;
+    --color_007: #F3F3F3;
+    --color_008: rgb(73 186 73);
 }
 
 html,
 #root {
-  height: 100%;
+    height: 100%;
 }
 
 body {
-  height: 100%;
-  margin: 0px;
-  font-family: Samim;
-  padding: 0px;
-  overflow-x: hidden;
-  position: relative;
+    height: 100%;
+    margin: 0px;
+    font-family: Samim;
+    padding: 0px;
+    overflow-x: hidden;
+    position: relative;
 }
 
 
 .right-item {
-  text-align: right;
-  direction: rtl;
+    text-align: right;
+    direction: rtl;
 }
 
 .left-item {
-  text-align: left;
-  direction: ltr;
+    text-align: left;
+    direction: ltr;
 }
 
 @font-face {
-  font-family: Yekan;
-  src: url("fonts/Yekan.ttf") format("truetype");
+    font-family: Yekan;
+    src: url("fonts/Yekan.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: iranyekan;
-  src: url("fonts/Yekan.ttf") format("iranyekanwebregularfanum");
+    font-family: iranyekan;
+    src: url("fonts/Yekan.ttf") format("iranyekanwebregularfanum");
 }
 
 @font-face {
-  font-family: IranNastaliq;
-  src: url("fonts/IranNastaliq.woff") format("woff"), url("fonts/IranNastaliq.ttf") format("truetype"), url("fonts/IranNastaliq.eot");
+    font-family: IranNastaliq;
+    src: url("fonts/IranNastaliq.woff") format("woff"), url("fonts/IranNastaliq.ttf") format("truetype"), url("fonts/IranNastaliq.eot");
 }
 
 @font-face {
-  font-family: Samim;
-  src: url("fonts/Samim.ttf") format("truetype"), url("fonts/Samim.woff") format("woff");
+    font-family: Samim;
+    src: url("fonts/Samim.ttf") format("truetype"), url("fonts/Samim.woff") format("woff");
 }
 
 @font-face {
-  font-family: Samim-Bold;
-  src: url("fonts/Samim-Bold.ttf") format("truetype");
+    font-family: Samim-Bold;
+    src: url("fonts/Samim-Bold.ttf") format("truetype");
 }
 
 
@@ -64,81 +64,81 @@ body {
 /*<-----------------card section------------------>*/
 
 .level-line {
-  position: absolute;
-  left: 0px;
-  right: -1372px;
-  z-index: 99;
-  background-color: aquamarine;
-  color: aquamarine;
-  height: 4px;
-  display: none;
-  top: 35px;
+    position: absolute;
+    left: 0px;
+    right: -1372px;
+    z-index: 99;
+    background-color: aquamarine;
+    color: aquamarine;
+    height: 4px;
+    display: none;
+    top: 35px;
 }
 
 .grad-line {
-  background-color: rgb(247 247 247);
-  margin: 4px 0px 12px;
-  padding: 20px 0px;
-  direction: rtl;
-  width: 100%;
+    background-color: rgb(247 247 247);
+    margin: 4px 0px 12px;
+    padding: 20px 0px;
+    direction: rtl;
+    width: 100%;
 }
 
 .inner-grid {
-  padding: 7px;
-  box-shadow: rgb(153, 153, 153) 1px 1px 4px;
-  border-radius: 0px 3px 3px;
+    padding: 7px;
+    box-shadow: rgb(153, 153, 153) 1px 1px 4px;
+    border-radius: 0px 3px 3px;
 }
 
-.inner-grid img {
-  width: 100%;
-  border-radius: 2px;
-  height: 280px;
-}
+    .inner-grid img {
+        width: 100%;
+        border-radius: 2px;
+        height: 280px;
+    }
 
 footer {
-  height: 200px;
-  background-color: black;
-  width: 100%;
+    height: 200px;
+    background-color: black;
+    width: 100%;
 }
 
 .def-link:active {
-  color: black;
+    color: black;
 }
 
 .def-link {
-  color: black;
+    color: black;
 }
 
 .center-helder {
-  min-height: 400px;
-  margin-top: 31px;
-  margin-bottom: 65px;
+    min-height: 400px;
+    margin-top: 31px;
+    margin-bottom: 65px;
 }
 
 .center-helder,
 .center-helder-zero {
-  margin-right: 76px;
-  margin-left: 76px;
+    margin-right: 76px;
+    margin-left: 76px;
 }
 
-.center-helder .row {
-  width: 100%
-}
+    .center-helder .row {
+        width: 100%
+    }
 
 .nav-router {
-  color: var(--color_001);
-  text-decoration: none;
-  font-size: 17px !important;
-  font-weight: 600 !important;
+    color: var(--color_001);
+    text-decoration: none;
+    font-size: 17px !important;
+    font-weight: 600 !important;
 }
 
-.nav-router:hover {
-  color: var(--color_002);
-}
+    .nav-router:hover {
+        color: var(--color_002);
+    }
 
 .link-active a,
 .link-active a :hover {
-  color: var(--color_003) !important
+    color: var(--color_003) !important
 }
 
 /* .right-item {
@@ -149,16 +149,16 @@ footer {
 } */
 
 @media screen and (max-width: 1100px) {
-  .card-section {
-    width: fit-content;
-    flex: 0.18;
-  }
+    .card-section {
+        width: fit-content;
+        flex: 0.18;
+    }
 }
 
 @media screen and (max-width: 1200px) {
 
-  .center-helder,
-  .center-helder-zero {
-    margin: 8px 8px;
-  }
+    .center-helder,
+    .center-helder-zero {
+        margin: 8px 8px;
+    }
 }

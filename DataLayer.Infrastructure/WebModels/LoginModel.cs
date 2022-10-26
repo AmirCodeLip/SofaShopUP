@@ -1,4 +1,5 @@
-﻿using DataLayer.UnitOfWork;
+﻿using DataLayer.Infrastructure.Services;
+using DataLayer.UnitOfWork;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace DataLayer.Infrastructure.WebModels
 {
+    [TSModelUsage(CompileOption = CompileOption.ignore)]
     public class LoginModel
     {
         [Required(ErrorMessage = SharedRegix.RequiredError)]

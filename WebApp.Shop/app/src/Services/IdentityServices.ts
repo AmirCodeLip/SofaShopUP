@@ -1,7 +1,7 @@
 import IFormModel from './../mylibraries/asp-communication/interfaces/IFormModel'
 import DataTransmitter from './DataTransmitter'
-import LoginModel from './../../webModels/LoginModel'
-import LoginOkResult from '../../webModels/LoginOkResult';
+import LoginModel from './../webModels/LoginModel'
+import LoginOkResult from './../webModels/LoginOkResult';
 import { JsonResponse } from '../models/JsonResponse';
 
 export async function loginService(model: LoginModel) {

@@ -5,7 +5,7 @@ import { FormModeInput, FormHandler } from '../../mylibraries/asp-communication/
 import { loginService } from '../../Services/IdentityServices'
 import { JsonResponseStatus } from '../../models/JsonResponse';
 export const Login: React.FC<{ model: IFormModel }> = ({ model }) => {
-    let phoneOrEmailModel = new FormModeInput(model, "PhoneOrEmail");
+    let phoneOrEmailModel: FormModeInput = new FormModeInput(model, "PhoneOrEmail");
     let passwordModel = new FormModeInput(model, "Password");
     let formHandler = new FormHandler(phoneOrEmailModel, passwordModel);
     formHandler.initRef(React.useRef);
@@ -16,15 +16,15 @@ export const Login: React.FC<{ model: IFormModel }> = ({ model }) => {
     async function login() {
         if (formHandler.isValid()) {
             let loginResult = await loginService({
-                PhoneOrEmail: phoneOrEmailModel.refInput.current.value,
-                Password: passwordModel.refInput.current.value
+                PhoneOrEmail: phoneOrEmailModel.refInput.current!.value,
+                Password: passwordModel.refInput.current!.value
             });
-            if (loginResult.status === JsonResponseStatus.Success) {
-                console.log(loginResult.tResult001);
-                localStorage.setItem("jwt", loginResult.tResult001.token)
+            if (loginResult!.status === JsonResponseStatus.Success) {
+                console.log(loginResult?.tResult001);
+                localStorage.setItem("jwt", loginResult!.tResult001!.token)
             } else {
-                for (let key in loginResult.infoData) {
-                    let data = loginResult.infoData[key];
+                for (let key in loginResult!.infoData) {
+                    let data = loginResult!.infoData[key];
                     formHandler.addError(key, data);
                 }
             }

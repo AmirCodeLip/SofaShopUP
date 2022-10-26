@@ -1,7 +1,10 @@
 import * as React from 'react'
-import FileManagerOnLoadData from './../../../webModels/FileManager/FileManagerOnLoadData'
-import FolderInfo from './../../../webModels/FileManager/FolderInfo'
-import FObjectKind from './../../../webModels/FileManager/FObjectKind'
+import FileManagerOnLoadData from './../../webModels/FileManager/FileManagerOnLoadData'
+import FolderInfo from './../../webModels/FileManager/FolderInfo'
+import FObjectKind from './../../webModels/FileManager/FObjectKind'
+import { FObjectKindComponent } from '../../Services/FileManagerServices'
+
+export type EventClickType = (ev: MouseEvent) => void;
 
 export function FolderLogo() {
     return (
@@ -17,10 +20,21 @@ export class FileManagerProps {
     model: FileManagerOnLoadData
 }
 
+
 export class FileManagerState {
     showContextMenu: boolean = false;
-    fData: Array<FObjectKind> = [];
+    fData: Array<FObjectKindComponent> = [];
 }
+
 export enum ClickedSection {
-    driveBar
+    driveBar, folder
 }
+
+export interface RightBarItem {
+    text: string,
+    cmdText: string,
+    icon: string,
+    refItem: React.RefObject<HTMLDivElement>,
+    clicked: () => void;
+}
+

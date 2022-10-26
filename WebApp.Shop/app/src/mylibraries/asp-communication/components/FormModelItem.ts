@@ -21,7 +21,7 @@ export class FormHandler {
     isInited: boolean = false;
 
     addError(key: string, error: string) {
-        this.formModelItems.find(x => x.name === key).addError(error);
+        this.formModelItems.find(x => x.name === key)!.addError(error);
     }
 
     initRef(refInfo: userRefType) {
@@ -45,6 +45,19 @@ export class FormHandler {
         return valid;
     }
 
+    setFormData(model: any): void {
+        for (let name in model) {
+            let item = this.formModelItems.find(x => x.name === name);
+            if (item) {
+                item.setValue(model[name]);
+                console.log(item.getValue());
+            }
+            else {
+                console.log(name);
+            }
+        }
+    }
+
     getFormData<FormType>() {
         var model: any = {};
         for (let formModelItem of this.formModelItems) {
@@ -61,7 +74,7 @@ export class FormHandler {
 abstract class FormModelItem {
     constructor(formModels: IFormModel, itemName: string) {
         this.name = itemName;
-        this.formModel = formModels.find(model => model.Name === itemName);
+        this.formModel = formModels.find(model => model.Name === itemName)!;
         for (let formDescriptors of this.formModel.FormDescriptors) {
             switch (formDescriptors.ClassName) {
                 case "InputDisplay":
@@ -99,6 +112,7 @@ abstract class FormModelItem {
     dataType: AspDataType | undefined;
     abstract isValid: boolean;
     abstract getValue(): any;
+    abstract setValue(value: any): void;
     abstract validate(): void;
     abstract initRef(refInfo: userRefType): void;
     abstract init(): void;
@@ -115,8 +129,8 @@ export class HiddenModeInput<TType> extends FormModelItem {
         return this.value;
     }
 
-    setValue(value: TType) {
-        this.value = value;
+    setValue(value: TType | any) {
+        this.value = value as TType;
     }
 
     validate(): void {
@@ -134,7 +148,6 @@ export class HiddenModeInput<TType> extends FormModelItem {
 export class FormModeInput extends FormModelItem {
     constructor(formModels: IFormModel, itemName: string) {
         super(formModels, itemName);
-
     }
 
     private touched: boolean;
@@ -143,9 +156,9 @@ export class FormModeInput extends FormModelItem {
     }
     set Touched(value: boolean) {
         if (value)
-            this.refLabel.current.classList.add("fm-touched");
+            this.refLabel.current!.classList.add("fm-touched");
         else
-            this.refLabel.current.classList.remove("fm-touched");
+            this.refLabel.current!.classList.remove("fm-touched");
         this.touched = value;
     }
 
@@ -155,9 +168,9 @@ export class FormModeInput extends FormModelItem {
     }
     set HaveValue(value: boolean) {
         if (value)
-            this.refLabel.current.classList.add("fm-have-val");
+            this.refLabel.current!.classList.add("fm-have-val");
         else
-            this.refLabel.current.classList.remove("fm-have-val");
+            this.refLabel.current!.classList.remove("fm-have-val");
         this.haveValue = value;
     }
 
@@ -175,52 +188,56 @@ export class FormModeInput extends FormModelItem {
 
     init() {
         if (this.displayName) {
-            this.refLabel.current.textContent = this.displayName;
+            this.refLabel.current!.textContent = this.displayName;
         }
         if (!this.dataType)
             this.dataType = AspDataType.Text;
         if (this.dataType) {
             switch (this.dataType) {
                 case AspDataType.Password:
-                    this.refInput.current.type = "password";
+                    this.refInput.current!.type = "password";
                 case AspDataType.Text:
-                    this.refInput.current.type = "text";
+                    this.refInput.current!.type = "text";
             }
         }
-        this.refInput.current.addEventListener("focus", () => {
+        this.refInput.current!.addEventListener("focus", () => {
             this.Touched = true;
         });
-        this.refInput.current.addEventListener("focusout", () => {
+        this.refInput.current!.addEventListener("focusout", () => {
             this.Touched = false;
         });
-        this.refLabel.current.focus = () => {
-            this.refInput.current.focus();
+        this.refLabel.current!.focus = () => {
+            this.refInput.current!.focus();
         }
-        this.refInput.current.onkeyup = () => this.validate();
-        this.HaveValue = this.refInput.current.value.length !== 0;
+        this.refInput.current!.onkeyup = () => this.validate();
+        this.HaveValue = this.refInput.current!.value.length !== 0;
     }
 
     addError(error: string) {
         this.isValid = false;
         let errorBox = document.createElement("span");
         errorBox.innerText = error;
-        this.refError.current.appendChild(errorBox);
+        this.refError.current!.appendChild(errorBox);
     }
 
     getValue() {
-        return this.refInput.current.value;
+        return this.refInput.current!.value;
+    }
+
+    setValue(value: any) {
+        this.refInput.current.value = value;
     }
 
     validate() {
-        let currentVal = this.refInput.current.value;
-        this.refError.current.innerHTML = "";
+        let currentVal = this.refInput.current!.value;
+        this.refError.current!.innerHTML = "";
         this.isValid = true;
         this.errorList = [];
         this.isValid = true;
         if (currentVal.length === 0) {
             this.HaveValue = false;
             if (this.required)
-                this.errorList.push(this.requiredErrorMsg.replace("{0}", this.displayName));
+                this.errorList.push(this.requiredErrorMsg.replace("{0}", this.displayName!));
         }
         else {
             this.HaveValue = true;

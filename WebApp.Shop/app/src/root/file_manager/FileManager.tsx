@@ -1,24 +1,43 @@
 import * as React from 'react'
-import { FolderLogo, FileManagerProps, FileManagerState, ClickedSection } from './FolderModules';
+import { FolderLogo, FileManagerProps, FileManagerState, ClickedSection, RightBarItem, EventClickType } from './FolderModules';
 import { Col, Row } from 'react-bootstrap';
 import './file-manager.css';
 import { Web_Modal, ModalOptions, ModalType } from './../web_modal/Web_Modal';
 import { FormModeInput, FormHandler, HiddenModeInput } from '../../mylibraries/asp-communication/components/FormModelItem';
-import FolderInfo from './../../../webModels/FileManager/FolderInfo'
+import FolderInfo from './../../webModels/FileManager/FolderInfo'
 import { load, editForm } from '../../Services/FileManagerServices'
 import { JsonResponseStatus, JsonResponse } from './../../models/JsonResponse';
-
-
-
-type EventClickType = (ev: MouseEvent) => void;
-
+import * as FObjectType from './../../webModels/FileManager/FObjectType'
 export default class FileManager extends React.Component<FileManagerProps, FileManagerState>  {
-    driveBar: React.MutableRefObject<HTMLDivElement | undefined>;
+    driveBar: React.RefObject<HTMLDivElement>;
     folderInfoModelInput: FormModeInput;
     folderInfoFormHandler: FormHandler;
     contextMenuMiddleware: ModalOptions;
     folderMenuMiddleware: ModalOptions;
-
+    rightBarItems: Array<RightBarItem> =
+        [
+            {
+                text: 'رفرش',
+                cmdText: 'Ctrl+R',
+                icon: "fa-solid fa-arrows-rotate",
+                refItem: React.createRef<HTMLDivElement>(),
+                clicked: () => { }
+            },
+            {
+                text: 'فولدر جدید',
+                cmdText: 'Ctrl+R',
+                icon: "fa-solid fa-arrows-rotate",
+                refItem: React.createRef<HTMLDivElement>(),
+                clicked: () => this.openEditFolder(null)
+            },
+            {
+                text: 'تغییرنام',
+                cmdText: 'Ctrl+R',
+                icon: "fa-solid fa-arrows-rotate",
+                refItem: React.createRef<HTMLDivElement>(),
+                clicked: () => { this.openEditFolder(null) }
+            }
+        ];
     constructor(props: FileManagerProps) {
         super(props);
         this.driveBar = React.createRef<HTMLDivElement>();
@@ -35,15 +54,14 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     }
 
     render() {
-        let folders = [1, 2];
         return (
             <>
                 <Row className="drive-bar" ref={this.driveBar}>
                     {this.state.fData.map((fData, i) => (
-                        <Col md={4} lg={2} className="f-hold" key={i} >
+                        <Col md={4} lg={2} className="f-hold" key={fData.id} ref={fData.refObject} >
                             <FolderLogo></FolderLogo>
                             <div className="f-hold-title right-item">
-                                {fData.Name}
+                                {fData.model.Name}
                             </div>
                             <div className="select-bar"></div>
                             <div className="hover-bar"></div>
@@ -67,45 +85,21 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
                 </Web_Modal>
                 <Web_Modal middleware={this.contextMenuMiddleware}>
                     <Row>
-                        <Col lg={12} className='contextlist-each'>
-                            <div className='contextlist-hold'>
-                                <div className="contextlist-item-text right-item">
-                                    رفرش
+                        {this.rightBarItems.map((item, key) =>
+                            <Col lg={12} className='contextlist-each' ref={item.refItem} key={key} >
+                                <div className='contextlist-hold'>
+                                    <div className="contextlist-item-text right-item">
+                                        {item.text}
+                                    </div>
+                                    <div className='contextlist-item-icon'>
+                                        <i className={item.icon}></i>
+                                    </div>
                                 </div>
-                                <div className='contextlist-item-icon'>
-                                    icon
+                                <div className='command-line'>
+                                    {item.cmdText}
                                 </div>
-                            </div>
-                            <div className='command-line'>
-                                Ctrl+R
-                            </div>
-                        </Col>
-                        <Col lg={12} className='contextlist-each' command="newFolder">
-                            <div className='contextlist-hold'>
-                                <div className="contextlist-item-text right-item">
-                                    فولدرجدید
-                                </div>
-                                <div className='contextlist-item-icon'>
-                                    icon
-                                </div>
-                            </div>
-                            <div className='command-line'>
-                                Ctrl+R
-                            </div>
-                        </Col>
-                        <Col lg={12} className='contextlist-each'>
-                            <div className='contextlist-hold'>
-                                <div className="contextlist-item-text right-item">
-                                    فایل جدید
-                                </div>
-                                <div className='contextlist-item-icon'>
-                                    icon
-                                </div>
-                            </div>
-                            <div className='command-line'>
-                                Ctrl+R
-                            </div>
-                        </Col>
+                            </Col>
+                        )}
                     </Row>
                 </Web_Modal>
             </>
@@ -117,8 +111,25 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
 
     rightClick(ev: MouseEvent) {
         let clickedSection: ClickedSection | undefined;
-        if ((ev.target as HTMLDivElement) === (this.driveBar.current)) {
+        let htmlTarget = (ev.target as HTMLDivElement);
+        this.folderMenuMiddleware.onLoaded = undefined;
+        let fixedElement = this.getFixedElement(ev.target as HTMLElement);
+        if (htmlTarget === (this.driveBar.current)) {
             clickedSection = ClickedSection.driveBar;
+        }
+        else if (fixedElement.classList[0] === "f-hold") {
+            let fModel = this.state.fData.find(x => x.refObject.current === fixedElement);
+            if (fModel && fModel.model.FObjectType === FObjectType.FObjectType.Folder) {
+                clickedSection = ClickedSection.folder;
+                this.folderMenuMiddleware.onLoaded = () => {
+                    let folderInfo: FolderInfo = {
+                        Id: fModel.model.Id,
+                        FolderName: fModel.model.Name,
+                        FolderId: fModel.model.FolderId
+                    };
+                    this.folderInfoFormHandler.setFormData(folderInfo);
+                }
+            }
         }
         if (clickedSection !== undefined) {
             this.contextMenuMiddleware.enable = true;
@@ -134,24 +145,20 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
             this.contextMenuMiddleware.enable = false;
         }
         else if (fixedElement.classList[0] === "contextlist-each") {
-            let command = fixedElement.getAttribute("command");
-            switch (command) {
-                case "newFolder":
-                    this.newFolder();
-                    break;
-            }
+            let clickedItem = this.rightBarItems.find(x => x.refItem.current === fixedElement);
+            clickedItem?.clicked();
         }
     }
 
     async editFolder() {
         var data = await editForm(this.folderInfoFormHandler.getFormData<FolderInfo>());
-        if (data.status === JsonResponseStatus.Success) {
+        if (data?.status === JsonResponseStatus.Success) {
             this.folderMenuMiddleware.enable = false;
             await this.loadData();
         }
     }
-    
-    newFolder(): void {
+
+    openEditFolder(folder: FolderInfo | null): void {
         this.contextMenuMiddleware.enable = false;
         this.folderMenuMiddleware.enable = true;
         setTimeout(() => {
@@ -174,7 +181,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     }
 
     async loadData() {
-        let data = await load();
+        let data = await load(React.createRef);
         this.setState({
             fData: data
         });
@@ -190,13 +197,9 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     }
 
     getFixedElement(elemet: HTMLElement): HTMLElement {
+        if (elemet.classList[0] === "hover-bar") {
+            return elemet!.parentElement as HTMLElement;
+        }
         return elemet;
     }
-    // driveBarClick(this: GlobalEventHandlers, e: MouseEvent) {
-    //     if ((e.target as HTMLDivElement) === (this as HTMLDivElement)) {
-
-    //     }
-    // }
 }
-
-// https://stackoverflow.com/questions/52448143/how-to-deal-with-a-ref-within-a-loop

@@ -96,6 +96,7 @@ namespace DataLayer.Infrastructure.Infrastructure
                 Id = x.Id,
                 FObjectType = FObjectType.Folder,
                 Name = x.Name,
+                FolderId = x.ParentId
             });
             return folders;
         }

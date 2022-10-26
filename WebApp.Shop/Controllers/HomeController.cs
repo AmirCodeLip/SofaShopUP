@@ -1,4 +1,5 @@
 ﻿using DataLayer.Infrastructure.Infrastructure;
+using DataLayer.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.Shop.Neptons;
 
@@ -18,7 +19,7 @@ namespace WebApp.Shop.Controllers
 
         public async Task<string> Index()
         {
-            StaticExtensions.AddWebModels(_hostingEnv);
+            TSModelGeneratore.AddWebModels(_hostingEnv);
             await defaultCreatorStructure.FastCreate();
 
 

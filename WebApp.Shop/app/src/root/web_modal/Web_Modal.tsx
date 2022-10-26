@@ -1,6 +1,5 @@
 import * as React from 'react'
 
-
 type emptyEvent<TType> = (value: TType, preValue: TType) => void;
 
 export enum ModalType {
@@ -22,7 +21,7 @@ export class ModalOptions {
         return this._enable;
     }
     public set enable(v: boolean) {
-        this.onEnableChange(v, this._enable);
+        this.onEnableChange!(v, this._enable);
         this._enable = v;
     }
 
@@ -31,7 +30,7 @@ export class ModalOptions {
         return this._xPos;
     }
     public set xPos(v: string) {
-        this.onXPosChange(v, this.xPos);
+        this.onXPosChange!(v, this.xPos);
         this._xPos = v;
     }
 
@@ -40,10 +39,11 @@ export class ModalOptions {
         return this._yPos;
     }
     public set yPos(v: string) {
-        this.onYPosChange(v, this._yPos);
+        this.onYPosChange!(v, this._yPos);
         this._yPos = v;
     }
     headIsActive = true;
+    onLoaded?: () => void;
     onEnableChange?: emptyEvent<boolean>;
     onXPosChange?: emptyEvent<string>;
     onYPosChange?: emptyEvent<string>;
@@ -74,13 +74,14 @@ export class Web_Modal extends React.Component<ModalProps, ModalState> {
                 this.className = "web-modal";
                 break;
         };
+        this.modalRef = React.createRef<HTMLDivElement>();
         props.middleware.onXPosChange = (value, preValue) => {
             if (preValue === value) {
                 return;
             }
             if (!this.modalRef || this.modalRef.current === null) {
                 setTimeout(() => {
-                    props.middleware.onXPosChange(value, preValue);
+                    props.middleware.onXPosChange!(value, preValue);
                 }, 10)
             }
             else
@@ -92,7 +93,7 @@ export class Web_Modal extends React.Component<ModalProps, ModalState> {
             }
             if (!this.modalRef || this.modalRef.current === null) {
                 setTimeout(() => {
-                    props.middleware.onYPosChange(value, preValue);
+                    props.middleware.onYPosChange!(value, preValue);
                 }, 10);
             }
             else
@@ -106,16 +107,28 @@ export class Web_Modal extends React.Component<ModalProps, ModalState> {
             this.setState({ enable: value });
         }
     }
-
+    componentDidUpdate(prevProps: ModalProps) {
+        if (this.state.enable) {
+            if (this.props.middleware.onLoaded)
+                this.props.middleware.onLoaded();
+        }
+    }
     componentDidMount() {
     }
 
     componentWillUnmount() {
     }
+    eventonModalClicked = (ev: React.MouseEvent<HTMLDivElement, MouseEvent>) => this.onModalClicked(ev);
 
+    onModalClicked(ev: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+        return;
+        if (ev.target === this.modalRef.current) {
+            this.setState({ enable: false });
+        }
+    }
     render() {
-        if (this.state.enable)
-            return (<div className={this.className} ref={this.modalRef}>
+        if (this.state.enable) {
+            return (<div className={this.className} ref={this.modalRef} onClick={this.eventonModalClicked}>
                 <div className='web-modal-content'>
                     {this.props.middleware.headIsActive &&
                         <div className='web-modal-head'>
@@ -129,6 +142,7 @@ export class Web_Modal extends React.Component<ModalProps, ModalState> {
                     </div>
                 </div>
             </div >)
+        }
         else
             return (<></>);
     }

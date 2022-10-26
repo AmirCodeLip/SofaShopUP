@@ -1,4 +1,5 @@
 ﻿using DataLayer.Domin.Models;
+using DataLayer.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,6 +10,7 @@ using System.Xml.Linq;
 
 namespace DataLayer.Infrastructure.WebModels.FileManager
 {
+    [TSModelUsage(CompileOption = CompileOption.compile)]
     public class FolderInfo
     {
         public Guid Id { get; set; }
