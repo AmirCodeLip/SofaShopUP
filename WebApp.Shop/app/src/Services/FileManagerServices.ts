@@ -1,7 +1,6 @@
 import DataTransmitter from './DataTransmitter'
 import FileManagerOnLoadData from './../webModels/FileManager/FileManagerOnLoadData'
 import FObjectKind from './../webModels/FileManager/FObjectKind'
-import { FObjectType } from './../webModels/FileManager/FObjectType'
 import FolderInfo from './../webModels/FileManager/FolderInfo'
 import { OdataSetProtocol } from './OdataServices';
 import { JsonResponse } from '../models/JsonResponse';
@@ -15,10 +14,31 @@ type userRefType = {
 
 // import DataTransmitter from './Services/DataTransmitter'
 
-export interface FObjectKindComponent {
-    id: string,
-    model: FObjectKind,
-    refObject: React.MutableRefObject<HTMLDivElement>
+export class FObjectKindComponent {
+    constructor(model: FObjectKind, refObject: React.MutableRefObject<HTMLDivElement>) {
+        this.id = uuidv4();
+        this.model = model;
+        this.refObject = refObject;
+    }
+    id: string;
+    model: FObjectKind;
+    refObject: React.MutableRefObject<HTMLDivElement>;
+
+    private _selected: boolean = false;
+    public get selected(): boolean {
+        return this._selected;
+    }
+    public set selected(v: boolean) {
+        let currentItem = this.refObject.current;
+        if (currentItem !== null)
+            if (v)
+                currentItem.classList.add("selected-object-kind");
+            else
+                currentItem.classList.remove("selected-object-kind");
+        this._selected = v;
+    }
+
+
 }
 
 export async function load(createRef: userRefType) {
@@ -26,14 +46,8 @@ export async function load(createRef: userRefType) {
     let componentItems: Array<FObjectKindComponent> = [];
     for (let i of (data)) {
         i.FObjectType = i.FObjectType === "Folder" ? 1 : 0;
-        let item: FObjectKindComponent = {
-            id: uuidv4(),
-            model: i,
-            refObject: createRef<HTMLDivElement>()
-        };
-        componentItems.push(item)
+        componentItems.push(new FObjectKindComponent(i, createRef<HTMLDivElement>()))
     }
-
     return componentItems;
 };
 
@@ -44,6 +58,5 @@ export async function FileManagerLoader() {
 }
 
 export async function editForm(formData: FolderInfo) {
-    debugger;
     return await DataTransmitter.PostRequest<JsonResponse<undefined>>(DataTransmitter.BaseUrl + "FileManager/Base/EditFolder", { authorize: true, body: formData });
 }

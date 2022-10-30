@@ -7,7 +7,10 @@ import { FormModeInput, FormHandler, HiddenModeInput } from '../../mylibraries/a
 import FolderInfo from './../../webModels/FileManager/FolderInfo'
 import { load, editForm } from '../../Services/FileManagerServices'
 import { JsonResponseStatus, JsonResponse } from './../../models/JsonResponse';
-import * as FObjectType from './../../webModels/FileManager/FObjectType'
+import * as FObjectType from './../../webModels/FileManager/FObjectType';
+import { FObjectKindComponent } from '../../Services/FileManagerServices';
+import UploadHandler from './UploadHandler';
+
 export default class FileManager extends React.Component<FileManagerProps, FileManagerState>  {
     driveBar: React.RefObject<HTMLDivElement>;
     folderInfoModelInput: FormModeInput;
@@ -28,22 +31,26 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
                 cmdText: 'Ctrl+R',
                 icon: "fa-solid fa-arrows-rotate",
                 refItem: React.createRef<HTMLDivElement>(),
-                clicked: () => this.openEditFolder(null)
+                clicked: () => this.openEditFolder()
             },
             {
                 text: 'تغییرنام',
                 cmdText: 'Ctrl+R',
                 icon: "fa-solid fa-arrows-rotate",
                 refItem: React.createRef<HTMLDivElement>(),
-                clicked: () => { this.openEditFolder(null) }
+                clicked: () => {
+                    this.openEditFolder()
+                }
             }
         ];
+
     constructor(props: FileManagerProps) {
         super(props);
         this.driveBar = React.createRef<HTMLDivElement>();
         this.folderInfoModelInput = new FormModeInput(props.model.EditFolderForm, "FolderName");
-        let id = new HiddenModeInput<string>(props.model.EditFolderForm, "Id");
-        this.folderInfoFormHandler = new FormHandler(this.folderInfoModelInput, id);
+        this.folderInfoFormHandler = new FormHandler(this.folderInfoModelInput,
+            new HiddenModeInput<string>(props.model.EditFolderForm, "Id"),
+            new HiddenModeInput<string>(props.model.EditFolderForm, "FolderId"));
         this.state =
         {
             showContextMenu: false,
@@ -63,8 +70,8 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
                             <div className="f-hold-title right-item">
                                 {fData.model.Name}
                             </div>
-                            <div className="select-bar"></div>
                             <div className="hover-bar"></div>
+                            <div className="select-bar"></div>
                         </Col>
                     ))}
                 </Row>
@@ -113,7 +120,9 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         let clickedSection: ClickedSection | undefined;
         let htmlTarget = (ev.target as HTMLDivElement);
         this.folderMenuMiddleware.onLoaded = undefined;
-        let fixedElement = this.getFixedElement(ev.target as HTMLElement);
+        let preFixElement = (ev.target as HTMLElement);
+        let fixedElement = this.getFixedElement(preFixElement);
+        this.deselectAll();
         if (htmlTarget === (this.driveBar.current)) {
             clickedSection = ClickedSection.driveBar;
         }
@@ -121,14 +130,8 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
             let fModel = this.state.fData.find(x => x.refObject.current === fixedElement);
             if (fModel && fModel.model.FObjectType === FObjectType.FObjectType.Folder) {
                 clickedSection = ClickedSection.folder;
-                this.folderMenuMiddleware.onLoaded = () => {
-                    let folderInfo: FolderInfo = {
-                        Id: fModel.model.Id,
-                        FolderName: fModel.model.Name,
-                        FolderId: fModel.model.FolderId
-                    };
-                    this.folderInfoFormHandler.setFormData(folderInfo);
-                }
+                if (fModel)
+                    fModel.selected = true;
             }
         }
         if (clickedSection !== undefined) {
@@ -140,9 +143,20 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     }
 
     leftClick(ev: MouseEvent) {
-        let fixedElement = this.getFixedElement(ev.target as HTMLElement);
-        if ((ev.target as HTMLDivElement) === (this.driveBar.current)) {
+        let preFixElement = (ev.target as HTMLElement);
+        let fixedElement = this.getFixedElement(preFixElement);
+        if (preFixElement.classList[0] === "hover-bar") {
+            this.deselectAll();
             this.contextMenuMiddleware.enable = false;
+        }
+        if ((ev.target as HTMLDivElement) === (this.driveBar.current)) {
+            this.deselectAll();
+            this.contextMenuMiddleware.enable = false;
+        }
+        else if (fixedElement.classList[0] === "f-hold") {
+            let fModel = this.state.fData.find(x => x.refObject.current === fixedElement);
+            if (fModel)
+                fModel.selected = true;
         }
         else if (fixedElement.classList[0] === "contextlist-each") {
             let clickedItem = this.rightBarItems.find(x => x.refItem.current === fixedElement);
@@ -151,33 +165,39 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     }
 
     async editFolder() {
-        var data = await editForm(this.folderInfoFormHandler.getFormData<FolderInfo>());
+        let formData = this.folderInfoFormHandler.getFormData<FolderInfo>();
+        var data = await editForm(formData);
         if (data?.status === JsonResponseStatus.Success) {
             this.folderMenuMiddleware.enable = false;
             await this.loadData();
         }
+        else {
+            for (let index in data.infoData) {
+                this.folderInfoFormHandler.addError(index, data.infoData[index]);
+            }
+        }
     }
 
-    openEditFolder(folder: FolderInfo | null): void {
+    openEditFolder(): void {
         this.contextMenuMiddleware.enable = false;
         this.folderMenuMiddleware.enable = true;
+        let folder = this.state.fData.find(x => x.selected);
+        if (folder && folder !== null) {
+            this.folderMenuMiddleware.onLoaded = () => {
+                let folderInfo: FolderInfo = {
+                    Id: folder.model.Id,
+                    FolderName: folder.model.Name,
+                    FolderId: folder.model.FolderId
+                };
+                this.folderInfoFormHandler.setFormData(folderInfo);
+            }
+        }
         setTimeout(() => {
             if (!this.folderInfoModelInput.refLabel.current ||
                 !this.folderInfoModelInput.refInput || !this.folderInfoModelInput.refError)
                 return;
             this.folderInfoFormHandler.init();
         }, 60);
-    }
-
-    componentWillMount(): void {
-        this.folderInfoFormHandler.initRef(React.createRef);
-    }
-
-    async componentDidMount() {
-        document.addEventListener("contextmenu", this.eventRightClick);
-        document.addEventListener("click", this.eventLeftClick);
-        await this.loadData();
-
     }
 
     async loadData() {
@@ -187,19 +207,32 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         });
     }
 
+    deselectAll() {
+        for (let fKind of this.state.fData) {
+            fKind.selected = false;
+        }
+    }
+
+    getFixedElement(elemet: HTMLElement): HTMLElement {
+        if (elemet.classList[0] === "hover-bar" || elemet.classList[0] === "select-bar") {
+            return elemet!.parentElement as HTMLElement;
+        }
+        return elemet;
+    }
+
     componentWillUnmount() {
         document.removeEventListener("contextmenu", this.eventRightClick);
         document.removeEventListener("contextmenu", this.eventLeftClick);
     }
-
-    deselectAll() {
-
+    componentWillMount(): void {
+        this.folderInfoFormHandler.initRef(React.createRef);
     }
 
-    getFixedElement(elemet: HTMLElement): HTMLElement {
-        if (elemet.classList[0] === "hover-bar") {
-            return elemet!.parentElement as HTMLElement;
-        }
-        return elemet;
+    async componentDidMount() {
+        document.addEventListener("contextmenu", this.eventRightClick);
+        document.addEventListener("click", this.eventLeftClick);
+        await this.loadData();
+        new UploadHandler(this.driveBar);
+
     }
 }

@@ -24,5 +24,13 @@ namespace WebApp.Shop.Areas.FileManager.Controllers
         [HttpPost, Authorize]
         public async Task<IActionResult> EditFolder([FromBody] FolderInfo folderInfo) =>
            Json(await fileManagerStructure.EditFolder(folderInfo, this.CentralizeDataFiller()));
+
+        [HttpPost]
+        public IActionResult Upload(IFormFile file, int id)
+        {
+
+
+            return Json(new JsonResponse());
+        }
     }
 }

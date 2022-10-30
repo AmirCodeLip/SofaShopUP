@@ -217,6 +217,7 @@ export class FormModeInput extends FormModelItem {
         this.isValid = false;
         let errorBox = document.createElement("span");
         errorBox.innerText = error;
+        this.refError.current.innerHTML = "";
         this.refError.current!.appendChild(errorBox);
     }
 

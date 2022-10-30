@@ -1,5 +1,6 @@
 ﻿using DataLayer.Domin.Models;
 using DataLayer.Infrastructure.Services;
+using DataLayer.UnitOfWork;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -15,6 +16,8 @@ namespace DataLayer.Infrastructure.WebModels.FileManager
     {
         public Guid Id { get; set; }
         [Display(Name = "نام فولدر")]
+        [Required(ErrorMessage = SharedRegix.RequiredError)]
+        [StringLength(256, ErrorMessage = SharedRegix.SLError, MinimumLength = 3)]
         public string FolderName { get; set; }
         public Guid? FolderId { get; set; }
 

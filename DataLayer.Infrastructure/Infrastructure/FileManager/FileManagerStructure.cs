@@ -59,7 +59,7 @@ namespace DataLayer.Infrastructure.Infrastructure
                 folderInfo.Assign(folder);
                 this.folderRepository.Update(folder);
             }
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return result;
         }
 
