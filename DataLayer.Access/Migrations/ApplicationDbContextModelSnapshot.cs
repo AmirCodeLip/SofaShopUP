@@ -427,7 +427,10 @@ namespace DataLayer.Access.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("FolderId")
+                    b.Property<string>("Extension")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("FolderId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
@@ -461,6 +464,9 @@ namespace DataLayer.Access.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<long>("Length")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -712,9 +718,7 @@ namespace DataLayer.Access.Migrations
                 {
                     b.HasOne("DataLayer.Domin.Models.WebFolder", "Folder")
                         .WithMany("WebFiles")
-                        .HasForeignKey("FolderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FolderId");
 
                     b.Navigation("Folder");
                 });
@@ -731,7 +735,7 @@ namespace DataLayer.Access.Migrations
             modelBuilder.Entity("DataLayer.Domin.Models.WebFolder", b =>
                 {
                     b.HasOne("DataLayer.Domin.Models.Identity.WebUser", "WebUser")
-                        .WithMany()
+                        .WithMany("Folders")
                         .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -800,6 +804,8 @@ namespace DataLayer.Access.Migrations
             modelBuilder.Entity("DataLayer.Domin.Models.Identity.WebUser", b =>
                 {
                     b.Navigation("Addresses");
+
+                    b.Navigation("Folders");
 
                     b.Navigation("UserSpecification");
                 });

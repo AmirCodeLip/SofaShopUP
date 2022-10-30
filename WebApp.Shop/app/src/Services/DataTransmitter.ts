@@ -55,25 +55,20 @@ export default class DataTransmitter {
                 }
             var xhr = new XMLHttpRequest();
             xhr.open("POST", url, true);
+            let jwt = localStorage.getItem("jwt");
+            if (jwt == null) {
+                window.location.replace("/identity/login");
+                return;
+            }
+            xhr.setRequestHeader("Authorization", `Bearer ${jwt}`);
             xhr.upload.onprogress = function (e) {
                 var percentComplete = Math.ceil((e.loaded / e.total) * 100);
                 console.log(percentComplete);
-                // $("#progress").css("display", "");
-                // $("#progressText").text((loopGallery + 1) + " z " + cList);
-                // $("#progressBar").css("width", percentComplete + "%");
             };
             xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     let jsonData = JSON.parse(xhr.responseText);
                     resolve(jsonData);
-                    // $("#progressObsah").load("moduls/galerie/showimages.php?ids=" + id);
-                    // if ((loopGallery + 1) == cList) {
-                    //     loopGallery = 0;
-                    // } else {
-                    //     $("#progressBar").css("width", "0%");
-                    //     loopGallery++;
-                    //     addImages(id);
-                    // }
                 }
             }
             xhr.send(fd);

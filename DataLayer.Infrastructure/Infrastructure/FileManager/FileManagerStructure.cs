@@ -19,19 +19,35 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http;
 using DataLayer.Infrastructure.ViewModel;
+using Microsoft.AspNetCore.Hosting;
+using System.Net.NetworkInformation;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace DataLayer.Infrastructure.Infrastructure
 {
     public class FileManagerStructure
     {
+        private readonly IWebHostEnvironment hostingEnv;
         private readonly IFolderRepository folderRepository;
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<WebUser> _userManager;
-        public FileManagerStructure(IFolderRepository folderRepository, ApplicationDbContext context, UserManager<WebUser> userManager)
+        private readonly IFileRepository fileRepository;
+        private readonly IFileVersionRepository fileVersionRepository;
+        private readonly ApplicationDbContext context;
+        private readonly UserManager<WebUser> userManager;
+        private readonly FileExtensionContentTypeProvider AllTypes;
+
+
+        public FileManagerStructure(IWebHostEnvironment hostingEnv, IFolderRepository folderRepository,
+            IFileRepository fileRepository, IFileVersionRepository fileVersionRepository,
+            ApplicationDbContext context, UserManager<WebUser> userManager)
         {
             this.folderRepository = folderRepository;
-            _userManager = userManager;
-            _context = context;
+            this.fileRepository = fileRepository;
+            this.hostingEnv = hostingEnv;
+            this.userManager = userManager;
+            this.context = context;
+            this.fileVersionRepository = fileVersionRepository;
+            AllTypes = new();
         }
 
         public async Task<JsonResponse> EditFolder(FolderInfo folderInfo, CentralizeData centralizeData)
@@ -45,7 +61,7 @@ namespace DataLayer.Infrastructure.Infrastructure
                 }
                 return result;
             }
-            var user = await _userManager.GetUserAsync(centralizeData.httpContext.User);
+            var user = await userManager.GetUserAsync(centralizeData.httpContext.User);
             folderInfo.FolderId = folderInfo.FolderId.HasValue ? folderInfo.FolderId.Value : (await RootFolderAsync(user.Id)).Id;
             if (folderInfo.Id == Guid.Empty)
             {
@@ -59,7 +75,7 @@ namespace DataLayer.Infrastructure.Infrastructure
                 folderInfo.Assign(folder);
                 this.folderRepository.Update(folder);
             }
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             return result;
         }
 
@@ -89,7 +105,7 @@ namespace DataLayer.Infrastructure.Infrastructure
 
         public async Task<IQueryable<FObjectKind>> GetFObjectKindsFromFolder(HttpContext httpContext, Guid? folderID)
         {
-            var user = await _userManager.GetUserAsync(httpContext.User);
+            var user = await userManager.GetUserAsync(httpContext.User);
             var fixedFolderId = folderID.HasValue ? folderID.Value : (await RootFolderAsync(user.Id)).Id;
             var folders = folderRepository.Where(x => x.ParentId == fixedFolderId).Select(x => new FObjectKind
             {
@@ -99,6 +115,48 @@ namespace DataLayer.Infrastructure.Infrastructure
                 FolderId = x.ParentId
             });
             return folders;
+        }
+
+        public async Task<JsonResponse> Upload(CentralizeData centralizeData, IFormFile file, Guid? folderId)
+        {
+            var result = new JsonResponse();
+            var user = await userManager.GetUserAsync(centralizeData.httpContext.User);
+            var root = await (folderId.HasValue ? folderRepository.FindAsync(folderId) : RootFolderAsync(user.Id));
+            var fileName = Path.GetFileNameWithoutExtension(file.FileName);
+            var ex = Path.GetExtension(file.FileName);
+            var fileInfo = new WebFile
+            {
+                CreatedDate = DateTime.Now,
+                Name = fileName,
+                FolderId = root.Id,
+                Extension = ex
+            };
+            await fileRepository.AddAsync(fileInfo);
+            await context.SaveChangesAsync();
+            var fileData = new WebFileVersion { FileId = fileInfo.Id };
+            var tempPath = Path.Combine(hostingEnv.ContentRootPath, "tempPath");
+            var tempFilePath = Path.Combine(tempPath, Guid.NewGuid().ToString());
+            if (!Directory.Exists(tempPath))
+                Directory.CreateDirectory(tempPath);
+            using (var stream = new FileStream(tempFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+            {
+                await file.CopyToAsync(stream);
+            }
+            fileData.FileData = await File.ReadAllBytesAsync(tempFilePath);
+            fileData.Length = fileData.FileData.Length;
+            File.Delete(tempFilePath);
+            await fileVersionRepository.AddAsync(fileData);
+            await context.SaveChangesAsync();
+            return result;
+        }
+
+        public async Task<FileStreamResult> GetFileImage()
+        {
+            var default_images = Path.Combine(hostingEnv.WebRootPath, "default_images");
+            var unknown = Path.Combine(default_images, "unknown.png");
+            MemoryStream ms = new MemoryStream(await File.ReadAllBytesAsync(unknown));
+            AllTypes.Mappings.TryGetValue(".png", out string contentType);
+            return new FileStreamResult(ms, contentType);
         }
     }
 }

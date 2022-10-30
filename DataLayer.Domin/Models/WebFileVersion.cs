@@ -15,5 +15,6 @@ namespace DataLayer.Domin.Models
         public byte[] FileData { get; set; }
         public bool IsDeleted { get; set; }
         public WebFile File { get; set; }
+        public long Length { get; set; }
     }
 }

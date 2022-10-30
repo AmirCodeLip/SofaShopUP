@@ -26,9 +26,6 @@
 
 
 	<ItemGroup>
-		<Folder Include="Areas\FileManager\Data\" />
-		<Folder Include="Areas\FileManager\Models\" />
-		<Folder Include="Areas\FileManager\Views\" />
 		<Folder Include="Neptons\Models\" />
 		<Folder Include="SqlScripts\" />
 	</ItemGroup>

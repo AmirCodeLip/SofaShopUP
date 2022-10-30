@@ -44,7 +44,7 @@ export default class UploadHandler {
 
     upload(file: File) {
         DataTransmitter.Upload<JsonResponse<undefined>>(DataTransmitter.BaseUrl + "FileManager/Base/Upload", 
-        file, { id: 123 }).then(x => {
+        file, {  }).then(x => {
             console.log(x);
 
         });
