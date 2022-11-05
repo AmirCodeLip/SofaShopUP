@@ -1,5 +1,7 @@
 import * as React from 'react'
-import { FolderLogo, FileManagerProps, FileManagerState, ClickedSection, RightBarItem, EventClickType } from './FolderModules';
+import {
+    FolderLogo, FileManagerProps, FileManagerState, RightBarItem, EventClickType, ClickedSection
+} from './FolderModules';
 import { Col, Row } from 'react-bootstrap';
 import './file-manager.css';
 import { Web_Modal, ModalOptions, ModalType } from './../web_modal/Web_Modal';
@@ -7,16 +9,18 @@ import { FormModeInput, FormHandler, HiddenModeInput } from '../../mylibraries/a
 import FolderInfo from './../../webModels/FileManager/FolderInfo'
 import { load, editForm } from '../../Services/FileManagerServices'
 import { JsonResponseStatus, JsonResponse } from './../../models/JsonResponse';
-import * as FObjectType from './../../webModels/FileManager/FObjectType';
-import { FObjectKindComponent } from '../../Services/FileManagerServices';
+import { FObjectType } from './../../webModels/FileManager/FObjectType';
+import DataTransmitter from '../../Services/DataTransmitter';
 import UploadHandler from './UploadHandler';
 
 export default class FileManager extends React.Component<FileManagerProps, FileManagerState>  {
+
     driveBar: React.RefObject<HTMLDivElement>;
     folderInfoModelInput: FormModeInput;
     folderInfoFormHandler: FormHandler;
     contextMenuMiddleware: ModalOptions;
     folderMenuMiddleware: ModalOptions;
+    clickedSection: ClickedSection | undefined;
     rightBarItems: Array<RightBarItem> =
         [
             {
@@ -24,6 +28,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
                 cmdText: 'Ctrl+R',
                 icon: "fa-solid fa-arrows-rotate",
                 refItem: React.createRef<HTMLDivElement>(),
+                clickedSection: ClickedSection.driveBar,
                 clicked: () => { }
             },
             {
@@ -31,13 +36,15 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
                 cmdText: 'Ctrl+R',
                 icon: "fa-solid fa-arrows-rotate",
                 refItem: React.createRef<HTMLDivElement>(),
+                clickedSection: ClickedSection.driveBar,
                 clicked: () => this.openEditFolder()
             },
             {
-                text: 'تغییرنام',
+                text: 'تغییرنام فولدر',
                 cmdText: 'Ctrl+R',
                 icon: "fa-solid fa-arrows-rotate",
                 refItem: React.createRef<HTMLDivElement>(),
+                clickedSection: ClickedSection.folder,
                 clicked: () => {
                     this.openEditFolder()
                 }
@@ -59,12 +66,11 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         this.contextMenuMiddleware = new ModalOptions(ModalType.contextModal);
         this.folderMenuMiddleware = new ModalOptions(ModalType.defualtModal);
     }
-
     render() {
         return (
             <>
                 <Row className="drive-bar" ref={this.driveBar}>
-                    {this.state.fData.map((fData, i) => (
+                    {this.state.fData.filter(f => f.model.FObjectType === FObjectType.Folder).map((fData, i) => (
                         <Col md={4} lg={2} className="f-hold" key={fData.id} ref={fData.refObject} >
                             <FolderLogo></FolderLogo>
                             <div className="f-hold-title right-item">
@@ -74,6 +80,17 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
                             <div className="select-bar"></div>
                         </Col>
                     ))}
+                    {this.state.fData.filter(f => f.model.FObjectType === FObjectType.File).map((fData, i) => (
+                        <Col md={4} lg={2} className="f-hold" key={fData.id} ref={fData.refObject} >
+                            <img src={DataTransmitter.BaseUrl + "FileManager/Base/GetFileImage/" + fData.model.Id} />
+                            <div className="f-hold-title right-item">
+                                {fData.model.Name}
+                            </div>
+                            <div className="hover-bar"></div>
+                            <div className="select-bar"></div>
+                        </Col>
+                    ))}
+
                 </Row>
                 <Web_Modal middleware={this.folderMenuMiddleware}>
                     <>
@@ -117,25 +134,40 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     eventLeftClick: EventClickType = (ev) => this.leftClick(ev);
 
     rightClick(ev: MouseEvent) {
-        let clickedSection: ClickedSection | undefined;
         let htmlTarget = (ev.target as HTMLDivElement);
         this.folderMenuMiddleware.onLoaded = undefined;
         let preFixElement = (ev.target as HTMLElement);
         let fixedElement = this.getFixedElement(preFixElement);
         this.deselectAll();
         if (htmlTarget === (this.driveBar.current)) {
-            clickedSection = ClickedSection.driveBar;
+            this.clickedSection = ClickedSection.driveBar;
         }
         else if (fixedElement.classList[0] === "f-hold") {
             let fModel = this.state.fData.find(x => x.refObject.current === fixedElement);
-            if (fModel && fModel.model.FObjectType === FObjectType.FObjectType.Folder) {
-                clickedSection = ClickedSection.folder;
+            if (fModel && fModel.model.FObjectType === FObjectType.Folder) {
+                this.clickedSection = ClickedSection.folder;
+                if (fModel)
+                    fModel.selected = true;
+            } else if (fModel && fModel.model.FObjectType === FObjectType.File) {
+                this.clickedSection = ClickedSection.drive;
                 if (fModel)
                     fModel.selected = true;
             }
         }
-        if (clickedSection !== undefined) {
-            this.contextMenuMiddleware.enable = true;
+        else this.clickedSection = undefined;
+        if (this.clickedSection !== undefined) {
+            let promise = () => {
+                for (let item of this.rightBarItems) {
+                    item.refItem.current.style.display = item.clickedSection === this.clickedSection ? "block" : "none";
+                }
+            }
+            if (this.contextMenuMiddleware.enable) {
+                promise();
+            }
+            else {
+                this.contextMenuMiddleware.onLoaded = () => promise();
+                this.contextMenuMiddleware.enable = true;
+            }
             this.contextMenuMiddleware.xPos = ev.pageX + "px";
             this.contextMenuMiddleware.yPos = ev.pageY + "px";
             ev.preventDefault();

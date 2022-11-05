@@ -60,3 +60,4 @@ export async function FileManagerLoader() {
 export async function editForm(formData: FolderInfo) {
     return await DataTransmitter.PostRequest<JsonResponse<undefined>>(DataTransmitter.BaseUrl + "FileManager/Base/EditFolder", { authorize: true, body: formData });
 }
+ 

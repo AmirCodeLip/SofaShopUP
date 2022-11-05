@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.Net.NetworkInformation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
+using DataLayer.Infrastructure.Services;
 
 namespace DataLayer.Infrastructure.Infrastructure
 {
@@ -114,7 +115,14 @@ namespace DataLayer.Infrastructure.Infrastructure
                 Name = x.Name,
                 FolderId = x.ParentId
             });
-            return folders;
+            var files = fileRepository.Where(x => x.FolderId == fixedFolderId).Select(x => new FObjectKind
+            {
+                Id = x.Id,
+                FObjectType = FObjectType.File,
+                Name = x.Name,
+                FolderId = x.FolderId
+            });
+            return folders.Concat(files);
         }
 
         public async Task<JsonResponse> Upload(CentralizeData centralizeData, IFormFile file, Guid? folderId)
@@ -150,13 +158,18 @@ namespace DataLayer.Infrastructure.Infrastructure
             return result;
         }
 
-        public async Task<FileStreamResult> GetFileImage()
+        public async Task<FileContentResult> GetFileImage(Guid? id)
         {
-            var default_images = Path.Combine(hostingEnv.WebRootPath, "default_images");
-            var unknown = Path.Combine(default_images, "unknown.png");
-            MemoryStream ms = new MemoryStream(await File.ReadAllBytesAsync(unknown));
-            AllTypes.Mappings.TryGetValue(".png", out string contentType);
-            return new FileStreamResult(ms, contentType);
+            if (id.HasValue)
+            {
+                var file = await fileRepository.AsQueryable().Include(x => x.WebFileVersions).FirstOrDefaultAsync(x => x.Id == id.Value);
+                if (SupportedTypes.Images.Mappings.ContainsKey(file.Extension))
+                {
+                    var webFileVersions = file.WebFileVersions.OrderByDescending(x => x.CreatedDate).FirstOrDefault();
+                    return new FileContentResult(webFileVersions.FileData, SupportedTypes.Images.Mappings[file.Extension]);
+                }
+            }
+            return new FileContentResult(await File.ReadAllBytesAsync(Path.Combine(hostingEnv.WebRootPath, "default_images", "unknown.png")), SupportedTypes.Images.Mappings[".png"]);
         }
     }
 }

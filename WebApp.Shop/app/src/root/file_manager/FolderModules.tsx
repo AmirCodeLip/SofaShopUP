@@ -26,15 +26,15 @@ export class FileManagerState {
     fData: Array<FObjectKindComponent> = [];
 }
 
-export enum ClickedSection {
-    driveBar, folder
-}
-
 export interface RightBarItem {
     text: string,
     cmdText: string,
     icon: string,
     refItem: React.RefObject<HTMLDivElement>,
+    clickedSection: number;
     clicked: () => void;
 }
 
+export enum ClickedSection {
+    driveBar, folder, drive
+}

@@ -30,6 +30,6 @@ namespace WebApp.Shop.Areas.FileManager.Controllers
             return Json(new JsonResponse());
         }
 
-        public async Task<IActionResult> GetFileImage() => await fileManagerStructure.GetFileImage();
+        public async Task<IActionResult> GetFileImage(Guid? id) => await fileManagerStructure.GetFileImage(id);
     }
 }
