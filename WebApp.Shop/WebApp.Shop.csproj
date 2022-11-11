@@ -33,6 +33,7 @@
 
 	<ItemGroup>
 		<Folder Include="Neptons\Models\" />
+		<Folder Include="tempPath\" />
 	</ItemGroup>
 
 
