@@ -17,7 +17,6 @@ namespace DataLayer.Access.EntityMaps
             builder.HasOne(x => x.CategorySpecification).WithOne(x => x.CategorySpecificationRelation).
                 HasForeignKey<ShopCategorySpecificationRelation>(k => k.ProductCategorySpecificationId);
             builder.HasKey(x => new { x.ProductCategoryId, x.ProductCategorySpecificationId });
-
         }
     }
 }

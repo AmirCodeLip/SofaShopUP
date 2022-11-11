@@ -43,6 +43,9 @@ namespace DataLayer.Access.Services
         Task<EntityEntry<TEntity>> AddAsync(TEntity entity);
 
         EntityEntry<TEntity> Update(TEntity entity);
+        
         Task<TEntity?> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, bool deleted = false);
+        
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

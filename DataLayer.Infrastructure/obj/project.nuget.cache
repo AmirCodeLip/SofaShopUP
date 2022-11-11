@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "kXlZnaLTdyF69EH17DOlcEVi7yB/4/qfIMP1BYUif73FrJUSCuGgboyGdJQOrzsSwyX1d9LTmaLaunK0ezkmLg==",
+  "dgSpecHash": "zDjctnK1Kjt0G6SweKABjjwBbLUPyZUcNNn9SyrYJJ04WIZEYTWmOdFMT4TzL1I8eHYXLw9vMgvYr0hSgnSUJQ==",
   "success": true,
   "projectFilePath": "D:\\SofaShop\\DataLayer.Infrastructure\\DataLayer.Infrastructure.csproj",
   "expectedPackageFiles": [
@@ -197,7 +197,8 @@
     "C:\\Users\\amir\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512",
     "C:\\Users\\amir\\.nuget\\packages\\system.xml.xmldocument\\4.3.0\\system.xml.xmldocument.4.3.0.nupkg.sha512",
     "C:\\Users\\amir\\.nuget\\packages\\system.xml.xpath\\4.3.0\\system.xml.xpath.4.3.0.nupkg.sha512",
-    "C:\\Users\\amir\\.nuget\\packages\\system.xml.xpath.xdocument\\4.3.0\\system.xml.xpath.xdocument.4.3.0.nupkg.sha512"
+    "C:\\Users\\amir\\.nuget\\packages\\system.xml.xpath.xdocument\\4.3.0\\system.xml.xpath.xdocument.4.3.0.nupkg.sha512",
+    "C:\\Users\\amir\\.nuget\\packages\\taglib-sharp-netstandard2.0\\2.1.0\\taglib-sharp-netstandard2.0.2.1.0.nupkg.sha512"
   ],
   "logs": [
     {

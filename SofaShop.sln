@@ -16,8 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayer.Infrastructure", "DataLayer.Infrastructure\DataLayer.Infrastructure.csproj", "{13380822-F202-4C2E-B82A-6E3A2ADBFCC3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoxonaSound", "RoxonaSound\RoxonaSound.csproj", "{98F899E9-7860-4F96-BA22-A270EB987912}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp.Shop", "WebApp.Shop\WebApp.Shop.csproj", "{5F28FA36-391A-425D-92F9-DD36FBA89F2A}"
 EndProject
 Global
@@ -42,10 +40,6 @@ Global
 		{13380822-F202-4C2E-B82A-6E3A2ADBFCC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13380822-F202-4C2E-B82A-6E3A2ADBFCC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13380822-F202-4C2E-B82A-6E3A2ADBFCC3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{98F899E9-7860-4F96-BA22-A270EB987912}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{98F899E9-7860-4F96-BA22-A270EB987912}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{98F899E9-7860-4F96-BA22-A270EB987912}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{98F899E9-7860-4F96-BA22-A270EB987912}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5F28FA36-391A-425D-92F9-DD36FBA89F2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5F28FA36-391A-425D-92F9-DD36FBA89F2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F28FA36-391A-425D-92F9-DD36FBA89F2A}.Release|Any CPU.ActiveCfg = Release|Any CPU

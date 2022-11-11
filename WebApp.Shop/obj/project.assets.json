@@ -4684,6 +4684,15 @@
           "lib/netstandard1.3/System.Xml.XDocument.dll": {}
         }
       },
+      "taglib-sharp-netstandard2.0/2.1.0": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/taglib-sharp.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/taglib-sharp.dll": {}
+        }
+      },
       "DataLayer.Access/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
@@ -4723,7 +4732,8 @@
           "AutoMapper": "11.0.1",
           "DataLayer.Access": "1.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.9",
-          "Microsoft.EntityFrameworkCore.SqlServer": "6.0.10"
+          "Microsoft.EntityFrameworkCore.SqlServer": "6.0.10",
+          "taglib-sharp-netstandard2.0": "2.1.0"
         },
         "compile": {
           "bin/placeholder/DataLayer.Infrastructure.dll": {}
@@ -12270,6 +12280,18 @@
         "ref/xamarinwatchos10/_._",
         "system.xml.xdocument.4.3.0.nupkg.sha512",
         "system.xml.xdocument.nuspec"
+      ]
+    },
+    "taglib-sharp-netstandard2.0/2.1.0": {
+      "sha512": "w45LreEPpV/vOfgpYBI1cNqiLvj8yQ8f7kJaMYtzTAsg26ZdHWnh5vPuy2/F9tCKhmgNB0s+zOBwdcEb4qk3Tg==",
+      "type": "package",
+      "path": "taglib-sharp-netstandard2.0/2.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard2.0/taglib-sharp.dll",
+        "taglib-sharp-netstandard2.0.2.1.0.nupkg.sha512",
+        "taglib-sharp-netstandard2.0.nuspec"
       ]
     },
     "DataLayer.Access/1.0.0": {

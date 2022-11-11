@@ -3452,6 +3452,15 @@
           "lib/netstandard1.3/System.Xml.XPath.XDocument.dll": {}
         }
       },
+      "taglib-sharp-netstandard2.0/2.1.0": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/taglib-sharp.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/taglib-sharp.dll": {}
+        }
+      },
       "DataLayer.Access/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
@@ -9486,6 +9495,18 @@
         "system.xml.xpath.xdocument.nuspec"
       ]
     },
+    "taglib-sharp-netstandard2.0/2.1.0": {
+      "sha512": "w45LreEPpV/vOfgpYBI1cNqiLvj8yQ8f7kJaMYtzTAsg26ZdHWnh5vPuy2/F9tCKhmgNB0s+zOBwdcEb4qk3Tg==",
+      "type": "package",
+      "path": "taglib-sharp-netstandard2.0/2.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard2.0/taglib-sharp.dll",
+        "taglib-sharp-netstandard2.0.2.1.0.nupkg.sha512",
+        "taglib-sharp-netstandard2.0.nuspec"
+      ]
+    },
     "DataLayer.Access/1.0.0": {
       "type": "project",
       "path": "../DataLayer.Access/DataLayer.Access.csproj",
@@ -9509,7 +9530,8 @@
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 6.0.9",
       "Microsoft.EntityFrameworkCore.Design >= 6.0.10",
       "Microsoft.EntityFrameworkCore.SqlServer >= 6.0.10",
-      "Microsoft.EntityFrameworkCore.Tools >= 6.0.10"
+      "Microsoft.EntityFrameworkCore.Tools >= 6.0.10",
+      "taglib-sharp-netstandard2.0 >= 2.1.0"
     ]
   },
   "packageFolders": {
@@ -9585,6 +9607,10 @@
             "suppressParent": "All",
             "target": "Package",
             "version": "[6.0.10, )"
+          },
+          "taglib-sharp-netstandard2.0": {
+            "target": "Package",
+            "version": "[2.1.0, )"
           }
         },
         "imports": [

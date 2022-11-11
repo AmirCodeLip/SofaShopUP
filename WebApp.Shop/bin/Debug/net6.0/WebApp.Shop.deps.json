@@ -2787,6 +2787,14 @@
           "System.Xml.ReaderWriter": "4.3.0"
         }
       },
+      "taglib-sharp-netstandard2.0/2.1.0": {
+        "runtime": {
+          "lib/netstandard2.0/taglib-sharp.dll": {
+            "assemblyVersion": "2.1.0.0",
+            "fileVersion": "2.1.0.0"
+          }
+        }
+      },
       "DataLayer.Access/1.0.0": {
         "dependencies": {
           "DataLayer.Domin": "1.0.0",
@@ -2814,7 +2822,8 @@
           "AutoMapper": "11.0.1",
           "DataLayer.Access": "1.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.9",
-          "Microsoft.EntityFrameworkCore.SqlServer": "6.0.10"
+          "Microsoft.EntityFrameworkCore.SqlServer": "6.0.10",
+          "taglib-sharp-netstandard2.0": "2.1.0"
         },
         "runtime": {
           "DataLayer.Infrastructure.dll": {}
@@ -4512,6 +4521,13 @@
       "sha512": "sha512-5zJ0XDxAIg8iy+t4aMnQAu0MqVbqyvfoUVl1yDV61xdo3Vth45oA2FoY4pPkxYAH5f8ixpmTqXeEIya95x0aCQ==",
       "path": "system.xml.xdocument/4.3.0",
       "hashPath": "system.xml.xdocument.4.3.0.nupkg.sha512"
+    },
+    "taglib-sharp-netstandard2.0/2.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-w45LreEPpV/vOfgpYBI1cNqiLvj8yQ8f7kJaMYtzTAsg26ZdHWnh5vPuy2/F9tCKhmgNB0s+zOBwdcEb4qk3Tg==",
+      "path": "taglib-sharp-netstandard2.0/2.1.0",
+      "hashPath": "taglib-sharp-netstandard2.0.2.1.0.nupkg.sha512"
     },
     "DataLayer.Access/1.0.0": {
       "type": "project",

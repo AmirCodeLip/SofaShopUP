@@ -11,8 +11,6 @@ namespace DataLayer.Domin.Models
         public virtual int Id { get; set; }
         public virtual string Name { get; set; }
         public short PropertyType { get; set; }
-
-
         public CategorySpecificationBase GetBase() => new CategorySpecificationBase
         {
             Id = this.Id,

@@ -142,6 +142,11 @@ namespace DataLayer.Access.Services
             return entityItem;
         }
 
+        public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            return _context.SaveChangesAsync();
+        }
+
         public async Task<TEntity?> FindAsync(params object?[]? keyValues) =>
           await this.FindAsync(false, keyValues);
 

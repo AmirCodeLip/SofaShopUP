@@ -368,6 +368,38 @@ namespace DataLayer.Access.Migrations
                     b.ToTable("WebAccessToRoles");
                 });
 
+            modelBuilder.Entity("DataLayer.Domin.Models.WebActorOrArtist", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Culture")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("Name", "Culture")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL AND [Culture] IS NOT NULL");
+
+                    b.ToTable("WebActorOrArtists");
+                });
+
             modelBuilder.Entity("DataLayer.Domin.Models.WebCityAndState", b =>
                 {
                     b.Property<int>("Id")
@@ -453,8 +485,14 @@ namespace DataLayer.Access.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("BroadCastTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Extension")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("FileData")
                         .HasColumnType("varbinary(max)");
@@ -468,11 +506,37 @@ namespace DataLayer.Access.Migrations
                     b.Property<long>("Length")
                         .HasColumnType("bigint");
 
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("FileId");
 
+                    b.HasIndex("ParentId");
+
                     b.ToTable("WebFileVersions");
+                });
+
+            modelBuilder.Entity("DataLayer.Domin.Models.WebFileVersionActorOrArtist", b =>
+                {
+                    b.Property<Guid>("WebFileVersionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("WebActorOrArtistId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.HasKey("WebFileVersionId", "WebActorOrArtistId");
+
+                    b.HasIndex("WebActorOrArtistId");
+
+                    b.ToTable("WebFileVersionActorOrArtists");
                 });
 
             modelBuilder.Entity("DataLayer.Domin.Models.WebFolder", b =>
@@ -705,6 +769,16 @@ namespace DataLayer.Access.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("DataLayer.Domin.Models.WebActorOrArtist", b =>
+                {
+                    b.HasOne("DataLayer.Domin.Models.WebActorOrArtist", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Parent");
+                });
+
             modelBuilder.Entity("DataLayer.Domin.Models.WebCityAndState", b =>
                 {
                     b.HasOne("DataLayer.Domin.Models.WebCityAndState", "CityAndStateItem")
@@ -729,7 +803,33 @@ namespace DataLayer.Access.Migrations
                         .WithMany("WebFileVersions")
                         .HasForeignKey("FileId");
 
+                    b.HasOne("DataLayer.Domin.Models.WebFileVersion", "Parent")
+                        .WithMany("AllInfoData")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("File");
+
+                    b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("DataLayer.Domin.Models.WebFileVersionActorOrArtist", b =>
+                {
+                    b.HasOne("DataLayer.Domin.Models.WebActorOrArtist", "WebActorOrArtist")
+                        .WithMany("WebFileVersionActorOrArtists")
+                        .HasForeignKey("WebActorOrArtistId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DataLayer.Domin.Models.WebFileVersion", "WebFileVersion")
+                        .WithMany("WebFileVersionActorOrArtists")
+                        .HasForeignKey("WebFileVersionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("WebActorOrArtist");
+
+                    b.Navigation("WebFileVersion");
                 });
 
             modelBuilder.Entity("DataLayer.Domin.Models.WebFolder", b =>
@@ -827,6 +927,13 @@ namespace DataLayer.Access.Migrations
                     b.Navigation("CategorySpecificationRelation");
                 });
 
+            modelBuilder.Entity("DataLayer.Domin.Models.WebActorOrArtist", b =>
+                {
+                    b.Navigation("Children");
+
+                    b.Navigation("WebFileVersionActorOrArtists");
+                });
+
             modelBuilder.Entity("DataLayer.Domin.Models.WebCityAndState", b =>
                 {
                     b.Navigation("Addresses");
@@ -837,6 +944,13 @@ namespace DataLayer.Access.Migrations
             modelBuilder.Entity("DataLayer.Domin.Models.WebFile", b =>
                 {
                     b.Navigation("WebFileVersions");
+                });
+
+            modelBuilder.Entity("DataLayer.Domin.Models.WebFileVersion", b =>
+                {
+                    b.Navigation("AllInfoData");
+
+                    b.Navigation("WebFileVersionActorOrArtists");
                 });
 
             modelBuilder.Entity("DataLayer.Domin.Models.WebFolder", b =>
