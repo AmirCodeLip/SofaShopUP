@@ -15,11 +15,11 @@ export default class NavMenu extends React.Component {
             title: "خانه",
         });
         urlContents.push({
-            path: "/counter",
+            path: "/en-US/counter",
             title: "یک",
         });
         urlContents.push({
-            path: "/manage_files",
+            path: "/en-US/manage_files/root",
             title: "فایل",
         });
         return (<div className='nav-menue'>
@@ -46,7 +46,7 @@ export default class NavMenu extends React.Component {
                     </a>
                     <ul>
                         <li>
-                            <Link className="nav-router" to={"identity/login"}>
+                            <Link className="nav-router" to={"en-US/identity/login"}>
                                 ورود
                             </Link>
                         </li>

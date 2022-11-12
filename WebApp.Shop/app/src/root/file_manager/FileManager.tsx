@@ -12,6 +12,7 @@ import { JsonResponseStatus, JsonResponse } from './../../models/JsonResponse';
 import { FObjectType } from './../../webModels/FileManager/FObjectType';
 import DataTransmitter from '../../Services/DataTransmitter';
 import UploadHandler from './UploadHandler';
+import { UrlParser, UrlData } from './../../neptons/CultureStructure'
 
 export default class FileManager extends React.Component<FileManagerProps, FileManagerState>  {
 
@@ -21,6 +22,8 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     contextMenuMiddleware: ModalOptions;
     folderMenuMiddleware: ModalOptions;
     clickedSection: ClickedSection | undefined;
+    queryString: UrlData;
+    folderId: string | undefined;
     rightBarItems: Array<RightBarItem> =
         [
             {
@@ -66,6 +69,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         this.contextMenuMiddleware = new ModalOptions(ModalType.contextModal);
         this.folderMenuMiddleware = new ModalOptions(ModalType.defualtModal);
     }
+
     render() {
         return (
             <>
@@ -128,10 +132,12 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
                 </Web_Modal>
             </>
         );
-    }
 
+    }
     eventRightClick: EventClickType = (ev) => this.rightClick(ev);
     eventLeftClick: EventClickType = (ev) => this.leftClick(ev);
+    eventLeftDblClick: EventClickType = (ev) => this.leftDblClick(ev);
+    eventPopstate: (ev: PopStateEvent) => any = (ev) => this.popstate(ev);  
 
     rightClick(ev: MouseEvent) {
         let htmlTarget = (ev.target as HTMLDivElement);
@@ -174,6 +180,18 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         }
     }
 
+    leftDblClick(ev: MouseEvent) {
+        let preFixElement = (ev.target as HTMLElement);
+        let fixedElement = this.getFixedElement(preFixElement);
+        if (fixedElement.classList[0] === "f-hold") {
+            let fModel = this.state.fData.find(x => x.refObject.current === fixedElement);
+            if (fModel.model.FObjectType === FObjectType.Folder) {
+                this.setFolder(fModel.id);
+                this.loadData();
+            }
+        }
+    }
+
     leftClick(ev: MouseEvent) {
         let preFixElement = (ev.target as HTMLElement);
         let fixedElement = this.getFixedElement(preFixElement);
@@ -194,6 +212,12 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
             let clickedItem = this.rightBarItems.find(x => x.refItem.current === fixedElement);
             clickedItem?.clicked();
         }
+    }
+
+    popstate(ev: PopStateEvent)
+    {
+        this.parseQueryString();
+        this.loadData();
     }
 
     async editFolder() {
@@ -233,10 +257,20 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     }
 
     async loadData() {
-        let data = await load(React.createRef);
+        let data = await load(React.createRef, this.folderId);
         this.setState({
             fData: data
         });
+    }
+
+    parseQueryString() {
+        this.queryString = UrlParser.getUrlData();
+        this.folderId = this.queryString.data[1] === "root" ? undefined : this.queryString.data[1];
+    }
+
+    setFolder(folderId: string) {
+        window.history.pushState(null, "changeFolder", `/${this.queryString.culture}/manage_files/${folderId}`);
+        this.parseQueryString();
     }
 
     deselectAll() {
@@ -254,7 +288,9 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
 
     componentWillUnmount() {
         document.removeEventListener("contextmenu", this.eventRightClick);
-        document.removeEventListener("contextmenu", this.eventLeftClick);
+        document.removeEventListener("click", this.eventLeftClick);
+        document.removeEventListener("dblclick", this.eventLeftDblClick);
+        window.removeEventListener("popstate", this.eventPopstate);
     }
     componentWillMount(): void {
         this.folderInfoFormHandler.initRef(React.createRef);
@@ -263,6 +299,10 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     async componentDidMount() {
         document.addEventListener("contextmenu", this.eventRightClick);
         document.addEventListener("click", this.eventLeftClick);
+        document.addEventListener("dblclick", this.eventLeftDblClick);
+        window.addEventListener("popstate", this.eventPopstate);
+       
+        this.parseQueryString();
         await this.loadData();
         new UploadHandler(this.driveBar);
 

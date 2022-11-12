@@ -41,10 +41,11 @@ export class FObjectKindComponent {
 
 }
 
-export async function load(createRef: userRefType) {
-    let data = await new OdataSetProtocol<FObjectKind>(DataTransmitter.BaseUrl + "odata/FObjectKind").Execute({ authorize: true });
+export async function load(createRef: userRefType, folderID: string | undefined) {
+    let data = await new OdataSetProtocol<FObjectKind>(DataTransmitter.BaseUrl + "odata/FObjectKind" +
+        (folderID === undefined ? "" : `?folderId=${folderID}`)).Execute({ authorize: true });
     let componentItems: Array<FObjectKindComponent> = [];
-    for (let i of (data)) {
+    for (let i of data) {
         i.FObjectType = i.FObjectType === "Folder" ? 1 : 0;
         componentItems.push(new FObjectKindComponent(i, createRef<HTMLDivElement>()))
     }
@@ -60,4 +61,3 @@ export async function FileManagerLoader() {
 export async function editForm(formData: FolderInfo) {
     return await DataTransmitter.PostRequest<JsonResponse<undefined>>(DataTransmitter.BaseUrl + "FileManager/Base/EditFolder", { authorize: true, body: formData });
 }
- 

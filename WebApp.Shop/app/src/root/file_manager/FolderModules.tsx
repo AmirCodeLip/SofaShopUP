@@ -17,7 +17,8 @@ export function FolderLogo() {
 }
 
 export class FileManagerProps {
-    model: FileManagerOnLoadData
+    model: FileManagerOnLoadData;
+    folderId: string;
 }
 
 

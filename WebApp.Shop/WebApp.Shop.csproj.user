@@ -13,4 +13,7 @@
     <Area_SelectedScaffolderID>AreaScaffolder</Area_SelectedScaffolderID>
     <Area_SelectedScaffolderCategoryPath>root/Common</Area_SelectedScaffolderCategoryPath>
   </PropertyGroup>
+  <ItemGroup>
+    <TypeScriptCompile Update="app\src\root\shared\PageLoader.tsx" />
+  </ItemGroup>
 </Project>

@@ -32,6 +32,7 @@
 
 
 	<ItemGroup>
+		<Folder Include="app\src\model_structure\implements\" />
 		<Folder Include="Neptons\Models\" />
 		<Folder Include="tempPath\" />
 	</ItemGroup>

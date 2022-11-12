@@ -148,6 +148,31 @@ footer {
   font-size: 17px;
 } */
 
+
+.lds-ripple {
+    display: inline-block;
+    position: relative;
+    width: 100px;
+    height: 100px;
+    /* margin: auto; */
+    left: 50%;
+    right: 50%;
+    top: 23%;
+}
+
+    .lds-ripple div {
+        position: absolute;
+        border: 6px solid var(--color_001);
+        opacity: 1;
+        border-radius: 50%;
+        animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+    }
+
+        .lds-ripple div:nth-child(2) {
+            animation-delay: -0.5s;
+        }
+
+
 @media screen and (max-width: 1100px) {
     .card-section {
         width: fit-content;
@@ -160,5 +185,39 @@ footer {
     .center-helder,
     .center-helder-zero {
         margin: 8px 8px;
+    }
+}
+
+@keyframes lds-ripple {
+    0% {
+        top: 72px;
+        left: 72px;
+        width: 0;
+        height: 0;
+        opacity: 0;
+    }
+
+    4.9% {
+        top: 72px;
+        left: 72px;
+        width: 0;
+        height: 0;
+        opacity: 0;
+    }
+
+    5% {
+        top: 72px;
+        left: 72px;
+        width: 0;
+        height: 0;
+        opacity: 1;
+    }
+
+    100% {
+        top: 0px;
+        left: 0px;
+        width: 144px;
+        height: 144px;
+        opacity: 0;
     }
 }
