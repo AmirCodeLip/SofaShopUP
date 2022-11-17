@@ -4731,6 +4731,7 @@
         "dependencies": {
           "AutoMapper": "11.0.1",
           "DataLayer.Access": "1.0.0",
+          "DataLayer.UnitOfWork": "1.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.9",
           "Microsoft.EntityFrameworkCore.SqlServer": "6.0.10",
           "taglib-sharp-netstandard2.0": "2.1.0"
@@ -12318,6 +12319,7 @@
   "projectFileDependencyGroups": {
     "net6.0": [
       "DataLayer.Infrastructure >= 1.0.0",
+      "DataLayer.UnitOfWork >= 1.0.0",
       "Microsoft.AspNetCore.OData >= 8.0.11",
       "Microsoft.EntityFrameworkCore.Design >= 6.0.9",
       "Microsoft.EntityFrameworkCore.InMemory >= 6.0.10",
@@ -12360,6 +12362,9 @@
           "projectReferences": {
             "D:\\SofaShop\\DataLayer.Infrastructure\\DataLayer.Infrastructure.csproj": {
               "projectPath": "D:\\SofaShop\\DataLayer.Infrastructure\\DataLayer.Infrastructure.csproj"
+            },
+            "D:\\SofaShop\\UnitOfWork\\DataLayer.UnitOfWork.csproj": {
+              "projectPath": "D:\\SofaShop\\UnitOfWork\\DataLayer.UnitOfWork.csproj"
             }
           }
         }

@@ -28,6 +28,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\DataLayer.Infrastructure\DataLayer.Infrastructure.csproj" />
+		<ProjectReference Include="..\UnitOfWork\DataLayer.UnitOfWork.csproj" />
 	</ItemGroup>
 
 

@@ -3,6 +3,7 @@ using DataLayer.Infrastructure.Infrastructure;
 using DataLayer.Infrastructure.WebModels.FileManager;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol;
 using WebApp.Shop.Neptons;
 
 namespace WebApp.Shop.Areas.FileManager.Controllers
@@ -21,13 +22,13 @@ namespace WebApp.Shop.Areas.FileManager.Controllers
 
         [HttpPost, Authorize]
         public async Task<IActionResult> EditFolder([FromBody] FolderInfo folderInfo) =>
-           Json(await fileManagerStructure.EditFolder(folderInfo, this.CentralizeDataFiller()));
+           (await fileManagerStructure.EditFolder(folderInfo, this.CentralizeDataFiller())).GetJson();
 
         [HttpPost, Authorize]
         public async Task<IActionResult> Upload(IFormFile file, Guid? folderId)
         {
-            await fileManagerStructure.Upload(this.CentralizeDataFiller(), file, folderId);
-            return Json(new JsonResponse());
+            var response = await fileManagerStructure.Upload(this.CentralizeDataFiller(), file, folderId);
+            return response.GetJson();
         }
 
         public async Task<IActionResult> GetFileImage(Guid? id) => await fileManagerStructure.GetFileImage(id);

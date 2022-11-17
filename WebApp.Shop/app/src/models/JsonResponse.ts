@@ -1,7 +1,7 @@
 export class JsonResponse<TResult> {
-    status: JsonResponseStatus;
-    infoData: { [k in string]: string };
-    tResult001: TResult
+    Status: JsonResponseStatus;
+    InfoData: { [k in string]: string };
+    TResult001: TResult
 }
 
 export interface KeyValuePair<TKey, TValue> {

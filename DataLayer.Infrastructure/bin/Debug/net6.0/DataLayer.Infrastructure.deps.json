@@ -10,6 +10,7 @@
         "dependencies": {
           "AutoMapper": "11.0.1",
           "DataLayer.Access": "1.0.0",
+          "DataLayer.UnitOfWork": "1.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.9",
           "Microsoft.EntityFrameworkCore.Design": "6.0.10",
           "Microsoft.EntityFrameworkCore.SqlServer": "6.0.10",
@@ -1806,6 +1807,14 @@
       "DataLayer.UnitOfWork/1.0.0": {
         "runtime": {
           "DataLayer.UnitOfWork.dll": {}
+        },
+        "resources": {
+          "en-US/DataLayer.UnitOfWork.resources.dll": {
+            "locale": "en-US"
+          },
+          "fa-IR/DataLayer.UnitOfWork.resources.dll": {
+            "locale": "fa-IR"
+          }
         }
       }
     }

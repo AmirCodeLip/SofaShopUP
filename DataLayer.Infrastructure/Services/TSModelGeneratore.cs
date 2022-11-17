@@ -124,6 +124,10 @@ namespace DataLayer.Infrastructure.Services
                             {
                                 propertyTypeString = "Int32Array";
                             }
+                            else if (propertyType == typeof(bool))
+                            {
+                                propertyTypeString = "boolean";
+                            }
                             else if ((propertyType.Namespace ?? "").StartsWith(WebModelsPath))
                             {
                                 propertyTypeString = property.Name;

@@ -194,6 +194,9 @@
             "projectReferences": {
               "D:\\SofaShop\\DataLayer.Access\\DataLayer.Access.csproj": {
                 "projectPath": "D:\\SofaShop\\DataLayer.Access\\DataLayer.Access.csproj"
+              },
+              "D:\\SofaShop\\UnitOfWork\\DataLayer.UnitOfWork.csproj": {
+                "projectPath": "D:\\SofaShop\\UnitOfWork\\DataLayer.UnitOfWork.csproj"
               }
             }
           }

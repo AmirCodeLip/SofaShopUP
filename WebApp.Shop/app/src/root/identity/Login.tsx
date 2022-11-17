@@ -19,12 +19,12 @@ export const Login: React.FC<{ model: IFormModel }> = ({ model }) => {
                 PhoneOrEmail: phoneOrEmailModel.refInput.current!.value,
                 Password: passwordModel.refInput.current!.value
             });
-            if (loginResult!.status === JsonResponseStatus.Success) {
-                console.log(loginResult?.tResult001);
-                localStorage.setItem("jwt", loginResult!.tResult001!.token)
+            if (loginResult!.Status === JsonResponseStatus.Success) {
+                console.log(loginResult?.TResult001);
+                localStorage.setItem("jwt", loginResult!.TResult001!.Token)
             } else {
-                for (let key in loginResult!.infoData) {
-                    let data = loginResult!.infoData[key];
+                for (let key in loginResult!.InfoData) {
+                    let data = loginResult!.InfoData[key];
                     formHandler.addError(key, data);
                 }
             }

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataLayer.Access\DataLayer.Access.csproj" />
+    <ProjectReference Include="..\UnitOfWork\DataLayer.UnitOfWork.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -19,3 +19,5 @@ D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\refint\DataLayer.Infrastru
 D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\DataLayer.Infrastructure.pdb
 D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\DataLayer.Infrastructure.genruntimeconfig.cache
 D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\ref\DataLayer.Infrastructure.dll
+D:\SofaShop\DataLayer.Infrastructure\bin\Debug\net6.0\fa-IR\DataLayer.UnitOfWork.resources.dll
+D:\SofaShop\DataLayer.Infrastructure\bin\Debug\net6.0\en-US\DataLayer.UnitOfWork.resources.dll

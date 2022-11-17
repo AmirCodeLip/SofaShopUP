@@ -194,6 +194,9 @@
             "projectReferences": {
               "D:\\SofaShop\\DataLayer.Access\\DataLayer.Access.csproj": {
                 "projectPath": "D:\\SofaShop\\DataLayer.Access\\DataLayer.Access.csproj"
+              },
+              "D:\\SofaShop\\UnitOfWork\\DataLayer.UnitOfWork.csproj": {
+                "projectPath": "D:\\SofaShop\\UnitOfWork\\DataLayer.UnitOfWork.csproj"
               }
             }
           }
@@ -350,6 +353,9 @@
             "projectReferences": {
               "D:\\SofaShop\\DataLayer.Infrastructure\\DataLayer.Infrastructure.csproj": {
                 "projectPath": "D:\\SofaShop\\DataLayer.Infrastructure\\DataLayer.Infrastructure.csproj"
+              },
+              "D:\\SofaShop\\UnitOfWork\\DataLayer.UnitOfWork.csproj": {
+                "projectPath": "D:\\SofaShop\\UnitOfWork\\DataLayer.UnitOfWork.csproj"
               }
             }
           }

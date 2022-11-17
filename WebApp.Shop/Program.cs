@@ -1,19 +1,32 @@
-﻿using DataLayer.Infrastructure;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using WebApp.Shop.Neptons;
 using WebApp.Shop.OdataControllers;
-using static System.Net.Mime.MediaTypeNames;
+using DataLayer.UnitOfWork;
+using DataLayer.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
+using DataLayer.UnitOfWork.Lanuages;
+using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddInfrastructureServices(builder.Configuration).AddControllersWithViews().AddOdataConfig();
- 
- 
+
+builder.Services.AddLocalization(option =>
+{
+    option.ResourcesPath = "Lanuages";
+});
+
 var app = builder.Build();
+ 
+
+app.UseRequestLocalization(new RequestLocalizationOptions().SetDefaultCulture(ConstTypes.SupportedLanguages.enUS).
+    AddSupportedCultures(ConstTypes.SupportedLanguages.List.Values.Select(x => x.Value).ToArray()));
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
 }
+
 app.UseReactCommunication();
 app.UseStaticFiles();
 app.UseRouting();

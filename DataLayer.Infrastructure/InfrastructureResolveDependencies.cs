@@ -15,6 +15,8 @@ using Microsoft.Extensions.Configuration;
 using DataLayer.Infrastructure.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Builder;
+using DataLayer.UnitOfWork;
 
 namespace DataLayer.Infrastructure
 {
@@ -34,7 +36,8 @@ namespace DataLayer.Infrastructure
             services.Configure<ApplicationSettings>(configuration.GetSection(nameof(ApplicationSettings)));
             services.AddAccessServices();
             services.addInternals();
-        
+
+            
             services.AddSingleton(new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new MappingProfile());

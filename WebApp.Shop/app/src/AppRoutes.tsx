@@ -5,7 +5,7 @@ import { LoginLoader } from './Services/IdentityServices'
 import { FileManagerLoader } from './Services/FileManagerServices'
 import { PageLoader } from "./root/shared/PageLoader";
 import FileManager from './root/file_manager/FileManager'
-import { GetDefaultCulture } from './neptons/CultureStructure'
+import { GetDefaultCulture } from './root/shared/GlobalManage'
 
 const AppRoutes = [
   // index: true,

@@ -293,3 +293,5 @@ D:\SofaShop\WebApp.Shop\obj\Debug\net6.0\WebApp.Shop.pdb
 D:\SofaShop\WebApp.Shop\obj\Debug\net6.0\WebApp.Shop.genruntimeconfig.cache
 D:\SofaShop\WebApp.Shop\obj\Debug\net6.0\ref\WebApp.Shop.dll
 D:\SofaShop\WebApp.Shop\bin\Debug\net6.0\taglib-sharp.dll
+D:\SofaShop\WebApp.Shop\bin\Debug\net6.0\fa-IR\DataLayer.UnitOfWork.resources.dll
+D:\SofaShop\WebApp.Shop\bin\Debug\net6.0\en-US\DataLayer.UnitOfWork.resources.dll

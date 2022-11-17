@@ -12,7 +12,7 @@ import { JsonResponseStatus, JsonResponse } from './../../models/JsonResponse';
 import { FObjectType } from './../../webModels/FileManager/FObjectType';
 import DataTransmitter from '../../Services/DataTransmitter';
 import UploadHandler from './UploadHandler';
-import { UrlParser, UrlData } from './../../neptons/CultureStructure'
+import { UrlParser, UrlData } from './../shared/GlobalManage';
 
 export default class FileManager extends React.Component<FileManagerProps, FileManagerState>  {
 
@@ -223,13 +223,13 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     async editFolder() {
         let formData = this.folderInfoFormHandler.getFormData<FolderInfo>();
         var data = await editForm(formData);
-        if (data?.status === JsonResponseStatus.Success) {
+        if (data?.Status === JsonResponseStatus.Success) {
             this.folderMenuMiddleware.enable = false;
             await this.loadData();
         }
         else {
-            for (let index in data.infoData) {
-                this.folderInfoFormHandler.addError(index, data.infoData[index]);
+            for (let index in data.InfoData) {
+                this.folderInfoFormHandler.addError(index, data.InfoData[index]);
             }
         }
     }

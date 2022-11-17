@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { PageLoaderOtpions, PageLoaderModel } from './../../model_structure/interfaces/PageLoaderModel'
 import PageLoaderState from './../../model_structure/interfaces/PageLoaderState'
+import { CultureInfoImplement } from './GlobalManage'
 
 export function Loading() {
 
@@ -17,15 +18,12 @@ export class PageLoader extends React.Component<PageLoaderModel, PageLoaderState
         };
     }
 
-
     public get pageName(): string {
         let name = '';
         if (typeof (this.props.PageContainer) === "function")
             name = (this.props.PageContainer as Function).name;
         return name;
     }
-
-
 
     render() {
         if (this.state.isLoaded && this.state.pageName !== this.pageName) {
@@ -52,6 +50,10 @@ export class PageLoader extends React.Component<PageLoaderModel, PageLoaderState
     }
 
     async componentDidMount() {
+        // let infoSalt = await cookies.pVInfoSetProcess();
+        // let info = await cookies.parseInfo(infoSalt);
+        // console.log(info);
+        await CultureInfoImplement.Get();
         await this.load();
     }
 

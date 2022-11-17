@@ -99,7 +99,7 @@ namespace DataLayer.Infrastructure.Infrastructure
                     var token = tokenHandler.WriteToken(securityToken);
                     result.TResult001 = new LoginOkResult
                     {
-                        token = token,
+                        Token = token,
                     };
                 }
                 else
