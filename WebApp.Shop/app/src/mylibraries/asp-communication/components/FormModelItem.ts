@@ -50,10 +50,11 @@ export class FormHandler {
             let item = this.formModelItems.find(x => x.name === name);
             if (item) {
                 item.setValue(model[name]);
-                console.log(item.getValue());
+                // console.log(item.getValue());
             }
             else {
-                console.log(name);
+                throw "the input with name " + name + " is not exist";        
+                // console.log(name);
             }
         }
     }

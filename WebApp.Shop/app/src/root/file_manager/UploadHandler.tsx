@@ -16,8 +16,6 @@ export default class UploadHandler {
     dragenterEvent = (ev: DragEvent) => this.dragenter(ev);
     dragoverEvent = (ev: DragEvent) => this.dragover(ev);
     dropEvent = (ev: DragEvent) => this.drop(ev);
-
-
     drop(e: DragEvent) {
         this.driveBar.current.classList.remove("dragenter");
         if (e.dataTransfer.items) {
@@ -46,14 +44,12 @@ export default class UploadHandler {
 
     upload(file: File) {
         let url = `FileManager/Base/Upload`;
-        let body: any = {};
+        let body: any = { folderId: null };
         if (this.queryString.id !== "root") {
-            body.Item1 = this.queryString.id;
+            body.folderId = this.queryString.id;
         }
-        debugger;
-        DataTransmitter.Upload<JsonResponse<undefined>>(DataTransmitter.BaseUrl + url,
-            file, {}).then(x => {
+        DataTransmitter.Upload<JsonResponse<undefined>>(DataTransmitter.BaseUrl + url, file, body).then(x => {
                 console.log(x);
-            });
+        });
     }
 }

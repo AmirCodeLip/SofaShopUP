@@ -12,16 +12,18 @@ import { JsonResponseStatus, JsonResponse } from './../../models/JsonResponse';
 import { FObjectType } from './../../webModels/FileManager/FObjectType';
 import DataTransmitter from '../../Services/DataTransmitter';
 import UploadHandler from './UploadHandler';
-import {  UrlData } from './../shared/GlobalManage';
+import { UrlData } from './../shared/GlobalManage';
+import FObjectKind from './../../webModels/FileManager/FObjectKind'
+
 
 export default class FileManager extends React.Component<FileManagerProps, FileManagerState>  {
 
     driveBar: React.RefObject<HTMLDivElement>;
-    folderInfoModelInput: FormModeInput;
-    folderInfoFormHandler: FormHandler;
+    fObjectInfoModelInput: FormModeInput;
+    fObjectInfoFormHandler: FormHandler;
     contextMenuMiddleware: ModalOptions;
-    folderMenuMiddleware: ModalOptions;
-    clickedSection: ClickedSection | undefined;
+    fObjectMenuMiddleware: ModalOptions;
+    // clickedSection: ClickedSection | undefined;
     queryString: UrlData;
     folderId: string | undefined;
     rightBarItems: Array<RightBarItem> =
@@ -36,20 +38,30 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
             },
             {
                 text: 'فولدر جدید',
-                cmdText: 'Ctrl+R',
-                icon: "fa-solid fa-arrows-rotate",
+                cmdText: 'Ctrl+N+D',
+                icon: "fa-regular fa-folder",
                 refItem: React.createRef<HTMLDivElement>(),
                 clickedSection: ClickedSection.driveBar,
-                clicked: () => this.openEditFolder()
+                clicked: () => this.openEditFolderOrFile()
             },
             {
-                text: 'تغییرنام فولدر',
-                cmdText: 'Ctrl+R',
-                icon: "fa-solid fa-arrows-rotate",
+                text: 'تغییر نام فولدر',
+                cmdText: 'Ctrl+R+N',
+                icon: "fa-solid fa-pen",
                 refItem: React.createRef<HTMLDivElement>(),
                 clickedSection: ClickedSection.folder,
                 clicked: () => {
-                    this.openEditFolder()
+                    this.openEditFolderOrFile()
+                }
+            },
+            {
+                text: 'تغییر نام فایل',
+                cmdText: 'Ctrl+R+N',
+                icon: "fa-solid fa-pen",
+                refItem: React.createRef<HTMLDivElement>(),
+                clickedSection: ClickedSection.file,
+                clicked: () => {
+                    this.openEditFolderOrFile()
                 }
             }
         ];
@@ -58,17 +70,19 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         super(props);
         this.queryString = new UrlData();
         this.driveBar = React.createRef<HTMLDivElement>();
-        this.folderInfoModelInput = new FormModeInput(props.model.EditFolderForm, "FolderName");
-        this.folderInfoFormHandler = new FormHandler(this.folderInfoModelInput,
-            new HiddenModeInput<string>(props.model.EditFolderForm, "Id"),
-            new HiddenModeInput<string>(props.model.EditFolderForm, "FolderId"));
+        this.fObjectInfoModelInput = new FormModeInput(props.model.EditFolderOrFileForm, "Name");
+        this.fObjectInfoFormHandler = new FormHandler(this.fObjectInfoModelInput,
+            new HiddenModeInput<string>(props.model.EditFolderOrFileForm, "Id"),
+            new HiddenModeInput<string>(props.model.EditFolderOrFileForm, "FObjectType"),
+            new HiddenModeInput<string>(props.model.EditFolderOrFileForm, "FolderId"));
         this.state =
         {
             showContextMenu: false,
-            fData: []
+            fData: [],
+            clickedSection: undefined
         };
         this.contextMenuMiddleware = new ModalOptions(ModalType.contextModal);
-        this.folderMenuMiddleware = new ModalOptions(ModalType.defualtModal);
+        this.fObjectMenuMiddleware = new ModalOptions(ModalType.defualtModal);
     }
 
     render() {
@@ -95,17 +109,16 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
                             <div className="select-bar"></div>
                         </Col>
                     ))}
-
                 </Row>
-                <Web_Modal middleware={this.folderMenuMiddleware}>
+                <Web_Modal middleware={this.fObjectMenuMiddleware}>
                     <>
                         <div className="epo-form">
-                            <label className='epo-right right-item' ref={this.folderInfoModelInput.refLabel}></label>
-                            <input className="epo right-item" ref={this.folderInfoModelInput.refInput} />
+                            <label className='epo-right right-item' ref={this.fObjectInfoModelInput.refLabel}></label>
+                            <input className="epo right-item" ref={this.fObjectInfoModelInput.refInput} />
                             <div className="epo-border"></div>
-                            <div className="right-item" ref={this.folderInfoModelInput.refError} ></div>
+                            <div className="right-item" ref={this.fObjectInfoModelInput.refError} ></div>
                         </div>
-                        <div className="epo-form" onClick={() => this.editFolder()}>
+                        <div className="epo-form" onClick={() => this.editFObject()}>
                             <button className="btn btn-outline-001 btn-well">
                                 ثبت
                             </button>
@@ -114,7 +127,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
                 </Web_Modal>
                 <Web_Modal middleware={this.contextMenuMiddleware}>
                     <Row>
-                        {this.rightBarItems.map((item, key) =>
+                        {this.rightBarItems.filter(x => x.clickedSection === this.state.clickedSection).map((item, key) =>
                             <Col lg={12} className='contextlist-each' ref={item.refItem} key={key} >
                                 <div className='contextlist-hold'>
                                     <div className="contextlist-item-text right-item">
@@ -138,41 +151,47 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     eventRightClick: EventClickType = (ev) => this.rightClick(ev);
     eventLeftClick: EventClickType = (ev) => this.leftClick(ev);
     eventLeftDblClick: EventClickType = (ev) => this.leftDblClick(ev);
-    eventPopstate: (ev: PopStateEvent) => any = (ev) => this.popstate(ev);  
+    eventPopstate: (ev: PopStateEvent) => any = (ev) => this.popstate(ev);
 
     rightClick(ev: MouseEvent) {
         let htmlTarget = (ev.target as HTMLDivElement);
-        this.folderMenuMiddleware.onLoaded = undefined;
+        this.fObjectMenuMiddleware.onLoaded = undefined;
         let preFixElement = (ev.target as HTMLElement);
         let fixedElement = this.getFixedElement(preFixElement);
         this.deselectAll();
+        let clickedSection: ClickedSection | undefined;
+
         if (htmlTarget === (this.driveBar.current)) {
-            this.clickedSection = ClickedSection.driveBar;
+            clickedSection = ClickedSection.driveBar;
         }
         else if (fixedElement.classList[0] === "f-hold") {
             let fModel = this.state.fData.find(x => x.refObject.current === fixedElement);
             if (fModel && fModel.model.FObjectType === FObjectType.Folder) {
-                this.clickedSection = ClickedSection.folder;
+                clickedSection = ClickedSection.folder;
                 if (fModel)
                     fModel.selected = true;
             } else if (fModel && fModel.model.FObjectType === FObjectType.File) {
-                this.clickedSection = ClickedSection.drive;
+                clickedSection = ClickedSection.file;
                 if (fModel)
                     fModel.selected = true;
             }
         }
-        else this.clickedSection = undefined;
-        if (this.clickedSection !== undefined) {
-            let promise = () => {
-                for (let item of this.rightBarItems) {
-                    item.refItem.current.style.display = item.clickedSection === this.clickedSection ? "block" : "none";
-                }
+        else this.setState({ clickedSection: undefined });
+        if (clickedSection !== undefined) {
+            // let promise = () => {
+            //     for (let item of this.rightBarItems) {
+            //         item.refItem.current.style.display = item.clickedSection === this.clickedSection ? "block" : "none";
+            //     }
+            // }
+            if (this.state.clickedSection !== clickedSection) {
+                this.setState({ clickedSection: clickedSection })
             }
+
             if (this.contextMenuMiddleware.enable) {
-                promise();
+                // promise();
             }
             else {
-                this.contextMenuMiddleware.onLoaded = () => promise();
+                // this.contextMenuMiddleware.onLoaded = () => promise();
                 this.contextMenuMiddleware.enable = true;
             }
             this.contextMenuMiddleware.xPos = ev.pageX + "px";
@@ -215,45 +234,45 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         }
     }
 
-    popstate(ev: PopStateEvent)
-    {
+    popstate(ev: PopStateEvent) {
         this.parseQueryString();
         this.loadData();
     }
 
-    async editFolder() {
-        let formData = this.folderInfoFormHandler.getFormData<FolderInfo>();
+    async editFObject() {
+        let formData = this.fObjectInfoFormHandler.getFormData<FObjectKind>();
         var data = await editForm(formData);
         if (data?.Status === JsonResponseStatus.Success) {
-            this.folderMenuMiddleware.enable = false;
+            this.fObjectMenuMiddleware.enable = false;
             await this.loadData();
         }
         else {
             for (let index in data.InfoData) {
-                this.folderInfoFormHandler.addError(index, data.InfoData[index]);
+                this.fObjectInfoFormHandler.addError(index, data.InfoData[index]);
             }
         }
     }
 
-    openEditFolder(): void {
+    openEditFolderOrFile(): void {
         this.contextMenuMiddleware.enable = false;
-        this.folderMenuMiddleware.enable = true;
-        let folder = this.state.fData.find(x => x.selected);
-        if (folder && folder !== null) {
-            this.folderMenuMiddleware.onLoaded = () => {
-                let folderInfo: FolderInfo = {
-                    Id: folder.model.Id,
-                    FolderName: folder.model.Name,
-                    FolderId: folder.model.FolderId
-                };
-                this.folderInfoFormHandler.setFormData(folderInfo);
+        this.fObjectMenuMiddleware.enable = true;
+        let folderOrFile = this.state.fData.find(x => x.selected);
+        if (folderOrFile && folderOrFile !== null) {
+            this.fObjectMenuMiddleware.onLoaded = () => {
+                // let folderInfo: FolderInfo = {
+                //     Id: folder.model.Id,
+                //     FolderName: folder.model.Name,
+                //     FolderId: folder.model.FolderId
+                // };
+                // this.folderInfoFormHandler.setFormData(folderInfo);
+                this.fObjectInfoFormHandler.setFormData(folderOrFile.model);
             }
         }
         setTimeout(() => {
-            if (!this.folderInfoModelInput.refLabel.current ||
-                !this.folderInfoModelInput.refInput || !this.folderInfoModelInput.refError)
+            if (!this.fObjectInfoModelInput.refLabel.current ||
+                !this.fObjectInfoModelInput.refInput || !this.fObjectInfoModelInput.refError)
                 return;
-            this.folderInfoFormHandler.init();
+            this.fObjectInfoFormHandler.init();
         }, 60);
     }
 
@@ -294,7 +313,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         window.removeEventListener("popstate", this.eventPopstate);
     }
     componentWillMount(): void {
-        this.folderInfoFormHandler.initRef(React.createRef);
+        this.fObjectInfoFormHandler.initRef(React.createRef);
     }
 
     async componentDidMount() {
@@ -302,7 +321,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         document.addEventListener("click", this.eventLeftClick);
         document.addEventListener("dblclick", this.eventLeftDblClick);
         window.addEventListener("popstate", this.eventPopstate);
-       
+
         this.parseQueryString();
         await this.loadData();
         new UploadHandler(this.driveBar, this.queryString);

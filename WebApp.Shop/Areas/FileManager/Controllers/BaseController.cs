@@ -21,13 +21,13 @@ namespace WebApp.Shop.Areas.FileManager.Controllers
         public string FileManagerOnLoadData() => fileManagerStructure.FileManagerOnLoadData();
 
         [HttpPost, Authorize]
-        public async Task<IActionResult> EditFolder([FromBody] FolderInfo folderInfo) =>
-           (await fileManagerStructure.EditFolder(folderInfo, this.CentralizeDataFiller())).GetJson();
+        public async Task<IActionResult> EditFObject([FromBody] FObjectKind fObjectKindInfo) =>
+           (await fileManagerStructure.EditFObject(fObjectKindInfo, this.CentralizeDataFiller())).GetJson();
 
         [HttpPost, Authorize]
-        public async Task<IActionResult> Upload(IFormFile file, [FromBody] Tuple<Guid?> folderId)
+        public async Task<IActionResult> Upload(IFormFile file, Guid? folderId)
         {
-            var response = await fileManagerStructure.Upload(this.CentralizeDataFiller(), file, folderId.Item1);
+            var response = await fileManagerStructure.Upload(this.CentralizeDataFiller(), file, folderId);
             return response.GetJson();
         }
 

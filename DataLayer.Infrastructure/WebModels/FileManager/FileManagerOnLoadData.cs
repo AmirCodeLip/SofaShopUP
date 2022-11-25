@@ -10,9 +10,9 @@ using System.Xml.Linq;
 
 namespace DataLayer.Infrastructure.WebModels.FileManager
 {
-    [TSModelUsage(CompileOption = CompileOption.ignore)]
+    //[TSModelUsage(CompileOption = CompileOption.ignore)]
     public class FileManagerOnLoadData
     {
-        public FormModel EditFolderForm { get; set; }
+        public FormModel EditFolderOrFileForm { get; set; }
     }
 }

@@ -25,6 +25,7 @@ export class FileManagerProps {
 export class FileManagerState {
     showContextMenu: boolean = false;
     fData: Array<FObjectKindComponent> = [];
+    clickedSection: ClickedSection | undefined;
 }
 
 export interface RightBarItem {
@@ -37,5 +38,5 @@ export interface RightBarItem {
 }
 
 export enum ClickedSection {
-    driveBar, folder, drive
+    driveBar, folder, file
 }

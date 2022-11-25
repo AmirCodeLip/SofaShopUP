@@ -33,7 +33,7 @@ namespace DataLayer.Infrastructure.Infrastructure
             IActorOrArtistRepository actorOrArtistRepository, IFileVersionActorOrArtistRepository fileVersionActorOrArtistRepository,
             ApplicationDbContext context, UserManager<WebUser> userManager)
         {
-            
+
             this.folderRepository = folderRepository;
             this.fileRepository = fileRepository;
             this.hostingEnv = hostingEnv;
@@ -44,8 +44,9 @@ namespace DataLayer.Infrastructure.Infrastructure
             this.fileVersionActorOrArtistRepository = fileVersionActorOrArtistRepository;
         }
 
-        public async Task<JsonResponse> EditFolder(FolderInfo folderInfo, CentralizeData centralizeData)
+        public async Task<JsonResponse> EditFObject(FObjectKind fObjectKindInfo, CentralizeData centralizeData)
         {
+
             var result = new JsonResponse();
             if (!centralizeData.modelState.IsValid)
             {
@@ -56,18 +57,28 @@ namespace DataLayer.Infrastructure.Infrastructure
                 return result;
             }
             var user = await userManager.GetUserAsync(centralizeData.httpContext.User);
-            folderInfo.FolderId = folderInfo.FolderId.HasValue ? folderInfo.FolderId.Value : (await RootFolderAsync(user.Id)).Id;
-            if (folderInfo.Id == Guid.Empty)
+            fObjectKindInfo.FolderId = fObjectKindInfo.FolderId.HasValue ? fObjectKindInfo.FolderId.Value : (await RootFolderAsync(user.Id)).Id;
+            if (fObjectKindInfo.FObjectType == FObjectType.File)
             {
-                WebFolder folder = folderInfo;
-                folder.CreatorId = user.Id;
-                await folderRepository.AddAsync(folder);
+                var file = await this.fileRepository.FindAsync(fObjectKindInfo.Id);
+                file.Name = fObjectKindInfo.Name;
+                fileRepository.Update(file);
             }
             else
             {
-                var folder = await this.folderRepository.FindAsync(folderInfo.Id);
-                folderInfo.Assign(folder);
-                this.folderRepository.Update(folder);
+                if (fObjectKindInfo.Id == Guid.Empty)
+                {
+                    WebFolder folder = fObjectKindInfo;
+                    folder.CreatorId = user.Id;
+                    await folderRepository.AddAsync(folder);
+                }
+                else
+                {
+                    var folder = await this.folderRepository.FindAsync(fObjectKindInfo.Id);
+                    if (folder.Name != fObjectKindInfo.Name)
+                        folder.Name = fObjectKindInfo.Name;
+                    this.folderRepository.Update(folder);
+                }
             }
             await context.SaveChangesAsync();
             return result;
@@ -77,7 +88,7 @@ namespace DataLayer.Infrastructure.Infrastructure
         {
             FileManagerOnLoadData vm = new FileManagerOnLoadData
             {
-                EditFolderForm = FormManager.GetFromFrom(typeof(FolderInfo))
+                EditFolderOrFileForm = FormManager.GetFromFrom(typeof(FObjectKind))
             };
             return JsonConvert.SerializeObject(vm);
         }
@@ -153,9 +164,12 @@ namespace DataLayer.Infrastructure.Infrastructure
                 info.FileDescriptor.Descript(fileData);
                 await fileVersionRepository.AddAsync(fileData);
                 await context.SaveChangesAsync();
-                foreach (var actorOrArtists in info.FileDescriptor.ActorOrArtists)
+                if (info.FileDescriptor.ActorOrArtists != null)
                 {
-                    await AddActorOrArtists(fileData, actorOrArtists);
+                    foreach (var actorOrArtists in info.FileDescriptor.ActorOrArtists)
+                    {
+                        await AddActorOrArtists(fileData, actorOrArtists);
+                    }
                 }
                 foreach (var infoData in info.InfoData)
                 {

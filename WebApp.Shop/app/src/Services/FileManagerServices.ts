@@ -58,6 +58,6 @@ export async function FileManagerLoader() {
     return DataTransmitter.GetRequest<FileManagerOnLoadData>(DataTransmitter.BaseUrl + "FileManager/Base/FileManagerOnLoadData", { authorize: true });
 }
 
-export async function editForm(formData: FolderInfo) {
-    return await DataTransmitter.PostRequest<JsonResponse<undefined>>(DataTransmitter.BaseUrl + "FileManager/Base/EditFolder", { authorize: true, body: formData });
+export async function editForm(formData: FObjectKind) {
+    return await DataTransmitter.PostRequest<JsonResponse<undefined>>(DataTransmitter.BaseUrl + "FileManager/Base/EditFObject", { authorize: true, body: formData });
 }
