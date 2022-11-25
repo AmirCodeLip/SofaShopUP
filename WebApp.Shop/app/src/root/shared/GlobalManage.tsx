@@ -7,7 +7,7 @@ import { stringify } from 'uuid'
 
 declare global {
     interface Window {
-        cultureInfo: undefined | CultureInfo; // whatever type you want to give. (any,number,float etc)
+        cultureInfo: undefined | CultureInfoImplement;
     }
 }
 
@@ -16,76 +16,142 @@ export const supportedCultures = {
     faIR: "fa-IR"
 }
 
-export const GetDefaultCulture = () => {
+function getDefault() {
     window.location.href = "/" + supportedCultures.enUS;
+}
+
+export const GetDefaultCulture = () => {
+    getDefault();
     return (<></>)
 }
 
 export function localizorHtml(prop: { txtKey: string }) {
     if (window.cultureInfo) {
         let data = window.cultureInfo;
-        // return null;
+        let word = data.GetString(prop.txtKey);
+        if (word != null) {
+            return (<p>{word}</p>);
+        }
     }
-    return (<span {...{ "not-localized": `${prop.txtKey}}` }}>
+    return (<span {...{ "not-localized": `${prop.txtKey}` }}>
         ...
     </span>)
 }
 
-export class UrlParser {
-    public static getUrlData() {
-        let data = window.location.href.split('/').filter((v, i) => v != '' && 2 < i);
-        let urlData: UrlData = {
-            culture: data[0],
-            data: data.filter((v, i) => 0 != i)
-        };
-        return urlData;
+export class UrlData {
+    constructor() {
+        this.update();
     }
+    update() {
+        let data = window.location.href.split('/').filter((v, i) => v != '' && 2 < i);
+        this.culture = data[0];
+        this.data = data.filter((v, i) => 0 != i);
+        this.id = data.length >= 3 ? data[2] : null;
+    }
+    culture: string;
+    data: Array<string>;
+    id: string;
 }
 
-export interface UrlData {
-    culture: string,
-    data: Array<string>
-}
-
-export class CultureInfoImplement implements CultureInfo {
+export class CultureInfoImplement {
     static keyItem = "lang_Data";
-    Rtl: boolean;
-    Culture: string;
-    Version: string;
+    // Rtl: boolean;
+    // Culture: string;
+    // Version: string;
     data: Array<KeyValuePair<string, string>>;
-
+    promiseWord: Array<string>;
+    inProgress: boolean;
+    cultureInfo: CultureInfo;
     constructor(cultureInfo: CultureInfo) {
         if (cultureInfo) {
-            this.Culture = cultureInfo.Culture;
-            this.Rtl = cultureInfo.Rtl;
-            this.Version = cultureInfo.Version;
+            // this.Culture = cultureInfo.Culture;
+            // this.Rtl = cultureInfo.Rtl;
+            // this.Version = cultureInfo.Version;
+            this.cultureInfo = cultureInfo;
+            this.data = [];
+            this.promiseWord = [];
+            this.inProgress = false;
+            setInterval(() => this.TransmitWord(), 3000);
         }
     }
 
-    GetString(txtKey: string) {
+    flush() {
+        let listDt = [];
+        for (let i of this.promiseWord) {
+            if (!this.data.find(x => x.Key == i)) {
+                listDt.push(i);
+            }
+        }
+        this.promiseWord = listDt;
+    }
+
+    async TransmitWord() {
+        try {
+            if (this.inProgress)
+                return;
+            this.inProgress = true;
+            this.flush();
+            await this.LoadList(this.promiseWord);
+            document.querySelectorAll("[not-localized]").forEach(notLocalized => {
+                let key = notLocalized.getAttribute("not-localized");
+                let dt = this.data.find(x => x.Key == key);
+                if (dt) {
+                    notLocalized.parentElement.replaceWith(notLocalized, document.createTextNode(dt.Value));
+                    notLocalized.remove();
+                }
+            });
+        }
+        finally {
+            this.inProgress = false;
+        }
+    }
+
+    async LoadList(words: Array<string>) {
+        if (words.length === 0)
+            return;
+        let data = await DataTransmitter.PostRequest<JsonResponse<Array<KeyValuePair<string, string>>>>(`${DataTransmitter.BaseUrl}CultureManager/GetList`, {
+            body: {
+                Words: words,
+                CultureInfo: this.cultureInfo
+            }
+        });
+        data.TResult001.forEach(x => {
+            this.data.push(x);
+        });
+    }
+
+    public GetStrings(...params: Array<string>) {
+        for (let txtKey of params) {
+            this.GetString(txtKey);
+        }
+    }
+
+    public GetString(txtKey: string): string | null {
         let data = this.data.find(x => x.Key === txtKey);
-        debugger;
-        // if (data) {
-
-
-        // }
+        if (data) {
+            return data.Value;
+        }
+        else {
+            if (!this.promiseWord.find(x => x == txtKey))
+                this.promiseWord.push(txtKey);
+            return null;
+        }
     }
 
     static async Get() {
+        if (window.cultureInfo)
+            return window.cultureInfo;
         let infoSalt = await cookies.pVInfoSetProcess();
         let info = await cookies.parseInfo(infoSalt);
-        let ci = localStorage.getItem(this.keyItem);
-        let ciData: CultureInfoImplement | null = ci == null ? null : JSON.parse(ci);
-        if (ci == null) {
+
+
+        if (!window.cultureInfo) {
             let response = await DataTransmitter.PostRequest<CultureInfo>(DataTransmitter.BaseUrl + `CultureManager/GetCultureInfo`, {
                 body: { Item1: info.Language }
             });
-            ciData = new CultureInfoImplement(response);
-            localStorage.setItem(this.keyItem, JSON.stringify(ciData));
+            window.cultureInfo = new CultureInfoImplement(response);
+            return window.cultureInfo;
         }
-        // if (!ci) {
-
-        // }
     }
 }
 
@@ -117,7 +183,12 @@ export class cookies {
     static async pVInfoSetProcess() {
         let info = cookies.getCookie(this.keyItem);
         if (info == null) {
-            let data: PVInfoModel = { Language: supportedCultures.faIR };
+            let urlData = new UrlData();
+            if (!urlData.culture) {
+                getDefault();
+                return;
+            }
+            let data: PVInfoModel = { Language: urlData.culture };
             let response = await DataTransmitter.PostRequest<JsonResponse<string>>(DataTransmitter.BaseUrl + `PVInfo/Set`, {
                 body: data
             });

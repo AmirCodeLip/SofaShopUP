@@ -14,6 +14,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using DataLayer.Infrastructure.WebModels;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DataLayer.Infrastructure.Infrastructure
 {
@@ -41,7 +42,7 @@ namespace DataLayer.Infrastructure.Infrastructure
             return JsonConvert.SerializeObject(FormManager.GetFromFrom(typeof(LoginModel)));
         }
 
-        public async Task<JsonResponse<LoginOkResult>> Login(LoginModel loginModel, ModelStateDictionary modelState)
+        public async Task<ContentResult> Login(LoginModel loginModel, ModelStateDictionary modelState)
         {
             var result = new JsonResponse<LoginOkResult>();
             if (!modelState.IsValid)
@@ -50,7 +51,7 @@ namespace DataLayer.Infrastructure.Infrastructure
                 {
                     result.AddError(state.Key, state.Value.Errors[0].ErrorMessage);
                 }
-                return result;
+                return result.GetJson();
             }
             WebUser user = null;
             if (SharedRegix.RgEmail.IsMatch(loginModel.PhoneOrEmail))
@@ -107,7 +108,7 @@ namespace DataLayer.Infrastructure.Infrastructure
                     result.AddError("PhoneOrEmail", "نام کاربری و یا گذرواژه فاقد اعتبار");
                 }
             }
-            return result;
+            return result.GetJson();
         }
 
         public async Task<JsonResponse<UserPersonalInfo>> GetUserProfile(ClaimsPrincipal user)

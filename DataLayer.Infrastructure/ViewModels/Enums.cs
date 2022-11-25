@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataLayer.Infrastructure.ViewModel
+namespace DataLayer.Infrastructure.ViewModels
 {
     public enum InputType
     {

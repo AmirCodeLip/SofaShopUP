@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataLayer.Domin.Models;
-using DataLayer.Infrastructure.Model;
+using DataLayer.Infrastructure.Models;
 
 namespace DataLayer.Infrastructure.Infrastructure
 {

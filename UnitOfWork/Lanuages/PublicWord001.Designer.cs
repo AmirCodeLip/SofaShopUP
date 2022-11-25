@@ -86,5 +86,41 @@ namespace DataLayer.UnitOfWork.Lanuages {
                 return ResourceManager.GetString("key003", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string key004 {
+            get {
+                return ResourceManager.GetString("key004", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string key005 {
+            get {
+                return ResourceManager.GetString("key005", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string key006 {
+            get {
+                return ResourceManager.GetString("key006", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string key007 {
+            get {
+                return ResourceManager.GetString("key007", resourceCulture);
+            }
+        }
     }
 }

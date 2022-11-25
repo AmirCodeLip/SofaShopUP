@@ -53,7 +53,7 @@ export class PageLoader extends React.Component<PageLoaderModel, PageLoaderState
         // let infoSalt = await cookies.pVInfoSetProcess();
         // let info = await cookies.parseInfo(infoSalt);
         // console.log(info);
-        await CultureInfoImplement.Get();
+       
         await this.load();
     }
 

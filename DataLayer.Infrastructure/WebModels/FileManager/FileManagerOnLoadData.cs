@@ -1,5 +1,5 @@
 ﻿using DataLayer.Infrastructure.Services;
-using DataLayer.Infrastructure.ViewModel.Form;
+using DataLayer.Infrastructure.ViewModels.Form;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

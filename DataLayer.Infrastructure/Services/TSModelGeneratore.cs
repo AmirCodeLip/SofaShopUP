@@ -1,4 +1,4 @@
-﻿using DataLayer.Infrastructure.ViewModel.Form;
+﻿using DataLayer.Infrastructure.ViewModels.Form;
 using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Generic;

@@ -126,4 +126,16 @@
   <data name="key003" xml:space="preserve">
     <value>خانه</value>
   </data>
+  <data name="key004" xml:space="preserve">
+    <value>درایو</value>
+  </data>
+  <data name="key005" xml:space="preserve">
+    <value>ورود/عضویت</value>
+  </data>
+  <data name="key006" xml:space="preserve">
+    <value>ورود</value>
+  </data>
+  <data name="key007" xml:space="preserve">
+    <value>عضویت</value>
+  </data>
 </root>

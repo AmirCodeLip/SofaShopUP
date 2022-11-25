@@ -4,6 +4,8 @@ import IFormModel from './../../mylibraries/asp-communication/interfaces/IFormMo
 import { FormModeInput, FormHandler } from '../../mylibraries/asp-communication/components/FormModelItem';
 import { loginService } from '../../Services/IdentityServices'
 import { JsonResponseStatus } from '../../models/JsonResponse';
+import { Container } from 'react-bootstrap'
+import { from } from 'rxjs';
 export const Login: React.FC<{ model: IFormModel }> = ({ model }) => {
     let phoneOrEmailModel: FormModeInput = new FormModeInput(model, "PhoneOrEmail");
     let passwordModel = new FormModeInput(model, "Password");
@@ -21,7 +23,8 @@ export const Login: React.FC<{ model: IFormModel }> = ({ model }) => {
             });
             if (loginResult!.Status === JsonResponseStatus.Success) {
                 console.log(loginResult?.TResult001);
-                localStorage.setItem("jwt", loginResult!.TResult001!.Token)
+                localStorage.setItem("jwt", loginResult!.TResult001!.Token);
+                window.location.href = `/${window.cultureInfo.cultureInfo.Culture}/manage_files/root`;
             } else {
                 for (let key in loginResult!.InfoData) {
                     let data = loginResult!.InfoData[key];
@@ -32,7 +35,7 @@ export const Login: React.FC<{ model: IFormModel }> = ({ model }) => {
     }
 
     return (
-        <>
+        <Container>
             <div className="epo-form">
                 <label className='epo-right right-item' ref={phoneOrEmailModel.refLabel}></label>
                 <input className="epo left-item" ref={phoneOrEmailModel.refInput} />
@@ -50,7 +53,7 @@ export const Login: React.FC<{ model: IFormModel }> = ({ model }) => {
                     ورود
                 </button>
             </div>
-        </>
+        </Container>
     );
 }
 

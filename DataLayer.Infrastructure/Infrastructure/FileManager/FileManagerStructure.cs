@@ -4,7 +4,7 @@ using DataLayer.Access.ViewModel;
 using DataLayer.Domin.Models;
 using DataLayer.Domin.Models.Identity;
 using DataLayer.Infrastructure.Services;
-using DataLayer.Infrastructure.ViewModel;
+using DataLayer.Infrastructure.ViewModels;
 using DataLayer.Infrastructure.WebModels;
 using DataLayer.Infrastructure.WebModels.FileManager;
 using Microsoft.AspNetCore.Hosting;

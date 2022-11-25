@@ -1,6 +1,6 @@
 ﻿using DataLayer.Infrastructure;
-using DataLayer.Infrastructure.ViewModel;
-using DataLayer.Infrastructure.ViewModel.Form;
+using DataLayer.Infrastructure.ViewModels;
+using DataLayer.Infrastructure.ViewModels.Form;
 using DataLayer.Infrastructure.WebModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;

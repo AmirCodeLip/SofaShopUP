@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace DataLayer.Infrastructure.ViewModel
+namespace DataLayer.Infrastructure.ViewModels
 {
     public class CentralizeData
     {

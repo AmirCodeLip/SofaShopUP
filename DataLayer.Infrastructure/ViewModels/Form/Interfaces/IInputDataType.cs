@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataLayer.Infrastructure.ViewModel.Form
+namespace DataLayer.Infrastructure.ViewModels.Form
 {
-    public interface IInputDisplay
+    public interface IInputDataType
     {
-        string Name { get; set; }
+        int DataType { get; set; }
     }
 }

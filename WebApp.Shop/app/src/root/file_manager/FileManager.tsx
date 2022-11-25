@@ -12,7 +12,7 @@ import { JsonResponseStatus, JsonResponse } from './../../models/JsonResponse';
 import { FObjectType } from './../../webModels/FileManager/FObjectType';
 import DataTransmitter from '../../Services/DataTransmitter';
 import UploadHandler from './UploadHandler';
-import { UrlParser, UrlData } from './../shared/GlobalManage';
+import {  UrlData } from './../shared/GlobalManage';
 
 export default class FileManager extends React.Component<FileManagerProps, FileManagerState>  {
 
@@ -56,6 +56,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
 
     constructor(props: FileManagerProps) {
         super(props);
+        this.queryString = new UrlData();
         this.driveBar = React.createRef<HTMLDivElement>();
         this.folderInfoModelInput = new FormModeInput(props.model.EditFolderForm, "FolderName");
         this.folderInfoFormHandler = new FormHandler(this.folderInfoModelInput,
@@ -186,7 +187,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         if (fixedElement.classList[0] === "f-hold") {
             let fModel = this.state.fData.find(x => x.refObject.current === fixedElement);
             if (fModel.model.FObjectType === FObjectType.Folder) {
-                this.setFolder(fModel.id);
+                this.setFolder(fModel.model.Id);
                 this.loadData();
             }
         }
@@ -264,8 +265,8 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     }
 
     parseQueryString() {
-        this.queryString = UrlParser.getUrlData();
-        this.folderId = this.queryString.data[1] === "root" ? undefined : this.queryString.data[1];
+        this.queryString.update();
+        this.folderId = this.queryString.id === "root" ? undefined : this.queryString.id;
     }
 
     setFolder(folderId: string) {
@@ -304,7 +305,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
        
         this.parseQueryString();
         await this.loadData();
-        new UploadHandler(this.driveBar);
+        new UploadHandler(this.driveBar, this.queryString);
 
     }
 }
