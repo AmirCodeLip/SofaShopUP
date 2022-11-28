@@ -1,4 +1,4 @@
-﻿using DataLayer.Domin.Models;
+﻿using DataLayer.Domin.Models.Web;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;

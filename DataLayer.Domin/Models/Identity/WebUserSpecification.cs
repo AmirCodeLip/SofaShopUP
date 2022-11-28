@@ -2,7 +2,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using DataLayer.UnitOfWork;
-using DataLayer.Domin.Models.Interfaces;
+using DataLayer.Domin.Models.BaseModels.Interfaces;
+#if shop_project
+using DataLayer.Domin.Models.WebShop;
+#endif
 
 namespace DataLayer.Domin.Models.Identity
 {
@@ -18,8 +21,9 @@ namespace DataLayer.Domin.Models.Identity
         public string LastName { get; set; }
         public Guid UserId { get; set; }
         public WebUser User { get; set; }
-
+#if shop_project
         public ICollection<ShopAddress> Addresses { get; set; }
+#endif
         public bool IsDeleted { get; set; }
     }
 

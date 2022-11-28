@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using DataLayer.Access;
-using DataLayer.Access.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DataLayer.Domin.Models;
 using DataLayer.Infrastructure.Models;
+using DataLayer.Domin.Models.Web;
+using DataLayer.Access.Services.Identity;
 
 namespace DataLayer.Infrastructure.Infrastructure
 {

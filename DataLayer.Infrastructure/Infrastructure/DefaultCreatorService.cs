@@ -1,16 +1,9 @@
 ﻿using DataLayer.Access.Data;
 using DataLayer.Access.Services;
-using DataLayer.Domin.Models;
 using DataLayer.Domin.Models.Identity;
+using DataLayer.Domin.Models.Web;
 using DataLayer.Domin.Works;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataLayer.Infrastructure.Infrastructure
 {

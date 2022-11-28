@@ -1,16 +1,11 @@
 ﻿using DataLayer.Access.Data;
 using DataLayer.Access.Services.Base;
-using DataLayer.Domin.Models.Interfaces;
+using DataLayer.Domin.Models.BaseModels.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 #nullable enable
-namespace DataLayer.Access.Services
+namespace DataLayer.Access.Services.Base
 {
     public class BaseService<TEntity> : IBaseRepository<TEntity> where TEntity : class, IDeleteBase
     {
@@ -62,7 +57,7 @@ namespace DataLayer.Access.Services
             else
                 return await _dbSet.NotDeleted().SingleOrDefaultAsync(predicate);
         }
-        
+
         public async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, bool deleted = false)
         {
             if (deleted)

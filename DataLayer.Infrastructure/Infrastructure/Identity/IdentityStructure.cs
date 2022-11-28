@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using DataLayer.UnitOfWork;
-using DataLayer.Access.Services;
 using DataLayer.Access.ViewModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -15,6 +14,8 @@ using Microsoft.EntityFrameworkCore;
 using DataLayer.Infrastructure.WebModels;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using DataLayer.Access.Services.Identity;
+using DataLayer.Access.Services;
 
 namespace DataLayer.Infrastructure.Infrastructure
 {

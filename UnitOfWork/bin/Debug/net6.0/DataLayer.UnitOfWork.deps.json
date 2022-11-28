@@ -11,6 +11,9 @@
           "DataLayer.UnitOfWork.dll": {}
         },
         "resources": {
+          "en-US/DataLayer.UnitOfWork.resources.dll": {
+            "locale": "en-US"
+          },
           "fa-IR/DataLayer.UnitOfWork.resources.dll": {
             "locale": "fa-IR"
           }

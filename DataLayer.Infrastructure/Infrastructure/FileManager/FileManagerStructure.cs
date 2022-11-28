@@ -1,8 +1,8 @@
 ﻿using DataLayer.Access.Data;
-using DataLayer.Access.Services;
+using DataLayer.Access.Services.Web;
 using DataLayer.Access.ViewModel;
-using DataLayer.Domin.Models;
 using DataLayer.Domin.Models.Identity;
+using DataLayer.Domin.Models.Web;
 using DataLayer.Infrastructure.Services;
 using DataLayer.Infrastructure.ViewModels;
 using DataLayer.Infrastructure.WebModels;

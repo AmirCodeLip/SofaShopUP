@@ -2088,6 +2088,14 @@
       "DataLayer.UnitOfWork/1.0.0": {
         "runtime": {
           "DataLayer.UnitOfWork.dll": {}
+        },
+        "resources": {
+          "en-US/DataLayer.UnitOfWork.resources.dll": {
+            "locale": "en-US"
+          },
+          "fa-IR/DataLayer.UnitOfWork.resources.dll": {
+            "locale": "fa-IR"
+          }
         }
       }
     }

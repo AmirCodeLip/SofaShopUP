@@ -16,15 +16,6 @@ namespace DataLayer.Domin.Works
             Type UserSectionAccessType = typeof(UserSectionAccess);
             userSection = new UserSectionAccess();
         }
-
-
-
-
-
-        //public bool HaveAccess(AllRoles role)
-        //{
-        //    return _userSectionAccesses.Any(u => u.Role == role && u.Access);
-        //}
     }
 
 }

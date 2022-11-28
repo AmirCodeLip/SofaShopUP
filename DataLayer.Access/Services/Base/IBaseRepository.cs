@@ -1,13 +1,8 @@
-﻿using DataLayer.Domin.Models.Interfaces;
+﻿using DataLayer.Domin.Models.BaseModels.Interfaces;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DataLayer.Access.Services
+namespace DataLayer.Access.Services.Base
 {
 #nullable enable
     public interface IBaseRepository<TEntity> where TEntity : class, IDeleteBase
@@ -43,9 +38,9 @@ namespace DataLayer.Access.Services
         Task<EntityEntry<TEntity>> AddAsync(TEntity entity);
 
         EntityEntry<TEntity> Update(TEntity entity);
-        
+
         Task<TEntity?> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, bool deleted = false);
-        
+
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

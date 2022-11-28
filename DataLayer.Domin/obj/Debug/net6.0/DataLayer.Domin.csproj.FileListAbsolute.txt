@@ -3,6 +3,8 @@ D:\SofaShop\DataLayer.Domin\bin\Debug\net6.0\DataLayer.Domin.dll
 D:\SofaShop\DataLayer.Domin\bin\Debug\net6.0\DataLayer.Domin.pdb
 D:\SofaShop\DataLayer.Domin\bin\Debug\net6.0\DataLayer.UnitOfWork.dll
 D:\SofaShop\DataLayer.Domin\bin\Debug\net6.0\DataLayer.UnitOfWork.pdb
+D:\SofaShop\DataLayer.Domin\bin\Debug\net6.0\en-US\DataLayer.UnitOfWork.resources.dll
+D:\SofaShop\DataLayer.Domin\bin\Debug\net6.0\fa-IR\DataLayer.UnitOfWork.resources.dll
 D:\SofaShop\DataLayer.Domin\obj\Debug\net6.0\DataLayer.Domin.csproj.AssemblyReference.cache
 D:\SofaShop\DataLayer.Domin\obj\Debug\net6.0\DataLayer.Domin.GeneratedMSBuildEditorConfig.editorconfig
 D:\SofaShop\DataLayer.Domin\obj\Debug\net6.0\DataLayer.Domin.AssemblyInfoInputs.cache
@@ -13,5 +15,3 @@ D:\SofaShop\DataLayer.Domin\obj\Debug\net6.0\DataLayer.Domin.dll
 D:\SofaShop\DataLayer.Domin\obj\Debug\net6.0\refint\DataLayer.Domin.dll
 D:\SofaShop\DataLayer.Domin\obj\Debug\net6.0\DataLayer.Domin.pdb
 D:\SofaShop\DataLayer.Domin\obj\Debug\net6.0\ref\DataLayer.Domin.dll
-D:\SofaShop\DataLayer.Domin\bin\Debug\net6.0\fa-IR\DataLayer.UnitOfWork.resources.dll
-D:\SofaShop\DataLayer.Domin\bin\Debug\net6.0\en-US\DataLayer.UnitOfWork.resources.dll

@@ -1,4 +1,4 @@
-﻿using DataLayer.Domin.Models.Interfaces;
+﻿using DataLayer.Domin.Models.BaseModels.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using System;
 

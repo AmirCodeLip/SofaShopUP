@@ -1,4 +1,5 @@
-﻿using DataLayer.Domin.Models;
+﻿#if shop_project
+using DataLayer.Domin.Models.WebShop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,3 +14,4 @@ namespace DataLayer.Access.ViewModel
         public ShopProductCategory ProductCategories { get;  set; }
     }
 }
+#endif

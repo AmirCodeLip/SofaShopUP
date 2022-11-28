@@ -1,4 +1,4 @@
-﻿using DataLayer.Domin.Models;
+﻿using DataLayer.Domin.Models.Web;
 using DataLayer.Infrastructure.Services;
 using DataLayer.UnitOfWork;
 using System;
