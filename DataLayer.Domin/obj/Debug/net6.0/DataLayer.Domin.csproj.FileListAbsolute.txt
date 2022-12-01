@@ -1,4 +1,5 @@
 D:\SofaShop\DataLayer.Domin\bin\Debug\net6.0\DataLayer.Domin.deps.json
+D:\SofaShop\DataLayer.Domin\bin\Debug\net6.0\DataLayer.Domin.runtimeconfig.json
 D:\SofaShop\DataLayer.Domin\bin\Debug\net6.0\DataLayer.Domin.dll
 D:\SofaShop\DataLayer.Domin\bin\Debug\net6.0\DataLayer.Domin.pdb
 D:\SofaShop\DataLayer.Domin\bin\Debug\net6.0\DataLayer.UnitOfWork.dll
@@ -14,4 +15,5 @@ D:\SofaShop\DataLayer.Domin\obj\Debug\net6.0\DataLayer.Domin.csproj.CopyComplete
 D:\SofaShop\DataLayer.Domin\obj\Debug\net6.0\DataLayer.Domin.dll
 D:\SofaShop\DataLayer.Domin\obj\Debug\net6.0\refint\DataLayer.Domin.dll
 D:\SofaShop\DataLayer.Domin\obj\Debug\net6.0\DataLayer.Domin.pdb
+D:\SofaShop\DataLayer.Domin\obj\Debug\net6.0\DataLayer.Domin.genruntimeconfig.cache
 D:\SofaShop\DataLayer.Domin\obj\Debug\net6.0\ref\DataLayer.Domin.dll

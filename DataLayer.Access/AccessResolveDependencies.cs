@@ -13,7 +13,7 @@ namespace DataLayer.Access
         public static IServiceCollection AddAccessServices(this IServiceCollection services)
         {
             var type = typeof(AccessResolveDependencies);
-            var types = type.Assembly.GetTypes().Where(x => x.Namespace == "DataLayer.Access.Services");
+            var types = type.Assembly.GetTypes().Where(x => !String.IsNullOrEmpty(x.Namespace)  && x.Namespace.StartsWith("DataLayer.Access.Services"));
             foreach (var repository in types.Where(n => n.Name.EndsWith("Repository")))
             {
                 var baseName = repository.Name.Substring(1, repository.Name.Length -

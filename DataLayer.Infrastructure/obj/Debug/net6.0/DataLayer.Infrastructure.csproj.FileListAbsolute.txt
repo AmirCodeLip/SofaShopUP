@@ -1,8 +1,3 @@
-D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\DataLayer.Infrastructure.csproj.AssemblyReference.cache
-D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\DataLayer.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
-D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\DataLayer.Infrastructure.AssemblyInfoInputs.cache
-D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\DataLayer.Infrastructure.AssemblyInfo.cs
-D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\DataLayer.Infrastructure.csproj.CoreCompileInputs.cache
 D:\SofaShop\DataLayer.Infrastructure\bin\Debug\net6.0\DataLayer.Infrastructure.deps.json
 D:\SofaShop\DataLayer.Infrastructure\bin\Debug\net6.0\DataLayer.Infrastructure.runtimeconfig.json
 D:\SofaShop\DataLayer.Infrastructure\bin\Debug\net6.0\DataLayer.Infrastructure.dll
@@ -15,6 +10,11 @@ D:\SofaShop\DataLayer.Infrastructure\bin\Debug\net6.0\DataLayer.UnitOfWork.pdb
 D:\SofaShop\DataLayer.Infrastructure\bin\Debug\net6.0\DataLayer.Domin.pdb
 D:\SofaShop\DataLayer.Infrastructure\bin\Debug\net6.0\en-US\DataLayer.UnitOfWork.resources.dll
 D:\SofaShop\DataLayer.Infrastructure\bin\Debug\net6.0\fa-IR\DataLayer.UnitOfWork.resources.dll
+D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\DataLayer.Infrastructure.csproj.AssemblyReference.cache
+D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\DataLayer.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\DataLayer.Infrastructure.AssemblyInfoInputs.cache
+D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\DataLayer.Infrastructure.AssemblyInfo.cs
+D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\DataLayer.Infrastructure.csproj.CoreCompileInputs.cache
 D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\DataLayer.Infrastructure.csproj.CopyComplete
 D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\DataLayer.Infrastructure.dll
 D:\SofaShop\DataLayer.Infrastructure\obj\Debug\net6.0\refint\DataLayer.Infrastructure.dll

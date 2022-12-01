@@ -26,9 +26,9 @@ namespace WebApp.Shop.Controllers
 
         public async Task<string> Index()
         {
-            TSModelGeneratore.AddWebModels(_hostingEnv);
+            //TSModelGeneratore.AddWebModels(_hostingEnv);
             await defaultCreatorStructure.FastCreate();
-            PublicWord001.Culture = ConstTypes.SupportedLanguages.List[ConstTypes.SupportedLanguages.faIR].CultureInfo;
+            //PublicWord001.Culture = ConstTypes.SupportedLanguages.List[ConstTypes.SupportedLanguages.faIR].CultureInfo;
             return "home";
         }
 
