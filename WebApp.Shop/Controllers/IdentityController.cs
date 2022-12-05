@@ -12,7 +12,6 @@ namespace WebApp.Shop.Controllers
     public class IdentityController : Controller
     {
         private IdentityStructure _identityManage;
-
         public IdentityController(IdentityStructure identityManage)
         {
             _identityManage = identityManage;
@@ -27,8 +26,7 @@ namespace WebApp.Shop.Controllers
             await _identityManage.Login(loginModel, ModelState);
 
         [HttpPost, Authorize]
-        public async Task<JsonResponse<UserPersonalInfo>> GetProfileInfo() => await _identityManage.GetUserProfile(User);
-   
+        public async Task<JsonResponse<UserPersonalInfo>> GetProfileInfo() => await _identityManage.GetUserProfile(User);   
     }
 
 }

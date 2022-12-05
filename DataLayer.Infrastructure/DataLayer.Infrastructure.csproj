@@ -4,8 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <!--<Nullable>dissable</Nullable>-->
+ 
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\DataLayer.Access\DataLayer.Access.csproj" />
     <ProjectReference Include="..\UnitOfWork\DataLayer.UnitOfWork.csproj" />
@@ -29,5 +29,11 @@
   <ItemGroup>
     <Folder Include="Data\" />
   </ItemGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<DefineConstants>$(DefineConstants);NEWSGENERATOR</DefineConstants>
+	</PropertyGroup>
+	
+	
 
 </Project>

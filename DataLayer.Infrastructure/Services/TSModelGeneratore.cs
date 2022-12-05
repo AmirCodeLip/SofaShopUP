@@ -17,11 +17,11 @@ namespace DataLayer.Infrastructure.Services
     {
         const string WebModelsPath = "DataLayer.Infrastructure.WebModels";
 
-        public static (string destination, string webPathLocation) GetFolder(string contentRoot, Type model)
+        public static (string destination, string webPathLocation) GetFolder(string contentRoot, Type model, string webModelsPath)
         {
-            var nameSpace = model.Namespace ?? WebModelsPath;
-            var webPathLocation = nameSpace.Substring(WebModelsPath.Length, (nameSpace.Length - WebModelsPath.Length)).Replace(".", "/");
-            var folder = model.Namespace?.Substring(WebModelsPath.Length, nameSpace.Length - WebModelsPath.Length);
+            var nameSpace = model.Namespace ?? webModelsPath;
+            var webPathLocation = nameSpace.Substring(webModelsPath.Length, (nameSpace.Length - webModelsPath.Length)).Replace(".", "/");
+            var folder = model.Namespace?.Substring(webModelsPath.Length, nameSpace.Length - webModelsPath.Length);
             var destination = contentRoot;
             if (!string.IsNullOrWhiteSpace(webPathLocation))
             {
@@ -48,7 +48,6 @@ namespace DataLayer.Infrastructure.Services
             get
             {
                 var defaultModels = new List<DefaultTSComponent>();
-
                 defaultModels.Add(
                     new DefaultTSComponent
                     {
@@ -60,13 +59,25 @@ namespace DataLayer.Infrastructure.Services
             }
         }
 
-        public static void AddWebModels(IWebHostEnvironment hostingEnv)
+        public static void AddFileManagerWebModel(IWebHostEnvironment hostingEnv)
         {
-            var defaultModels = DefaultModels;
-            var contentRoot = $"{hostingEnv.ContentRootPath}app\\src\\webModels";
             var types = typeof(InfrastructureResolveDependencies).Assembly.GetTypes().Where(x => (x.Namespace ?? "").StartsWith(WebModelsPath));
-            if (!Directory.Exists(contentRoot))
-                Directory.CreateDirectory(contentRoot);
+            AddWebModels(types, $"{hostingEnv.ContentRootPath}app\\src\\webModels", DefaultModels, WebModelsPath);
+        }
+
+#if NEWSGENERATOR
+        public static void AddNewsGeneratorWebModel()
+        {
+            string webModelsPath = "DataLayer.Infrastructure.NGWebModels";
+            var types = typeof(InfrastructureResolveDependencies).Assembly.GetTypes().Where(x => (x.Namespace ?? "").StartsWith(webModelsPath));
+            AddWebModels(types, $"D:\\AppUI\\news-template\\src\\webModels", null, webModelsPath);
+        }
+#endif
+
+        public static void AddWebModels(IEnumerable<Type> types, string destinationRoot, List<DefaultTSComponent> defaultModels, string webModelsPath)
+        {
+            if (!Directory.Exists(destinationRoot))
+                Directory.CreateDirectory(destinationRoot);
             foreach (var model in types)
             {
                 var usageType = model.GetCustomAttributes<TSModelUsageAttribute>().FirstOrDefault();
@@ -75,7 +86,7 @@ namespace DataLayer.Infrastructure.Services
                     if (usageType.CompileOption == CompileOption.ignore)
                         continue;
                 }
-                var folderInfo = GetFolder(contentRoot, model);
+                var folderInfo = GetFolder(destinationRoot, model, webModelsPath);
                 if (File.Exists(folderInfo.destination))
                     File.Delete(folderInfo.destination);
                 using (var stram = new FileStream(folderInfo.destination, FileMode.Create, FileAccess.Write))
@@ -131,7 +142,7 @@ namespace DataLayer.Infrastructure.Services
                             else if ((propertyType.Namespace ?? "").StartsWith(WebModelsPath))
                             {
                                 propertyTypeString = property.Name;
-                                var folderInfoProp = GetFolder(contentRoot, propertyType);
+                                var folderInfoProp = GetFolder(destinationRoot, propertyType, webModelsPath);
                                 var folderInfoPropWPN = folderInfoProp.webPathLocation.StartsWith(folderInfo.webPathLocation) ?
                                     folderInfoProp.webPathLocation.Substring(folderInfo.webPathLocation.Length,
                                     folderInfoProp.webPathLocation.Length - folderInfo.webPathLocation.Length)
@@ -145,7 +156,7 @@ namespace DataLayer.Infrastructure.Services
                                     fileHeaderData.AppendLine(@$"import {property.Name} from './{folderInfoPropWPN}{property.Name}'");
                                 }
                             }
-                            else if (defaultModels.Any(x => x.ModelType == propertyType))
+                            else if (defaultModels != null && defaultModels.Any(x => x.ModelType == propertyType))
                             {
                                 var defaultModel = defaultModels.FirstOrDefault(x => x.ModelType == propertyType);
                                 fileHeaderData.AppendLine(defaultModel?.Header);
