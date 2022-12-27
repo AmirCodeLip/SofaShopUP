@@ -1,17 +1,131 @@
 import * as React from 'react';
 import { Container } from 'react-bootstrap';
 import NavMenu from './NavMenu';
-import ChildItemModel  from './model_structure/interfaces/ChildItemModel'
-export default class Layout extends React.Component<ChildItemModel> 
+import ChildItemModel from './model_structure/interfaces/ChildItemModel';
+import { Col, Row } from 'react-bootstrap';
+
+interface LayoutState {
+  navMode: "openFullSide" | "close",
+  sideWidth: number
+}
+
+export default class Layout extends React.Component<ChildItemModel, LayoutState>
 {
-  
+  spaceDescription = '{0} used of {1}';
+  changeSide: boolean;
   static displayName = Layout.name;
+  sideItemRef: React.RefObject<HTMLDivElement>;
+  constructor(props: ChildItemModel) {
+    super(props);
+    this.state = { navMode: "openFullSide", sideWidth: 19 };
+    document.addEventListener("mousemove", this.checkSideNavMove.bind(this));
+    this.sideItemRef = React.createRef<HTMLDivElement>();
+    window.document.addEventListener("mouseup", this.mouseup.bind(this))
+
+  }
   render() {
     return (
-      <>
-        <NavMenu />
-        {this.props.children}
-      </>
+      <div className='shutter-view'>
+        <div className={this.getClassItem("view-side-center")} style={this.getSideNavStyle()}>
+          <div className='side-grid-center'>
+            <div className='link-list'>
+              <a className={this.getClassItem('link-list-item')}>
+                <i className={this.getClassItem("link-list-logo") + ' fa-solid fa-folder'}></i>
+                <span className={this.getClassItem('link-list-text')}>All Files</span>
+              </a>
+              <a className={this.getClassItem('link-list-item')}>
+                <i className={this.getClassItem("link-list-logo") + ' fa-solid fa-image'}></i>
+                <span className={this.getClassItem('link-list-text')}>Images</span>
+              </a>
+              <a className={this.getClassItem('link-list-item')}>
+                <i className={this.getClassItem("link-list-logo") + ' fa-solid fa-video'}></i>
+                <span className={this.getClassItem('link-list-text')}>Videos</span>
+              </a>
+              <a className={this.getClassItem('link-list-item')}>
+                <i className={this.getClassItem("link-list-logo") + ' fa-solid fa-music'}></i>
+                <span className={this.getClassItem('link-list-text')}>Sounds</span>
+              </a>
+            </div>
+            <div className={this.getClassItem('drive-info')}>
+              <div className="progress-view">
+                <div className="progress-view-fill"></div>
+                <div className="progress-view-bar"></div>
+              </div>
+              <div className='drive-info-description'>
+                {this.spaceDescription.replace('{0}', '272 MB').replace('{1}', '5 GB')}
+              </div>
+            </div>
+            <div className='right-border' onMouseDown={this.rightBorderMouseDown.bind(this)} ref={this.sideItemRef}></div>
+          </div>
+        </div>
+        <div className={this.getMain()}>
+          {this.props.children}
+        </div>
+      </div >
     );
   }
+  rightBorderMouseDown(ev: MouseEvent) {
+    this.changeSide = true
+    if (this.state.navMode !== "openFullSide") {
+      this.setState({ navMode: "openFullSide" });
+    }
+  }
+
+  mouseup(ev: MouseEvent) {
+    this.changeSide = false;
+    if (ev.clientX < 115) {
+      this.setState({ navMode: "close", sideWidth: 4 });
+    }
+  }
+
+  checkSideNavMove(ev: MouseEvent) {
+    if (!this.changeSide) return;
+    let clientX = ev.clientX;
+    if (clientX > 300) {
+      clientX = 300;
+    }
+    let width = (100 * clientX) / document.body.offsetWidth;
+    this.setState({
+      sideWidth: width,
+    });
+  }
+
+  getClassItem(className: string): string {
+    switch (this.state.navMode) {
+      case "close": return `${className} close`;
+      case "openFullSide":
+      default: return className;
+    }
+  }
+
+  getSideNavStyle(): object {
+    let result: React.CSSProperties = {};
+    switch (this.state.navMode) {
+      case "close": result.width = "0%";
+      case "openFullSide":
+      default: result.width = this.state.sideWidth + "%";
+    }
+    return result;
+  }
+
+  getMainStyle() {
+    let result: React.CSSProperties = {};
+    switch (this.state.navMode) {
+      case "close": result.width = "100%";
+      case "openFullSide":
+      default: result.width = (99 - this.state.sideWidth) + "%";
+    }
+    return result;
+  }
+
+  getMain(): string {
+    switch (this.state.navMode) {
+      case "close": return "view-main-center close";
+      case "openFullSide":
+      default: return "view-main-center";
+    }
+  }
+
+
+
 }

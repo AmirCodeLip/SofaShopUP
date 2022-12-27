@@ -6,14 +6,14 @@ import { Col, Row } from 'react-bootstrap';
 import './file-manager.css';
 import { Web_Modal, ModalOptions, ModalType } from './../web_modal/Web_Modal';
 import { FormModeInput, FormHandler, HiddenModeInput } from '../../mylibraries/asp-communication/components/FormModelItem';
-import FolderInfo from './../../webModels/FileManager/FolderInfo'
-import { load, editForm } from '../../Services/FileManagerServices'
+import FolderInfo from './../../webModels/FileManager/FolderInfo';
+import { load, editForm, FObjectKindComponent } from '../../Services/FileManagerServices'
 import { JsonResponseStatus, JsonResponse } from './../../models/JsonResponse';
 import { FObjectType } from './../../webModels/FileManager/FObjectType';
 import DataTransmitter from '../../Services/DataTransmitter';
 import UploadHandler from './UploadHandler';
 import { UrlData } from './../shared/GlobalManage';
-import FObjectKind from './../../webModels/FileManager/FObjectKind'
+import FObjectKind from './../../webModels/FileManager/FObjectKind';
 
 
 export default class FileManager extends React.Component<FileManagerProps, FileManagerState>  {
@@ -23,6 +23,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     fObjectInfoFormHandler: FormHandler;
     contextMenuMiddleware: ModalOptions;
     fObjectMenuMiddleware: ModalOptions;
+    newData?: FObjectKindComponent;
     // clickedSection: ClickedSection | undefined;
     queryString: UrlData;
     folderId: string | undefined;
@@ -42,7 +43,15 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
                 icon: "fa-regular fa-folder",
                 refItem: React.createRef<HTMLDivElement>(),
                 clickedSection: ClickedSection.driveBar,
-                clicked: () => this.openEditFolderOrFile()
+                clicked: () => {
+                    this.newData = new FObjectKindComponent({
+                        Id: null,
+                        FolderId: null,
+                        Name: "",
+                        FObjectType: FObjectType.Folder
+                    });
+                    this.openEditFolderOrFile()
+                }
             },
             {
                 text: 'تغییر نام فولدر',
@@ -241,6 +250,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
 
     async editFObject() {
         let formData = this.fObjectInfoFormHandler.getFormData<FObjectKind>();
+        if (formData.FolderId === null) delete formData.Id;
         var data = await editForm(formData);
         if (data?.Status === JsonResponseStatus.Success) {
             this.fObjectMenuMiddleware.enable = false;
@@ -256,15 +266,10 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     openEditFolderOrFile(): void {
         this.contextMenuMiddleware.enable = false;
         this.fObjectMenuMiddleware.enable = true;
-        let folderOrFile = this.state.fData.find(x => x.selected);
+        let folderOrFile = this.newData ? this.newData : this.state.fData.find(x => x.selected);
+        this.newData = undefined;
         if (folderOrFile && folderOrFile !== null) {
             this.fObjectMenuMiddleware.onLoaded = () => {
-                // let folderInfo: FolderInfo = {
-                //     Id: folder.model.Id,
-                //     FolderName: folder.model.Name,
-                //     FolderId: folder.model.FolderId
-                // };
-                // this.folderInfoFormHandler.setFormData(folderInfo);
                 this.fObjectInfoFormHandler.setFormData(folderOrFile.model);
             }
         }

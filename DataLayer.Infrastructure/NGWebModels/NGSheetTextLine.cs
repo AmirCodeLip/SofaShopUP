@@ -1,9 +1,4 @@
 ﻿#if NEWSGENERATOR
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataLayer.Infrastructure.NGWebModels
 {
@@ -14,6 +9,8 @@ namespace DataLayer.Infrastructure.NGWebModels
         public Guid Id { get; set; }
         public Guid? ParentId { get; set; }
         public string JsonStyle { get; set; }
+        public int Width { get; set; }
+        public string CalssName { get; set; }
     }
 }
 #endif

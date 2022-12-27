@@ -20,7 +20,7 @@ namespace WebApp.Shop.Neptons
 
         public UrlMiddleware(RequestDelegate next, IWebHostEnvironment hostingEnv, IOptions<StaticFileOptions> options)
         {
-            supportedFiles = new[] { ".css" };
+            supportedFiles = new[] { ".css",".ttf",".woff" };
             _next = next;
             _hostingEnv = hostingEnv;
             _options = options;
@@ -40,8 +40,6 @@ namespace WebApp.Shop.Neptons
             }
             return _next(context);
         }
-
-        private static bool ValidateNoEndpoint(HttpContext context) => context.GetEndpoint() == null;
 
         private bool IsReactFile(HttpContext context, out string filePath)
         {
@@ -71,7 +69,4 @@ namespace WebApp.Shop.Neptons
             return _next(context);
         }
     }
-
-
-
 }

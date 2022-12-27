@@ -41,7 +41,7 @@ app.MapControllerRoute(
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
+    pattern: "{controller=home}/{action=Index}/{id?}");
 app.MapFallbackToFile("index.html");
 app.Run();
 

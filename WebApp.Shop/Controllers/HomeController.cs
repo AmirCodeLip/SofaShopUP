@@ -24,12 +24,13 @@ namespace WebApp.Shop.Controllers
 
         }
 
-        public async Task<string> Index()
+        public async Task<IActionResult> Index()
         {
-            TSModelGeneratore.AddNewsGeneratorWebModel();
-            await defaultCreatorStructure.FastCreate();
+            //TSModelGeneratore.AddNewsGeneratorWebModel();
+            //await defaultCreatorStructure.FastCreate();
+
             //PublicWord001.Culture = ConstTypes.SupportedLanguages.List[ConstTypes.SupportedLanguages.faIR].CultureInfo;
-            return "home";
+            return View();
         }
 
     }

@@ -15,21 +15,21 @@ type userRefType = {
 // import DataTransmitter from './Services/DataTransmitter'
 
 export class FObjectKindComponent {
-    constructor(model: FObjectKind, refObject: React.MutableRefObject<HTMLDivElement>) {
+    constructor(model: FObjectKind, refObject?: React.MutableRefObject<HTMLDivElement>) {
         this.id = uuidv4();
         this.model = model;
         this.refObject = refObject;
     }
     id: string;
     model: FObjectKind;
-    refObject: React.MutableRefObject<HTMLDivElement>;
+    refObject?: React.MutableRefObject<HTMLDivElement>;
 
     private _selected: boolean = false;
     public get selected(): boolean {
         return this._selected;
     }
     public set selected(v: boolean) {
-        let currentItem = this.refObject.current;
+        let currentItem = this.refObject!!.current;
         if (currentItem !== null)
             if (v)
                 currentItem.classList.add("selected-object-kind");

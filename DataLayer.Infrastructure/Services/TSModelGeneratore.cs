@@ -133,7 +133,7 @@ namespace DataLayer.Infrastructure.Services
                             }
                             else if (propertyType == typeof(int))
                             {
-                                propertyTypeString = "Int32Array";
+                                propertyTypeString = "number";
                             }
                             else if (propertyType == typeof(bool))
                             {
