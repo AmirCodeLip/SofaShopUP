@@ -4,7 +4,6 @@ import PageLoaderState from './../../model_structure/interfaces/PageLoaderState'
 import { CultureInfoImplement } from './GlobalManage'
 
 export function Loading() {
-
     return (<div className="lds-ripple"><div></div><div></div></div>);
 }
 

@@ -138,4 +138,16 @@
   <data name="key007" xml:space="preserve">
     <value>عضویت</value>
   </data>
+  <data name="key008" xml:space="preserve">
+    <value>تمامی فایل ها</value>
+  </data>
+  <data name="key009" xml:space="preserve">
+    <value>عکسها</value>
+  </data>
+  <data name="key010" xml:space="preserve">
+    <value>ویدیوها</value>
+  </data>
+  <data name="key011" xml:space="preserve">
+    <value>صداها</value>
+  </data>
 </root>

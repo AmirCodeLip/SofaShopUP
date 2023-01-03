@@ -3,10 +3,14 @@ import { Container } from 'react-bootstrap';
 import NavMenu from './NavMenu';
 import ChildItemModel from './model_structure/interfaces/ChildItemModel';
 import { Col, Row } from 'react-bootstrap';
+import * as  globalManage from './root/shared/GlobalManage'
+import { Link } from "react-router-dom";
+import { Loading } from './root/shared/PageLoader';
 
 interface LayoutState {
   navMode: "openFullSide" | "close",
-  sideWidth: number
+  sideWidth: number,
+  load: Boolean
 }
 
 export default class Layout extends React.Component<ChildItemModel, LayoutState>
@@ -17,33 +21,45 @@ export default class Layout extends React.Component<ChildItemModel, LayoutState>
   sideItemRef: React.RefObject<HTMLDivElement>;
   constructor(props: ChildItemModel) {
     super(props);
-    this.state = { navMode: "openFullSide", sideWidth: 19 };
+    this.state = { navMode: "openFullSide", sideWidth: 19, load: false };
     document.addEventListener("mousemove", this.checkSideNavMove.bind(this));
     this.sideItemRef = React.createRef<HTMLDivElement>();
-    window.document.addEventListener("mouseup", this.mouseup.bind(this))
+    window.document.addEventListener("mouseup", this.mouseup.bind(this));
 
   }
   render() {
+    if (!this.state.load)
+      return (<Loading></Loading>);
+
     return (
       <div className='shutter-view'>
+        <div className='main-loader hide'><div className='main-loader-spin'></div></div>
         <div className={this.getClassItem("view-side-center")} style={this.getSideNavStyle()}>
           <div className='side-grid-center'>
             <div className='link-list'>
-              <a className={this.getClassItem('link-list-item')}>
+              <Link className={this.getClassItem('link-list-item')} to={`/${window.cultureInfo.cultureInfo.Culture}/manage_files/root`}>
                 <i className={this.getClassItem("link-list-logo") + ' fa-solid fa-folder'}></i>
-                <span className={this.getClassItem('link-list-text')}>All Files</span>
-              </a>
+                <span className={this.getClassItem('link-list-text')}>
+                  <globalManage.localizorHtml txtKey={'PublicWord001.key008'}></globalManage.localizorHtml>
+                </span>
+              </Link>
               <a className={this.getClassItem('link-list-item')}>
                 <i className={this.getClassItem("link-list-logo") + ' fa-solid fa-image'}></i>
-                <span className={this.getClassItem('link-list-text')}>Images</span>
+                <span className={this.getClassItem('link-list-text')}>
+                  <globalManage.localizorHtml txtKey={'PublicWord001.key009'}></globalManage.localizorHtml>
+                </span>
               </a>
               <a className={this.getClassItem('link-list-item')}>
                 <i className={this.getClassItem("link-list-logo") + ' fa-solid fa-video'}></i>
-                <span className={this.getClassItem('link-list-text')}>Videos</span>
+                <span className={this.getClassItem('link-list-text')}>
+                  <globalManage.localizorHtml txtKey={'PublicWord001.key010'}></globalManage.localizorHtml>
+                </span>
               </a>
               <a className={this.getClassItem('link-list-item')}>
                 <i className={this.getClassItem("link-list-logo") + ' fa-solid fa-music'}></i>
-                <span className={this.getClassItem('link-list-text')}>Sounds</span>
+                <span className={this.getClassItem('link-list-text')}>
+                  <globalManage.localizorHtml txtKey={'PublicWord001.key011'}></globalManage.localizorHtml>
+                </span>
               </a>
             </div>
             <div className={this.getClassItem('drive-info')}>
@@ -61,9 +77,24 @@ export default class Layout extends React.Component<ChildItemModel, LayoutState>
         <div className={this.getMain()}>
           {this.props.children}
         </div>
-      </div >
+      </div>
     );
   }
+
+  componentDidMount() {
+    var readyStateCheckInterval = setInterval((function () {
+      if (document && document.readyState === 'complete') { // Or 'interactive'
+        clearInterval(readyStateCheckInterval);
+        setTimeout(() => {
+          this.setState({ load: true });
+        }, 300);
+      }
+    }).bind(this), 10);
+  }
+
+  componentWillUnmount() {
+  }
+
   rightBorderMouseDown(ev: MouseEvent) {
     this.changeSide = true
     if (this.state.navMode !== "openFullSide") {
@@ -72,6 +103,7 @@ export default class Layout extends React.Component<ChildItemModel, LayoutState>
   }
 
   mouseup(ev: MouseEvent) {
+    if (!this.changeSide) return;
     this.changeSide = false;
     if (ev.clientX < 115) {
       this.setState({ navMode: "close", sideWidth: 4 });

@@ -3,7 +3,6 @@ import {
     FolderLogo, FileManagerProps, FileManagerState, RightBarItem, EventClickType, ClickedSection
 } from './FolderModules';
 import { Col, Row } from 'react-bootstrap';
-import './file-manager.css';
 import { Web_Modal, ModalOptions, ModalType } from './../web_modal/Web_Modal';
 import { FormModeInput, FormHandler, HiddenModeInput } from '../../mylibraries/asp-communication/components/FormModelItem';
 import FolderInfo from './../../webModels/FileManager/FolderInfo';

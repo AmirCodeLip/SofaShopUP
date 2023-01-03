@@ -16,8 +16,10 @@ export const supportedCultures = {
     faIR: "fa-IR"
 }
 
+export const supportedCultureList: Array<string> = [supportedCultures.enUS, supportedCultures.faIR];
+
 function getDefault() {
-    window.location.href = "/" + supportedCultures.enUS;
+    window.location.href = "/" + supportedCultures.enUS + window.location.pathname
 }
 
 export const GetDefaultCulture = () => {
@@ -45,6 +47,10 @@ export class UrlData {
     update() {
         let data = window.location.href.split('/').filter((v, i) => v != '' && 2 < i);
         this.culture = data[0];
+        if (!supportedCultureList.includes(this.culture)) {
+            this.culture = undefined;
+            data = [undefined, ...data];
+        }
         this.data = data.filter((v, i) => 0 != i);
         this.id = data.length >= 3 ? data[2] : null;
     }
@@ -143,8 +149,10 @@ export class CultureInfoImplement {
             return window.cultureInfo;
         let infoSalt = await cookies.pVInfoSetProcess();
         let info = await cookies.parseInfo(infoSalt);
-
-
+        if (!supportedCultureList.includes(info.Language)) {
+            getDefault();
+            return;
+        }
         if (!window.cultureInfo) {
             let response = await DataTransmitter.PostRequest<CultureInfo>(DataTransmitter.BaseUrl + `CultureManager/GetCultureInfo`, {
                 body: { Item1: info.Language }
@@ -180,7 +188,7 @@ export class cookies {
         return null;
     }
 
-    static async pVInfoSetProcess() {
+    static async pVInfoSetProcess(newInfo?: PVInfoModel) {
         let info = cookies.getCookie(this.keyItem);
         if (info == null) {
             let urlData = new UrlData();
@@ -195,6 +203,13 @@ export class cookies {
             info = response.TResult001;
             cookies.setCookie(this.keyItem, response.TResult001, 30);
         }
+        else if (newInfo) {
+            let response = await DataTransmitter.PostRequest<JsonResponse<string>>(DataTransmitter.BaseUrl + `PVInfo/Set`, {
+                body: newInfo
+            });
+            info = response.TResult001;
+            cookies.setCookie(this.keyItem, response.TResult001, 30);
+        }
         return info;
     }
 
@@ -202,6 +217,11 @@ export class cookies {
         let response = await DataTransmitter.PostRequest<JsonResponse<PVInfoModel>>(DataTransmitter.BaseUrl + `PVInfo/Get`, {
             body: { Item1: data }
         });
+        let urlData = new UrlData();
+        if (urlData.culture && urlData.culture !== response.TResult001.Language) {
+            await this.pVInfoSetProcess({ Language: urlData.culture });
+            window.location.reload();
+        }
         return response.TResult001;
     }
 }

@@ -1,6 +1,7 @@
 .shutter-view {
     display: flex;
     height: 100%;
+    position: relative;
 }
 
 .view-side-center {
@@ -141,12 +142,11 @@
     display: none;
 }
 
-.link-list-item.close::after
-{
-    content:'';
+.link-list-item.close::after {
+    content: '';
     top: -29%;
     left: 18.5%;
-    position:absolute;
+    position: absolute;
     width: 36px;
     height: 36px;
     border-radius: 8px;

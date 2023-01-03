@@ -18,8 +18,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayer.Infrastructure", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp.Shop", "WebApp.Shop\WebApp.Shop.csproj", "{5F28FA36-391A-425D-92F9-DD36FBA89F2A}"
 EndProject
-Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "AppUI", "AppUI\AppUI.njsproj", "{00EC0995-733B-4192-A9CA-D9B43B72CDFC}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,10 +44,6 @@ Global
 		{5F28FA36-391A-425D-92F9-DD36FBA89F2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F28FA36-391A-425D-92F9-DD36FBA89F2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F28FA36-391A-425D-92F9-DD36FBA89F2A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{00EC0995-733B-4192-A9CA-D9B43B72CDFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{00EC0995-733B-4192-A9CA-D9B43B72CDFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{00EC0995-733B-4192-A9CA-D9B43B72CDFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{00EC0995-733B-4192-A9CA-D9B43B72CDFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

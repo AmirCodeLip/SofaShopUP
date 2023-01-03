@@ -18,11 +18,11 @@ namespace WebApp.Shop.Controllers
         public string GetCultureInfo([FromBody] Tuple<string> info)
         {
             PublicWord001.Culture = ConstTypes.SupportedLanguages.List[ConstTypes.SupportedLanguages.faIR].CultureInfo;
-
+            var culture = global::System.Globalization.CultureInfo.GetCultureInfoByIetfLanguageTag(info.Item1);
             return JsonConvert.SerializeObject(new CultureInfo
             {
                 Culture = info.Item1,
-                Rtl = false,
+                Rtl = culture.TextInfo.IsRightToLeft,
                 Version = CultureVersion.ToString()
             });
         }

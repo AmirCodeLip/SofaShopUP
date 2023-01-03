@@ -8,7 +8,6 @@ import FileManager from './root/file_manager/FileManager'
 import { GetDefaultCulture } from './root/shared/GlobalManage'
 
 const AppRoutes = [
-  // index: true,
   {
     index: true,
     element: <GetDefaultCulture />
@@ -25,14 +24,15 @@ const AppRoutes = [
     path: '/:culture/manage_files/:fileId',
     element: <PageLoader PageContainer={FileManager} pageLoaderOtpions={{ Loading: FileManagerLoader, allowAnonymous: false }} />
   },
-  // {
-  //   path: '/counter',
-  //   element: <Counter />
-  // },
-  // {
-  //   path: '/fetch-data',
-  //   element: <FetchData />
-  // }
 ];
+const extera = [];
+for (let route of AppRoutes) {
+  if (route.index)
+    continue;
+  extera.push({
+    path: route.path.replace('/:culture', ''),
+    element: <GetDefaultCulture />
+  })
+}
 
-export default AppRoutes;
+export default [...extera, ...AppRoutes];
