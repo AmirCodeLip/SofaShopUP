@@ -103,3 +103,16 @@
     z-index: 4;
     opacity: 1;
 }
+
+.search-drive {
+    border: none;
+    border-bottom: 2px solid var(--color_003);
+    height: 26px;
+    width: 100%;
+}
+
+
+.search-drive:focus {
+    outline: none;
+    padding-left: 3px;
+}

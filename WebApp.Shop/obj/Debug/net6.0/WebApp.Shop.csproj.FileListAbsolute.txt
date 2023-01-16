@@ -4,6 +4,7 @@ D:\SofaShop\WebApp.Shop\bin\Debug\net6.0\app\package-lock.json
 D:\SofaShop\WebApp.Shop\bin\Debug\net6.0\app\package.json
 D:\SofaShop\WebApp.Shop\bin\Debug\net6.0\app\public\manifest.json
 D:\SofaShop\WebApp.Shop\bin\Debug\net6.0\app\tsconfig.json
+D:\SofaShop\WebApp.Shop\bin\Debug\net6.0\bundleconfig.json
 D:\SofaShop\WebApp.Shop\bin\Debug\net6.0\libman.json
 D:\SofaShop\WebApp.Shop\bin\Debug\net6.0\WebApp.Shop.staticwebassets.runtime.json
 D:\SofaShop\WebApp.Shop\bin\Debug\net6.0\WebApp.Shop.exe
@@ -300,4 +301,3 @@ D:\SofaShop\WebApp.Shop\obj\Debug\net6.0\refint\WebApp.Shop.dll
 D:\SofaShop\WebApp.Shop\obj\Debug\net6.0\WebApp.Shop.pdb
 D:\SofaShop\WebApp.Shop\obj\Debug\net6.0\WebApp.Shop.genruntimeconfig.cache
 D:\SofaShop\WebApp.Shop\obj\Debug\net6.0\ref\WebApp.Shop.dll
-D:\SofaShop\WebApp.Shop\bin\Debug\net6.0\bundleconfig.json

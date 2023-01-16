@@ -1,8 +1,10 @@
-import { FObjectType } from './FObjectType'
+import {FObjectType} from './FObjectType'
 
 export default interface FObjectKind {
-    Id: string,
-    FolderId: string | null,
-    Name: string,
-    FObjectType: FObjectType
+Id?: string | null,
+FolderId: string | null,
+Name: string,
+Path: string,
+FObjectType: FObjectType,
+TypeKind: string
 }

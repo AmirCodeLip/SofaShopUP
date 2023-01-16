@@ -1,5 +1,6 @@
 ﻿using DataLayer.Access.Data;
 using DataLayer.Access.Services;
+using DataLayer.Access.Services.Web;
 using DataLayer.Domin.Models.Identity;
 using DataLayer.Domin.Models.Web;
 using DataLayer.Domin.Works;
@@ -13,14 +14,20 @@ namespace DataLayer.Infrastructure.Infrastructure
         private readonly UserManager<WebUser> userManager;
         private readonly RoleManager<WebRole> roleManager;
         private readonly IUserRepository userRepository;
+        private readonly FileManagerStructure fileManagerStructure;
+        private readonly IFolderRepository folderRepository;
+
         public DefaultCreatorStructure(ApplicationDbContext context, UserManager<WebUser> userManager, RoleManager<WebRole> roleManager,
+            FileManagerStructure fileManagerStructure,
+            IFolderRepository folderRepository,
             IUserRepository userRepository)
         {
             this.context = context;
             this.userManager = userManager;
             this.roleManager = roleManager;
             this.userRepository = userRepository;
-
+            this.fileManagerStructure = fileManagerStructure;
+            this.folderRepository = folderRepository;
         }
 
         //public void AddSqlFileTable()
@@ -36,6 +43,13 @@ namespace DataLayer.Infrastructure.Infrastructure
 
 
         //}
+
+        public async Task InitAllRoots()
+        {
+            foreach (var folder in await folderRepository.GetListAsync())
+                await fileManagerStructure.SetFolderPath(folder);
+            await folderRepository.SaveChangesAsync();
+        }
 
         public async Task FastCreate()
         {

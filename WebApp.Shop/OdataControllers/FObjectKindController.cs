@@ -17,7 +17,7 @@ namespace WebApp.Shop.OdataControllers
 
 
         [EnableQuery, Authorize]
-        public async Task<IQueryable<FObjectKind>> Get(Guid? folderID)
+        public async Task<IQueryable<FObjectKind>> Get(string folderID)
         {
             return await fileManagerStructure.GetFObjectKindsFromFolder(this.HttpContext, folderID);
         }

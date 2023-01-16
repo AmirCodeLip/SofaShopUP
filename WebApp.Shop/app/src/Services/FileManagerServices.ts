@@ -2,6 +2,7 @@ import DataTransmitter from './DataTransmitter'
 import FileManagerOnLoadData from './../webModels/FileManager/FileManagerOnLoadData'
 import FObjectKind from './../webModels/FileManager/FObjectKind'
 import FolderInfo from './../webModels/FileManager/FolderInfo'
+import { SupportedTypeKinds } from './../webModels/FileManager/SupportedTypeKinds'
 import { OdataSetProtocol } from './OdataServices';
 import { JsonResponse } from '../models/JsonResponse';
 import { v4 as uuidv4 } from 'uuid';
@@ -42,8 +43,15 @@ export class FObjectKindComponent {
 }
 
 export async function load(createRef: userRefType, folderID: string | undefined) {
-    let data = await new OdataSetProtocol<FObjectKind>(DataTransmitter.BaseUrl + "odata/FObjectKind" +
-        (folderID === undefined ? "" : `?folderId=${folderID}`)).Execute({ authorize: true });
+    let rq = new OdataSetProtocol<FObjectKind>(DataTransmitter.BaseUrl + "odata/FObjectKind" +
+        (folderID === undefined ? "" : `?folderId=${folderID}`));
+    if (folderID === "images")
+        rq.Where(x => x.TypeKind === "1");
+    if (folderID === "videos")
+        rq.Where(x => x.TypeKind === "2");
+    if (folderID === "audios")
+        rq.Where(x => x.TypeKind === "3");
+    let data = await rq.Execute({ authorize: true });
     let componentItems: Array<FObjectKindComponent> = [];
     for (let i of data) {
         i.FObjectType = i.FObjectType === "Folder" ? 1 : 0;
@@ -52,7 +60,17 @@ export async function load(createRef: userRefType, folderID: string | undefined)
     return componentItems;
 };
 
+export async function loadSingle(id: string) {
+    // let data = await new OdataSetProtocol<FObjectKind>(DataTransmitter.BaseUrl + "odata/FObjectKind")).Execute({ authorize: true });
+}
 
+export async function parseId(id: string) {
+    if (id === "root")
+        return "root";
+    else {
+        return "";
+    }
+}
 
 export async function FileManagerLoader() {
     return DataTransmitter.GetRequest<FileManagerOnLoadData>(DataTransmitter.BaseUrl + "FileManager/Base/FileManagerOnLoadData", { authorize: true });
@@ -61,3 +79,4 @@ export async function FileManagerLoader() {
 export async function editForm(formData: FObjectKind) {
     return await DataTransmitter.PostRequest<JsonResponse<undefined>>(DataTransmitter.BaseUrl + "FileManager/Base/EditFObject", { authorize: true, body: formData });
 }
+

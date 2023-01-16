@@ -3,6 +3,7 @@
 using DataLayer.Domin.Models.WebShop;
 #endif
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace DataLayer.Domin.Models.Web
@@ -10,6 +11,7 @@ namespace DataLayer.Domin.Models.Web
     public class WebCityAndState : IDeleteBase
     {
         public int Id { get; set; }
+        [MaxLength(250)]
         public string Name { get; set; }
         public int? CityAndStateId { get; set; }
         [JsonIgnore]

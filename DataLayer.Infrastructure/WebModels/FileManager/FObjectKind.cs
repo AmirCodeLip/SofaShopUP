@@ -14,20 +14,23 @@ namespace DataLayer.Infrastructure.WebModels.FileManager
     [TSModelUsage(CompileOption = CompileOption.compile)]
     public class FObjectKind
     {
-        public Guid Id { get; set; }
+        [TSModelDescription(Optional = true)]
+        public Guid? Id { get; set; }
         public Guid? FolderId { get; set; }
         [Display(Name = "نام")]
         [Required(ErrorMessage = SharedRegix.RequiredError)]
         [StringLength(256, ErrorMessage = SharedRegix.SLError, MinimumLength = 3)]
         public string Name { get; set; }
+        public string Path { get; set; }
         public FObjectType FObjectType { get; set; }
+        public string TypeKind { get; set; }
 
         public static implicit operator WebFolder(FObjectKind f)
         {
             return new WebFolder
             {
                 Name = f.Name,
-                Id = f.Id,
+                Id = f.Id ?? Guid.Empty,
                 ParentId = f.FolderId
             };
         }

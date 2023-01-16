@@ -19,6 +19,8 @@ export default class Layout extends React.Component<ChildItemModel, LayoutState>
   changeSide: boolean;
   static displayName = Layout.name;
   sideItemRef: React.RefObject<HTMLDivElement>;
+
+
   constructor(props: ChildItemModel) {
     super(props);
     this.state = { navMode: "openFullSide", sideWidth: 19, load: false };
@@ -27,6 +29,7 @@ export default class Layout extends React.Component<ChildItemModel, LayoutState>
     window.document.addEventListener("mouseup", this.mouseup.bind(this));
 
   }
+
   render() {
     if (!this.state.load)
       return (<Loading></Loading>);
@@ -43,24 +46,24 @@ export default class Layout extends React.Component<ChildItemModel, LayoutState>
                   <globalManage.localizorHtml txtKey={'PublicWord001.key008'}></globalManage.localizorHtml>
                 </span>
               </Link>
-              <a className={this.getClassItem('link-list-item')}>
+              <Link className={this.getClassItem('link-list-item')}  to={`/${window.cultureInfo.cultureInfo.Culture}/manage_files/images`}>
                 <i className={this.getClassItem("link-list-logo") + ' fa-solid fa-image'}></i>
                 <span className={this.getClassItem('link-list-text')}>
                   <globalManage.localizorHtml txtKey={'PublicWord001.key009'}></globalManage.localizorHtml>
                 </span>
-              </a>
-              <a className={this.getClassItem('link-list-item')}>
+              </Link>
+              <Link className={this.getClassItem('link-list-item')}  to={`/${window.cultureInfo.cultureInfo.Culture}/manage_files/videos`}>
                 <i className={this.getClassItem("link-list-logo") + ' fa-solid fa-video'}></i>
                 <span className={this.getClassItem('link-list-text')}>
                   <globalManage.localizorHtml txtKey={'PublicWord001.key010'}></globalManage.localizorHtml>
                 </span>
-              </a>
-              <a className={this.getClassItem('link-list-item')}>
+              </Link>
+              <Link className={this.getClassItem('link-list-item')}  to={`/${window.cultureInfo.cultureInfo.Culture}/manage_files/audios`}>
                 <i className={this.getClassItem("link-list-logo") + ' fa-solid fa-music'}></i>
                 <span className={this.getClassItem('link-list-text')}>
                   <globalManage.localizorHtml txtKey={'PublicWord001.key011'}></globalManage.localizorHtml>
                 </span>
-              </a>
+              </Link>
             </div>
             <div className={this.getClassItem('drive-info')}>
               <div className="progress-view">
@@ -74,7 +77,7 @@ export default class Layout extends React.Component<ChildItemModel, LayoutState>
             <div className='right-border' onMouseDown={this.rightBorderMouseDown.bind(this)} ref={this.sideItemRef}></div>
           </div>
         </div>
-        <div className={this.getMain()}>
+        <div className={this.getMain()} style={this.getMainStyle()}>
           {this.props.children}
         </div>
       </div>
@@ -145,7 +148,7 @@ export default class Layout extends React.Component<ChildItemModel, LayoutState>
     switch (this.state.navMode) {
       case "close": result.width = "100%";
       case "openFullSide":
-      default: result.width = (99 - this.state.sideWidth) + "%";
+      default: result.width = (100 - this.state.sideWidth) + "%";
     }
     return result;
   }

@@ -6,7 +6,7 @@ import { Col, Row } from 'react-bootstrap';
 import { Web_Modal, ModalOptions, ModalType } from './../web_modal/Web_Modal';
 import { FormModeInput, FormHandler, HiddenModeInput } from '../../mylibraries/asp-communication/components/FormModelItem';
 import FolderInfo from './../../webModels/FileManager/FolderInfo';
-import { load, editForm, FObjectKindComponent } from '../../Services/FileManagerServices'
+import { load, editForm, FObjectKindComponent, parseId } from '../../Services/FileManagerServices'
 import { JsonResponseStatus, JsonResponse } from './../../models/JsonResponse';
 import { FObjectType } from './../../webModels/FileManager/FObjectType';
 import DataTransmitter from '../../Services/DataTransmitter';
@@ -14,18 +14,18 @@ import UploadHandler from './UploadHandler';
 import { UrlData } from './../shared/GlobalManage';
 import FObjectKind from './../../webModels/FileManager/FObjectKind';
 
-
 export default class FileManager extends React.Component<FileManagerProps, FileManagerState>  {
 
     driveBar: React.RefObject<HTMLDivElement>;
+    searchDrive: React.RefObject<HTMLInputElement>;
     fObjectInfoModelInput: FormModeInput;
     fObjectInfoFormHandler: FormHandler;
     contextMenuMiddleware: ModalOptions;
     fObjectMenuMiddleware: ModalOptions;
     newData?: FObjectKindComponent;
-    // clickedSection: ClickedSection | undefined;
     queryString: UrlData;
     folderId: string | undefined;
+    rootRegix = new RegExp('root(\/[a-zA-Z]{1,}){1,}');
     rightBarItems: Array<RightBarItem> =
         [
             {
@@ -44,10 +44,12 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
                 clickedSection: ClickedSection.driveBar,
                 clicked: () => {
                     this.newData = new FObjectKindComponent({
-                        Id: null,
+                        // Id: null,
                         FolderId: null,
                         Name: "",
-                        FObjectType: FObjectType.Folder
+                        FObjectType: FObjectType.Folder,
+                        Path: "",
+                        TypeKind: null
                     });
                     this.openEditFolderOrFile()
                 }
@@ -78,6 +80,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         super(props);
         this.queryString = new UrlData();
         this.driveBar = React.createRef<HTMLDivElement>();
+        this.searchDrive = React.createRef<HTMLInputElement>();
         this.fObjectInfoModelInput = new FormModeInput(props.model.EditFolderOrFileForm, "Name");
         this.fObjectInfoFormHandler = new FormHandler(this.fObjectInfoModelInput,
             new HiddenModeInput<string>(props.model.EditFolderOrFileForm, "Id"),
@@ -96,6 +99,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     render() {
         return (
             <>
+                <input className="search-drive" ref={this.searchDrive} onKeyDown={this.checkPathKeys} onKeyUp={this.changePath.bind(this)} />
                 <Row className="drive-bar" ref={this.driveBar}>
                     {this.state.fData.filter(f => f.model.FObjectType === FObjectType.Folder).map((fData, i) => (
                         <Col md={4} lg={2} className="f-hold" key={fData.id} ref={fData.refObject} >
@@ -156,10 +160,6 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         );
 
     }
-    eventRightClick: EventClickType = (ev) => this.rightClick(ev);
-    eventLeftClick: EventClickType = (ev) => this.leftClick(ev);
-    eventLeftDblClick: EventClickType = (ev) => this.leftDblClick(ev);
-    eventPopstate: (ev: PopStateEvent) => any = (ev) => this.popstate(ev);
 
     rightClick(ev: MouseEvent) {
         let htmlTarget = (ev.target as HTMLDivElement);
@@ -173,7 +173,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
             clickedSection = ClickedSection.driveBar;
         }
         else if (fixedElement.classList[0] === "f-hold") {
-            let fModel = this.state.fData.find(x => x.refObject.current === fixedElement);
+            let fModel = this.state.fData.find(x => x.refObject!!.current === fixedElement);
             if (fModel && fModel.model.FObjectType === FObjectType.Folder) {
                 clickedSection = ClickedSection.folder;
                 if (fModel)
@@ -208,14 +208,15 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         }
     }
 
-    leftDblClick(ev: MouseEvent) {
+    async leftDblClick(ev: MouseEvent) {
         let preFixElement = (ev.target as HTMLElement);
         let fixedElement = this.getFixedElement(preFixElement);
         if (fixedElement.classList[0] === "f-hold") {
-            let fModel = this.state.fData.find(x => x.refObject.current === fixedElement);
-            if (fModel.model.FObjectType === FObjectType.Folder) {
-                this.setFolder(fModel.model.Id);
-                this.loadData();
+            let fModel = this.state.fData.find(x => x.refObject!!.current === fixedElement);
+            if (fModel!!.model.FObjectType === FObjectType.Folder) {
+                await this.setFolder(fModel!!.model.Id!!);
+                await this.loadData();
+                this.searchDrive.current!!.value = fModel!!.model.Path;
             }
         }
     }
@@ -232,7 +233,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
             this.contextMenuMiddleware.enable = false;
         }
         else if (fixedElement.classList[0] === "f-hold") {
-            let fModel = this.state.fData.find(x => x.refObject.current === fixedElement);
+            let fModel = this.state.fData.find(x => x.refObject!!.current === fixedElement);
             if (fModel)
                 fModel.selected = true;
         }
@@ -242,9 +243,10 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         }
     }
 
-    popstate(ev: PopStateEvent) {
+    async popstate(ev: PopStateEvent) {
         this.parseQueryString();
         this.loadData();
+        this.searchDrive.current!!.value = await parseId(this.queryString.id);
     }
 
     async editFObject() {
@@ -256,8 +258,8 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
             await this.loadData();
         }
         else {
-            for (let index in data.InfoData) {
-                this.fObjectInfoFormHandler.addError(index, data.InfoData[index]);
+            for (let index in data!!.InfoData) {
+                this.fObjectInfoFormHandler.addError(index, data!!.InfoData[index]);
             }
         }
     }
@@ -269,7 +271,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         this.newData = undefined;
         if (folderOrFile && folderOrFile !== null) {
             this.fObjectMenuMiddleware.onLoaded = () => {
-                this.fObjectInfoFormHandler.setFormData(folderOrFile.model);
+                this.fObjectInfoFormHandler.setFormData(folderOrFile!!.model);
             }
         }
         setTimeout(() => {
@@ -289,7 +291,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
 
     parseQueryString() {
         this.queryString.update();
-        this.folderId = this.queryString.id === "root" ? undefined : this.queryString.id;
+        this.folderId = this.queryString.id;
     }
 
     setFolder(folderId: string) {
@@ -297,10 +299,90 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         this.parseQueryString();
     }
 
+    sendSearchRequestTimer?: NodeJS.Timer;
+    searchItems: Array<SearchItemHolder> = [];
+    sendSearchRequest() {
+        let lastItem = this.searchItems[this.searchItems.length - 1];
+        if (!lastItem) {
+            clearInterval(this.sendSearchRequestTimer);
+            return;
+        }
+        if (lastItem.val === "root" && this.queryString.id !== "root") {
+            this.setFolder("root");
+            this.loadData();
+            this.searchDrive.current!!.value = "root";
+        }
+        else if (this.rootRegix.test(lastItem.val)) {
+            console.log("tryGetFolder");
+        }
+        this.searchItems = this.searchItems.filter(c => c.time > lastItem.time)
+    }
+
+    changePath(e: any) {
+        let val = e.target.value;
+        if (!this.sendSearchRequestTimer) {
+            this.sendSearchRequestTimer = setInterval(this.sendSearchRequest.bind(this), 1500);
+        }
+        this.searchItems.push({
+            val: val,
+            time: new Date().getTime()
+        });
+
+
+
+    }
+
+    checkPathKeys(e: any) {
+        let wrongKey = [9, 187, 188, 190, 192, 220, 222];
+        if (wrongKey.includes(e.keyCode)) {
+            e.preventDefault();
+            return;
+        }
+    }
+
     deselectAll() {
         for (let fKind of this.state.fData) {
             fKind.selected = false;
         }
+    }
+
+    linkListItemClick(e: Event) {
+        let target: HTMLElement | any = e.target!! as HTMLElement;
+        target = target.tagName === 'P' ? target.parentElement!!.parentElement!! : target;
+        target = target.tagName === 'SPAN' || target.tagName === 'I' ? target.parentElement!! : target;
+        let paths = target.href.split("/");
+        let id = paths[paths.length - 1];
+        switch (id) {
+            case "images":
+                if (this.queryString.id !== "images") {
+                    this.setFolder("images");
+                    this.loadData();
+                    this.searchDrive.current!!.value = "images"
+                }
+                break;
+            case "root":
+                if (this.queryString.id !== "root") {
+                    this.setFolder("root");
+                    this.loadData();
+                    this.searchDrive.current!!.value = "root"
+                }
+                break;
+            case "audios":
+                if (this.queryString.id !== "audios") {
+                    this.setFolder("audios");
+                    this.loadData();
+                    this.searchDrive.current!!.value = "sounds"
+                }
+                break;
+            case "videos":
+                if (this.queryString.id !== "videos") {
+                    this.setFolder("videos");
+                    this.loadData();
+                    this.searchDrive.current!!.value = "videos"
+                }
+                break;
+        }
+        e.preventDefault();
     }
 
     getFixedElement(elemet: HTMLElement): HTMLElement {
@@ -311,24 +393,36 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     }
 
     componentWillUnmount() {
-        document.removeEventListener("contextmenu", this.eventRightClick);
-        document.removeEventListener("click", this.eventLeftClick);
-        document.removeEventListener("dblclick", this.eventLeftDblClick);
-        window.removeEventListener("popstate", this.eventPopstate);
+        document.removeEventListener("contextmenu", this.rightClick);
+        document.removeEventListener("click", this.leftClick);
+        document.removeEventListener("dblclick", this.leftDblClick);
+        window.removeEventListener("popstate", this.popstate);
+        let items = document.getElementsByClassName("link-list-item");
+        for (let index = 0; index < items.length; index++) {
+            items[index].removeEventListener("click", this.linkListItemClick);
+        }
     }
+
     componentWillMount(): void {
         this.fObjectInfoFormHandler.initRef(React.createRef);
     }
 
     async componentDidMount() {
-        document.addEventListener("contextmenu", this.eventRightClick);
-        document.addEventListener("click", this.eventLeftClick);
-        document.addEventListener("dblclick", this.eventLeftDblClick);
-        window.addEventListener("popstate", this.eventPopstate);
-
+        document.addEventListener("contextmenu", this.rightClick.bind(this));
+        document.addEventListener("click", this.leftClick.bind(this));
+        document.addEventListener("dblclick", this.leftDblClick.bind(this));
+        let items = document.getElementsByClassName("link-list-item");
+        for (let index = 0; index < items.length; index++)
+            items[index].addEventListener("click", this.linkListItemClick.bind(this));
+        window.addEventListener("popstate", this.popstate.bind(this));
         this.parseQueryString();
         await this.loadData();
         new UploadHandler(this.driveBar, this.queryString);
-
+        this.searchDrive.current!!.value = await parseId(this.queryString.id);
+        // this.searchDrive.current.contentDocument.designMode = "on";
     }
+}
+interface SearchItemHolder {
+    val: string,
+    time: number
 }

@@ -13,6 +13,7 @@ namespace DataLayer.Access.EntityMaps
     {
         public void Configure(EntityTypeBuilder<WebFileVersion> builder)
         {
+            builder.Property(x => x.CreatedDate).HasDefaultValueSql("getdate()");
             builder.HasOne(x => x.Parent).WithMany(x => x.AllInfoData).HasForeignKey(k => k.ParentId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
         }
     }

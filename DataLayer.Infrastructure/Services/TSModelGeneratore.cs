@@ -115,6 +115,7 @@ namespace DataLayer.Infrastructure.Services
                         for (var i = 0; i < properties.Length; i++)
                         {
                             var property = properties[i];
+                            var modelDescription = property.GetCustomAttribute<TSModelDescriptionAttribute>();
                             string propertyTypeString = "";
                             var propertyType = property.PropertyType;
                             bool isNullable = false;
@@ -141,7 +142,7 @@ namespace DataLayer.Infrastructure.Services
                             }
                             else if ((propertyType.Namespace ?? "").StartsWith(WebModelsPath))
                             {
-                                propertyTypeString = property.Name;
+                                propertyTypeString = propertyType.Name;
                                 var folderInfoProp = GetFolder(destinationRoot, propertyType, webModelsPath);
                                 var folderInfoPropWPN = folderInfoProp.webPathLocation.StartsWith(folderInfo.webPathLocation) ?
                                     folderInfoProp.webPathLocation.Substring(folderInfo.webPathLocation.Length,
@@ -149,11 +150,11 @@ namespace DataLayer.Infrastructure.Services
                                     : folderInfoProp.webPathLocation;
                                 if (propertyType.BaseType == typeof(Enum))
                                 {
-                                    fileHeaderData.AppendLine(@$"import {{ {property.Name} }} from './{folderInfoPropWPN}{property.Name}'");
+                                    fileHeaderData.AppendLine(@$"import {{{propertyType.Name}}} from './{folderInfoPropWPN}{propertyType.Name}'");
                                 }
                                 else
                                 {
-                                    fileHeaderData.AppendLine(@$"import {property.Name} from './{folderInfoPropWPN}{property.Name}'");
+                                    fileHeaderData.AppendLine(@$"import {propertyType.Name} from './{folderInfoPropWPN}{propertyType.Name}'");
                                 }
                             }
                             else if (defaultModels != null && defaultModels.Any(x => x.ModelType == propertyType))
@@ -165,8 +166,7 @@ namespace DataLayer.Infrastructure.Services
                             if (string.IsNullOrEmpty(propertyTypeString))
                                 continue;
 
-
-                            var resultLine = $"    {property.Name}: {propertyTypeString}" + (isNullable ? " | null" : "");
+                            var resultLine = $"{property.Name + ((modelDescription != null && modelDescription.Optional) ? "?" : "")}: {propertyTypeString}" + (isNullable ? " | null" : "");
                             if (i != properties.Length - 1)
                                 resultLine += ",";
                             fileData.AppendLine(resultLine);
@@ -199,7 +199,7 @@ namespace DataLayer.Infrastructure.Services
         public Type ModelType { get; set; }
     }
 
-    [System.AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
+    [System.AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = false)]
     public sealed class TSModelUsageAttribute : Attribute
     {
         public TSModelUsageAttribute()
@@ -214,6 +214,17 @@ namespace DataLayer.Infrastructure.Services
         }
 
     }
+
+    [System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+    public sealed class TSModelDescriptionAttribute : Attribute
+    {
+        public TSModelDescriptionAttribute()
+        {
+        }
+        public bool Optional { set; get; } = false;
+    }
+
+
 
     public enum CompileOption
     {

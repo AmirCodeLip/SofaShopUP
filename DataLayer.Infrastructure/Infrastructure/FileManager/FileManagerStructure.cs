@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Security.Cryptography.X509Certificates;
+using static DataLayer.Infrastructure.Constants;
 
 namespace DataLayer.Infrastructure.Infrastructure
 {
@@ -27,7 +29,7 @@ namespace DataLayer.Infrastructure.Infrastructure
         private readonly IFileVersionActorOrArtistRepository fileVersionActorOrArtistRepository;
         private readonly ApplicationDbContext context;
         private readonly UserManager<WebUser> userManager;
-
+        private readonly SupportedTypes supportedTypes;
         public FileManagerStructure(IWebHostEnvironment hostingEnv, IFolderRepository folderRepository,
             IFileRepository fileRepository, IFileVersionRepository fileVersionRepository,
             IActorOrArtistRepository actorOrArtistRepository, IFileVersionActorOrArtistRepository fileVersionActorOrArtistRepository,
@@ -42,6 +44,7 @@ namespace DataLayer.Infrastructure.Infrastructure
             this.fileVersionRepository = fileVersionRepository;
             this.actorOrArtistRepository = actorOrArtistRepository;
             this.fileVersionActorOrArtistRepository = fileVersionActorOrArtistRepository;
+            supportedTypes = new SupportedTypes();
         }
 
         public async Task<JsonResponse> EditFObject(FObjectKind fObjectKindInfo, CentralizeData centralizeData)
@@ -70,6 +73,7 @@ namespace DataLayer.Infrastructure.Infrastructure
                 {
                     WebFolder folder = fObjectKindInfo;
                     folder.CreatorId = user.Id;
+                    await SetFolderPath(folder);
                     await folderRepository.AddAsync(folder);
                 }
                 else
@@ -102,29 +106,49 @@ namespace DataLayer.Infrastructure.Infrastructure
                 {
                     Name = "root",
                     CreatorId = userId,
-                    ParentId = null
+                    ParentId = null,
+                    Path = "root"
                 }));
             }
             return rootFolder;
         }
 
-        public async Task<IQueryable<FObjectKind>> GetFObjectKindsFromFolder(HttpContext httpContext, Guid? folderID)
+        public async Task<IQueryable<FObjectKind>> GetFObjectKindsFromFolder(HttpContext httpContext, string folderID)
         {
             var user = await userManager.GetUserAsync(httpContext.User);
-            var fixedFolderId = folderID.HasValue ? folderID.Value : (await RootFolderAsync(user.Id)).Id;
-            var folders = folderRepository.Where(x => x.ParentId == fixedFolderId).Select(x => new FObjectKind
+            Guid? fixedFolderId = null;
+            if (!string.IsNullOrEmpty(folderID))
+            {
+                if (folderID == "root")
+                    fixedFolderId = (await RootFolderAsync(user.Id)).Id;
+                else if (!SupportedTypeKinds.ListItem.Values.Contains(folderID))
+                    fixedFolderId = Guid.Parse(folderID);
+            }
+
+            var qFolder = folderRepository.Where(x => x.CreatorId == user.Id);
+            var qFile = fileRepository.Where(x => x.CreatorId == user.Id);
+            if (fixedFolderId.HasValue)
+            {
+                qFolder = qFolder.Where(x => x.ParentId == fixedFolderId.Value);
+                qFile = qFile.Where(x => x.FolderId == fixedFolderId.Value);
+            }
+            var folders = qFolder.Where(x => x.ParentId == fixedFolderId).Select(x => new FObjectKind
             {
                 Id = x.Id,
                 FObjectType = FObjectType.Folder,
                 Name = x.Name,
-                FolderId = x.ParentId
+                FolderId = x.ParentId,
+                Path = x.Path,
+                TypeKind = "0"
             });
-            var files = fileRepository.Where(x => x.FolderId == fixedFolderId).Select(x => new FObjectKind
+            var files = qFile.Where(x => x.FolderId == fixedFolderId).Select(x => new FObjectKind
             {
                 Id = x.Id,
                 FObjectType = FObjectType.File,
                 Name = x.Name,
-                FolderId = x.FolderId
+                FolderId = x.FolderId,
+                Path = x.Path,
+                TypeKind = x.TypeKind
             });
             return folders.Concat(files);
         }
@@ -133,7 +157,7 @@ namespace DataLayer.Infrastructure.Infrastructure
         {
             try
             {
-                context.Database.SetCommandTimeout(3600);
+                context.Database.SetCommandTimeout(10000);
                 var result = new JsonResponse();
                 var user = await userManager.GetUserAsync(centralizeData.httpContext.User);
                 var root = await (folderId.HasValue ? folderRepository.FindAsync(folderId) : RootFolderAsync(user.Id));
@@ -141,14 +165,17 @@ namespace DataLayer.Infrastructure.Infrastructure
                 var ex = Path.GetExtension(file.FileName);
                 var fileInfo = new WebFile
                 {
+                    Id = Guid.NewGuid(),
                     CreatedDate = DateTime.Now,
                     Name = fileName,
                     FolderId = root.Id,
                     Extension = ex
                 };
-                await fileRepository.AddAsync(fileInfo);
-                await context.SaveChangesAsync();
-                var fileData = new WebFileVersion { FileId = fileInfo.Id };
+                if (!supportedTypes.ContainsEX(ex))
+                {
+                    result.AddError(UploadErrorCode.NotSupportedFile.ToString(), "");
+                    return result;
+                }
                 var tempPath = Path.Combine(hostingEnv.ContentRootPath, "tempPath");
                 var tempFilePath = Path.Combine(tempPath, Guid.NewGuid().ToString()) + ex;
                 if (!Directory.Exists(tempPath))
@@ -158,6 +185,11 @@ namespace DataLayer.Infrastructure.Infrastructure
                     await file.CopyToAsync(stream);
                 }
                 var info = ProssesFile(tempFilePath);
+                var contentTypeInfo = supportedTypes.GetByEx(ex);
+                fileInfo.TypeKind = contentTypeInfo?.TypeKind;
+                await fileRepository.AddAsync(fileInfo);
+                await context.SaveChangesAsync();
+                var fileData = new WebFileVersion { FileId = fileInfo.Id };
                 fileData.FileData = await File.ReadAllBytesAsync(tempFilePath);
                 fileData.Length = fileData.FileData.Length;
                 File.Delete(tempFilePath);
@@ -201,7 +233,6 @@ namespace DataLayer.Infrastructure.Infrastructure
             var ex = Path.GetExtension(filePath);
             List<WebFileVersion> fileVersions = new List<WebFileVersion>();
             FileDescriptor fileDescriptor = new FileDescriptor();
-
             switch (ex)
             {
                 case ".mp3":
@@ -213,12 +244,13 @@ namespace DataLayer.Infrastructure.Infrastructure
                             fileDescriptor.BroadCastTime = new DateTime((int)f.Tag.Year, 1, 1);
                         foreach (var picture in f.Tag.Pictures)
                         {
-                            var pictureEx = SupportedTypes.Images.Mappings.FirstOrDefault(x => x.Value == picture.MimeType);
-                            fileVersions.Add(new WebFileVersion
-                            {
-                                FileData = picture.Data.Data,
-                                Extension = pictureEx.Key
-                            });
+                            var pictureEx = supportedTypes.Images.GetByMime(picture.MimeType);
+                            if (pictureEx != null)
+                                fileVersions.Add(new WebFileVersion
+                                {
+                                    FileData = picture.Data.Data,
+                                    Extension = pictureEx?.Ex
+                                });
                         }
                     }
                     break;
@@ -231,11 +263,11 @@ namespace DataLayer.Infrastructure.Infrastructure
             if (id.HasValue)
             {
                 var file = await fileRepository.AsQueryable().Include(x => x.WebFileVersions).FirstOrDefaultAsync(x => x.Id == id.Value);
-                if (SupportedTypes.Images.Mappings.ContainsKey(file.Extension))
+                if (supportedTypes.ContainsEX(file.Extension))
                 {
                     var webFileVersions = file.WebFileVersions.OrderByDescending(x => x.CreatedDate).FirstOrDefault();
-                    var a = webFileVersions.AllInfoData;
-                    return new FileContentResult(webFileVersions.FileData, SupportedTypes.Images.Mappings[file.Extension]);
+                    var t = supportedTypes.GetByEx(file.Extension);
+                    return new FileContentResult(webFileVersions.FileData, supportedTypes.GetByEx(file.Extension)?.ContentType);
                 }
                 else
                 {
@@ -243,12 +275,36 @@ namespace DataLayer.Infrastructure.Infrastructure
                     var firstImg = await fileVersionRepository.FirstOrDefaultAsync(x => x.ParentId == webFileVersions.Id);
                     if (firstImg != null)
                     {
-                        return new FileContentResult(firstImg.FileData, SupportedTypes.All.Mappings[file.Extension]);
+                        return new FileContentResult(firstImg.FileData, supportedTypes.GetByEx(file.Extension)?.ContentType);
                     }
 
                 }
             }
-            return new FileContentResult(await File.ReadAllBytesAsync(Path.Combine(hostingEnv.WebRootPath, "default_images", "unknown.png")), SupportedTypes.Images.Mappings[".png"]);
+            return new FileContentResult(await File.ReadAllBytesAsync(Path.Combine(hostingEnv.WebRootPath, "default_images", "unknown.png")), supportedTypes.GetByEx(".png")?.ContentType);
         }
+
+        public async Task SetFolderPath(WebFolder webFolder)
+        {
+            var paths = new List<string>();
+            if (webFolder.ParentId.HasValue)
+            {
+                var folder = webFolder;
+                while (true)
+                {
+                    paths.Add(folder.Name);
+                    if (!folder.ParentId.HasValue)
+                        break;
+                    folder = await folderRepository.FindAsync(folder.ParentId);
+                }
+            }
+            else
+            {
+                paths.Add("root");
+            }
+            paths.Reverse();
+            webFolder.Path = string.Join("/", paths);
+        }
+
+
     }
 }

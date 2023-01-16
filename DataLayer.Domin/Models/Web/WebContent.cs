@@ -16,8 +16,10 @@ namespace DataLayer.Domin.Models.Web
         [Required(ErrorMessage = SharedRegix.RequiredError)]
         [MinLength(4, ErrorMessage = SharedRegix.MinLengthError)]
         [Display(Name = "عنوان")]
+        [MaxLength(250)]
         public string Title { get; set; }
         public DateTime CreatedDate { get; set; }
+        [MaxLength(500)]
         [DisplayName(displayName: "توضیحات")]
         public string Description { get; set; }
         public bool IsDeleted { get; set; }

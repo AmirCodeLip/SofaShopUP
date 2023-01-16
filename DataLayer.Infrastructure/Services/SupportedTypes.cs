@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.StaticFiles;
+﻿using DataLayer.Infrastructure.WebModels.FileManager;
+using Microsoft.AspNetCore.StaticFiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,29 +10,70 @@ namespace DataLayer.Infrastructure.Services
 {
     public class SupportedTypes
     {
-        static SupportedTypes()
+        public SupportedTypes()
         {
-            var allTypes = new FileExtensionContentTypeProvider();
-            All = new FileExtensionContentTypeProvider(new Dictionary<string, string>());
-            Images = new FileExtensionContentTypeProvider(new Dictionary<string, string>());
-            Audios = new FileExtensionContentTypeProvider(new Dictionary<string, string>());
-            Images.Mappings.Clear();
-            foreach (var img in new[] { ".png", ".jpg" })
+            var allTypes = new ContentTypeProvider();
+            Images.Add(new ContentTypeInfo
             {
-                Images.Mappings.Add(img, allTypes.Mappings[img]);
-                All.Mappings.Add(img, allTypes.Mappings[img]);
-            }
-            foreach (var audio in new[] { ".mp3" })
+                ContentType = "image/png",
+                Ex = ".png",
+                TypeKind = Constants.SupportedTypeKinds.Image,
+                IdList = new byte[][] { new byte[] { 0x89, 0x50, 0x4E, 0x47 } }
+            });
+            Images.Add(new ContentTypeInfo
             {
-                Audios.Mappings.Add(audio, allTypes.Mappings[audio]);
-                All.Mappings.Add(audio, allTypes.Mappings[audio]);
-            }
-
-
+                ContentType = "image/jpg",
+                Ex = ".jpg",
+                TypeKind = Constants.SupportedTypeKinds.Image
+            });
+        }
+        public readonly ContentTypeProvider Images = new ContentTypeProvider();
+        public readonly ContentTypeProvider Audios = new ContentTypeProvider();
+        public readonly ContentTypeProvider Videos = new ContentTypeProvider();
+        public bool ContainsEX(string ex)
+        {
+            return Images.ContainsEX(ex) || Audios.ContainsEX(ex) || Videos.ContainsEX(ex);
         }
 
-        public readonly static FileExtensionContentTypeProvider All;
-        public readonly static FileExtensionContentTypeProvider Images;
-        public readonly static FileExtensionContentTypeProvider Audios;
+        public ContentTypeInfo? GetByEx(string ex)
+        {
+            if (Images.ContainsEX(ex)) return Images.GetByEx(ex);
+            if (Audios.ContainsEX(ex)) return Audios.GetByEx(ex);
+            if (Videos.ContainsEX(ex)) return Videos.GetByEx(ex);
+            return null;
+        }
     }
+    public struct ContentTypeInfo
+    {
+        public string Ex { get; set; }
+        public string ContentType { get; set; }
+        public byte[][] IdList { get; set; }
+        public string TypeKind { get; set; }
+
+    }
+    public class ContentTypeProvider : List<ContentTypeInfo>
+    {
+        public bool ContainsEX(string ex)
+        {
+            var localEX = ex.ToLower();
+            if (localEX == ".jpeg")
+                localEX = ".jpg";
+            return this.Any(x => x.Ex == localEX);
+        }
+
+        public ContentTypeInfo? GetByMime(string mime)
+        {
+            if (this.Any(x => x.ContentType == mime))
+                return this.FirstOrDefault(x => x.ContentType == mime);
+            return null;
+        }
+
+        public ContentTypeInfo? GetByEx(string ex)
+        {
+            if (this.Any(x => x.Ex == ex))
+                return this.FirstOrDefault(x => x.Ex == ex);
+            return null;
+        }
+    }
+
 }

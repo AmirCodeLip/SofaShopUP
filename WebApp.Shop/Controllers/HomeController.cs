@@ -26,9 +26,9 @@ namespace WebApp.Shop.Controllers
 
         public async Task<IActionResult> Index()
         {
-            //TSModelGeneratore.AddNewsGeneratorWebModel();
-            //await defaultCreatorStructure.FastCreate();
-
+            TSModelGeneratore.AddFileManagerWebModel(_hostingEnv);
+            await defaultCreatorStructure.FastCreate();
+            await defaultCreatorStructure.InitAllRoots();
             //PublicWord001.Culture = ConstTypes.SupportedLanguages.List[ConstTypes.SupportedLanguages.faIR].CultureInfo;
             return View();
         }

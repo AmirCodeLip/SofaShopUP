@@ -33,6 +33,26 @@ namespace DataLayer.Infrastructure
 
 
         }
+
+        public static class SupportedTypeKinds
+        {
+            public const string Undefined = "0";
+            public const string Image = "1";
+            public const string Video = "2";
+            public const string Audio = "3";
+            public static Dictionary<string, string> ListItem
+            {
+                get
+                {
+                    var listItem = new Dictionary<string, string>();
+                    listItem[Image] = $"{nameof(Image)}s".ToLower();
+                    listItem[Video] = $"{nameof(Video)}s".ToLower();
+                    listItem[Audio] = $"{nameof(Audio)}s".ToLower();
+                    return listItem;
+                }
+            }
+
+        }
     }
 }
 
