@@ -68,6 +68,13 @@
     margin-right: 15px;
     min-height: 70vh;
     position: relative;
+    min-height: 400px;
+    -webkit-user-select: none;
+    /* Safari */
+    -ms-user-select: none;
+    /* IE 10 and IE 11 */
+    user-select: none;
+    /* Standard syntax */
 }
 
 .f-hold-title {
@@ -115,4 +122,16 @@
 .search-drive:focus {
     outline: none;
     padding-left: 3px;
+}
+
+.selection-drive {
+    position: absolute;
+    height: 200px;
+    background-color: var(--color_001);
+    opacity: 0.2;
+    padding: 0 !important;
+}
+
+.view-main-center {
+    overflow: hidden;
 }

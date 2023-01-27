@@ -18,6 +18,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
 
     driveBar: React.RefObject<HTMLDivElement>;
     searchDrive: React.RefObject<HTMLInputElement>;
+    selectionElement: React.RefObject<HTMLDivElement>;
     fObjectInfoModelInput: FormModeInput;
     fObjectInfoFormHandler: FormHandler;
     contextMenuMiddleware: ModalOptions;
@@ -26,6 +27,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     queryString: UrlData;
     folderId: string | undefined;
     rootRegix = new RegExp('root(\/[a-zA-Z]{1,}){1,}');
+    uploadHandler?: UploadHandler;
     rightBarItems: Array<RightBarItem> =
         [
             {
@@ -81,6 +83,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         this.queryString = new UrlData();
         this.driveBar = React.createRef<HTMLDivElement>();
         this.searchDrive = React.createRef<HTMLInputElement>();
+        this.selectionElement = React.createRef<HTMLInputElement>();
         this.fObjectInfoModelInput = new FormModeInput(props.model.EditFolderOrFileForm, "Name");
         this.fObjectInfoFormHandler = new FormHandler(this.fObjectInfoModelInput,
             new HiddenModeInput<string>(props.model.EditFolderOrFileForm, "Id"),
@@ -121,6 +124,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
                             <div className="select-bar"></div>
                         </Col>
                     ))}
+                    <div ref={this.selectionElement} style={{ display: 'none' }} className='selection-drive'></div>
                 </Row>
                 <Web_Modal middleware={this.fObjectMenuMiddleware}>
                     <>
@@ -401,6 +405,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         for (let index = 0; index < items.length; index++) {
             items[index].removeEventListener("click", this.linkListItemClick);
         }
+        this.uploadHandler.componentWillUnmount();
     }
 
     componentWillMount(): void {
@@ -417,8 +422,9 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         window.addEventListener("popstate", this.popstate.bind(this));
         this.parseQueryString();
         await this.loadData();
-        new UploadHandler(this.driveBar, this.queryString);
+        this.uploadHandler = new UploadHandler(this.driveBar, this.queryString, this.selectionElement);
         this.searchDrive.current!!.value = await parseId(this.queryString.id);
+
         // this.searchDrive.current.contentDocument.designMode = "on";
     }
 }
