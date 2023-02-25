@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Container } from 'react-bootstrap';
-import NavMenu from './NavMenu';
-import ChildItemModel from './model_structure/interfaces/ChildItemModel';
+import NavMenu from '../../NavMenu';
+import ChildItemModel from '../../model_structure/interfaces/ChildItemModel';
 import { Col, Row } from 'react-bootstrap';
-import * as  globalManage from './root/shared/GlobalManage'
-import { Link } from "react-router-dom";
-import { Loading } from './root/shared/PageLoader';
+import * as  globalManage from '../shared/GlobalManage'
+import { Loading } from '../shared/PageLoader';
+import { useNavigation, Route, Routes, Link } from "react-router-dom";
 
 interface LayoutState {
   navMode: "openFullSide" | "close",
@@ -20,14 +20,12 @@ export default class Layout extends React.Component<ChildItemModel, LayoutState>
   static displayName = Layout.name;
   sideItemRef: React.RefObject<HTMLDivElement>;
 
-
   constructor(props: ChildItemModel) {
     super(props);
     this.state = { navMode: "openFullSide", sideWidth: 19, load: false };
     document.addEventListener("mousemove", this.checkSideNavMove.bind(this));
     this.sideItemRef = React.createRef<HTMLDivElement>();
     window.document.addEventListener("mouseup", this.mouseup.bind(this));
-
   }
 
   render() {
@@ -40,32 +38,32 @@ export default class Layout extends React.Component<ChildItemModel, LayoutState>
         <div className={this.getClassItem("view-side-center")} style={this.getSideNavStyle()}>
           <div className='side-grid-center'>
             <div className='link-list'>
-              <Link className={this.getClassItem('link-list-item')} to={`/${window.cultureInfo.cultureInfo.Culture}/manage_files/root`}>
+              <Link className={this.getClassItem('link-list-item')} to={`/${window.cultureInfo?.cultureInfo.Culture}/manage_files/root`}>
                 <i className={this.getClassItem("link-list-logo") + ' fa-solid fa-folder'}></i>
                 <span className={this.getClassItem('link-list-text')}>
                   <globalManage.localizorHtml txtKey={'PublicWord001.key008'}></globalManage.localizorHtml>
                 </span>
               </Link>
-              <Link className={this.getClassItem('link-list-item')}  to={`/${window.cultureInfo.cultureInfo.Culture}/manage_files/images`}>
+              <Link className={this.getClassItem('link-list-item')} to={`/${window.cultureInfo?.cultureInfo.Culture}/manage_files/images`}>
                 <i className={this.getClassItem("link-list-logo") + ' fa-solid fa-image'}></i>
                 <span className={this.getClassItem('link-list-text')}>
                   <globalManage.localizorHtml txtKey={'PublicWord001.key009'}></globalManage.localizorHtml>
                 </span>
               </Link>
-              <Link className={this.getClassItem('link-list-item')}  to={`/${window.cultureInfo.cultureInfo.Culture}/manage_files/videos`}>
+              <Link className={this.getClassItem('link-list-item')} to={`/${window.cultureInfo?.cultureInfo.Culture}/manage_files/videos`}>
                 <i className={this.getClassItem("link-list-logo") + ' fa-solid fa-video'}></i>
                 <span className={this.getClassItem('link-list-text')}>
                   <globalManage.localizorHtml txtKey={'PublicWord001.key010'}></globalManage.localizorHtml>
                 </span>
               </Link>
-              <Link className={this.getClassItem('link-list-item')}  to={`/${window.cultureInfo.cultureInfo.Culture}/manage_files/audios`}>
+              <Link className={this.getClassItem('link-list-item')} to={`/${window.cultureInfo?.cultureInfo.Culture}/manage_files/audios`}>
                 <i className={this.getClassItem("link-list-logo") + ' fa-solid fa-music'}></i>
                 <span className={this.getClassItem('link-list-text')}>
                   <globalManage.localizorHtml txtKey={'PublicWord001.key011'}></globalManage.localizorHtml>
                 </span>
               </Link>
             </div>
-            <div className={this.getClassItem('drive-info')}>
+            <div className={this.getClassItem('drive-info')} style={this.getDriveInfoStyle()}>
               <div className="progress-view">
                 <div className="progress-view-fill"></div>
                 <div className="progress-view-bar"></div>
@@ -93,9 +91,7 @@ export default class Layout extends React.Component<ChildItemModel, LayoutState>
         }, 300);
       }
     }).bind(this), 10);
-  }
 
-  componentWillUnmount() {
   }
 
   rightBorderMouseDown(ev: MouseEvent) {
@@ -139,6 +135,16 @@ export default class Layout extends React.Component<ChildItemModel, LayoutState>
       case "close": result.width = "0%";
       case "openFullSide":
       default: result.width = this.state.sideWidth + "%";
+    }
+    return result;
+  }
+
+  getDriveInfoStyle(): object {
+    let result: React.CSSProperties = {};
+    switch (this.state.navMode) {
+      case "close": result.width = "0%";
+      case "openFullSide":
+      default: result.width = this.state.sideWidth - 1 + "%";
     }
     return result;
   }

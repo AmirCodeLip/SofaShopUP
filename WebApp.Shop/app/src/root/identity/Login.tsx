@@ -6,55 +6,157 @@ import { loginService } from '../../Services/IdentityServices'
 import { JsonResponseStatus } from '../../models/JsonResponse';
 import { Container } from 'react-bootstrap'
 import { from } from 'rxjs';
-export const Login: React.FC<{ model: IFormModel }> = ({ model }) => {
-    let phoneOrEmailModel: FormModeInput = new FormModeInput(model, "PhoneOrEmail");
-    let passwordModel = new FormModeInput(model, "Password");
-    let formHandler = new FormHandler(phoneOrEmailModel, passwordModel);
-    formHandler.initRef(React.useRef);
-    React.useEffect(() => {
-        formHandler.init();
-    }, []);
+import CheckBox from 'devextreme-react/check-box';
+import TabPanel from 'devextreme-react/tab-panel';
+import { identityLoaderModel } from './../../Services/IdentityServices'
 
-    async function login() {
-        if (formHandler.isValid()) {
+
+interface LoginProps {
+    data: tabInfo
+}
+interface IdentityPanelProps {
+    model: identityLoaderModel
+}
+interface tabInfo {
+    name: string
+    getModel: () => IFormModel
+}
+
+export class IdentityPanel extends React.Component<IdentityPanelProps, any> {
+    dataSource: Array<tabInfo> = [];
+    constructor(props: IdentityPanelProps) {
+        super(props);
+        this.dataSource.push({ name: "login", getModel: () => props.model.LoginModel });
+        this.dataSource.push({ name: "register", getModel: () => props.model.RegisterModel });
+    }
+
+    render() {
+        return (
+            <div className='identity-box'>
+                <TabPanel
+                    height={260}
+                    dataSource={this.dataSource}
+                    loop={false}
+                    itemTitleRender={this.itemTitleRender}
+                    itemComponent={IdentityForm.bind(this.props)}
+                    animationEnabled={false}
+                    swipeEnabled={false}
+                    elementAttr={{ class: "identity-tabs" }}
+                />
+
+            </div>
+        );
+    }
+    itemTitleRender(info: tabInfo) {
+        return <span>{info.name === "login" ? "ورود" : "عضویت"}</span>;
+    }
+}
+
+
+class IdentityForm extends React.PureComponent<LoginProps, any> {
+    phoneOrEmailModel: FormModeInput;
+    passwordModel: FormModeInput;
+    formHandler: FormHandler;
+    isLogin = false;
+    constructor(props: LoginProps) {
+        super(props);
+        this.isLogin = this.props.data.name === "login";
+        if (this.isLogin) {
+            let loginModel = props.data.getModel();
+            this.phoneOrEmailModel = new FormModeInput(loginModel, "PhoneOrEmail");
+            this.passwordModel = new FormModeInput(loginModel, "Password");
+            this.formHandler = new FormHandler(this.phoneOrEmailModel, this.passwordModel);
+        }else
+        {
+            let registerModel = props.data.getModel();
+            this.phoneOrEmailModel = new FormModeInput(registerModel, "PhoneOrEmail");
+            this.passwordModel = new FormModeInput(registerModel, "Password");
+            this.formHandler = new FormHandler(this.phoneOrEmailModel, this.passwordModel);
+        }
+
+    }
+    componentWillMount(): void {
+        if (this.isLogin) {
+            this.formHandler.initRef(React.createRef);
+            setTimeout(() => {
+                this.formHandler.init();
+            }, 50)
+        }
+        else
+        {
+            this.formHandler.initRef(React.createRef);
+            setTimeout(() => {
+                this.formHandler.init();
+            }, 50)
+        }
+    }
+    render() {
+        if (this.isLogin) {
+            return (
+                <Container>
+                    <div className="epo-form">
+                        <label className='epo-right right-item' ref={this.phoneOrEmailModel.refLabel}></label>
+                        <input className="epo left-item" ref={this.phoneOrEmailModel.refInput} />
+                        <div className="epo-border"></div>
+                        <div className="right-item" ref={this.phoneOrEmailModel.refError} ></div>
+                    </div>
+                    <div className="epo-form">
+                        <label className="epo-right right-item" ref={this.passwordModel.refLabel}></label>
+                        <input className="epo" ref={this.passwordModel.refInput} />
+                        <div className="epo-border"></div>
+                        <div className="right-item" ref={this.passwordModel.refError} ></div>
+                    </div>
+                    <div className="epo-form" onClick={this.login.bind(this)}>
+                        <button className="btn btn-outline-001 btn-well">
+                            ورود
+                        </button>
+                    </div>
+                </Container>
+            );
+        }
+        else {
+            return (
+                <Container>
+                    <div className="epo-form">
+                        <label className='epo-right right-item' ref={this.phoneOrEmailModel.refLabel}></label>
+                        <input className="epo left-item" ref={this.phoneOrEmailModel.refInput} />
+                        <div className="epo-border"></div>
+                        <div className="right-item" ref={this.phoneOrEmailModel.refError} ></div>
+                    </div>
+                    <div className="epo-form">
+                        <label className="epo-right right-item" ref={this.passwordModel.refLabel}></label>
+                        <input className="epo" ref={this.passwordModel.refInput} />
+                        <div className="epo-border"></div>
+                        <div className="right-item" ref={this.passwordModel.refError} ></div>
+                    </div>
+                    <div className="epo-form">
+                        <button className="btn btn-outline-001 btn-well">
+                            عضویت
+                        </button>
+                    </div>
+                </Container>
+            );
+        }
+    }
+    async login() {
+        if (this.formHandler.isValid()) {
             let loginResult = await loginService({
-                PhoneOrEmail: phoneOrEmailModel.refInput.current!.value,
-                Password: passwordModel.refInput.current!.value
+                PhoneOrEmail: this.phoneOrEmailModel.refInput.current!.value,
+                Password: this.passwordModel.refInput.current!.value
             });
             if (loginResult!.Status === JsonResponseStatus.Success) {
                 console.log(loginResult?.TResult001);
                 localStorage.setItem("jwt", loginResult!.TResult001!.Token);
-                window.location.href = `/${window.cultureInfo.cultureInfo.Culture}/manage_files/root`;
+                window.location.href = `/${window.cultureInfo!!.cultureInfo.Culture}/manage_files/root`;
             } else {
                 for (let key in loginResult!.InfoData) {
                     let data = loginResult!.InfoData[key];
-                    formHandler.addError(key, data);
+                    this.formHandler.addError(key, data);
                 }
             }
         }
     }
-
-    return (
-        <Container>
-            <div className="epo-form">
-                <label className='epo-right right-item' ref={phoneOrEmailModel.refLabel}></label>
-                <input className="epo left-item" ref={phoneOrEmailModel.refInput} />
-                <div className="epo-border"></div>
-                <div className="right-item" ref={phoneOrEmailModel.refError} ></div>
-            </div>
-            <div className="epo-form">
-                <label className="epo-right right-item" ref={passwordModel.refLabel}></label>
-                <input className="epo" ref={passwordModel.refInput} />
-                <div className="epo-border"></div>
-                <div className="right-item" ref={passwordModel.refError} ></div>
-            </div>
-            <div className="epo-form" onClick={login}>
-                <button className="btn btn-outline-001 btn-well">
-                    ورود
-                </button>
-            </div>
-        </Container>
-    );
 }
+
 
 

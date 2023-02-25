@@ -14,9 +14,13 @@ export default class DataTransmitter {
             }
             headers["Authorization"] = `Bearer ${jwt}`;
         }
-        let request = await fetch(url, { headers: headers });
-        let result: TOutput = (await request.json()) as TOutput;
-        return result;
+        try {
+            let request = await fetch(url, { headers: headers });
+            let result: TOutput = (await request.json()) as TOutput;
+            return result;
+        } catch {
+            return null;
+        }
     }
 
     static async PostRequest<TOutput>(url: string, options?: DataTransmitterOptions) {
@@ -40,9 +44,14 @@ export default class DataTransmitter {
         };
         if (options.body)
             requestInit.body = JSON.stringify(options.body);
-        let request = await fetch(url, requestInit);
-        let result: TOutput = (await request.json()) as TOutput;
-        return result;
+        try {
+
+            let request = await fetch(url, requestInit);
+            let result: TOutput = (await request.json()) as TOutput;
+            return result;
+        } catch (ex) {
+            return null;
+        }
     }
 
     static Upload<T>(url: string, file: File, data: any, options: UploadOptions = {}): Promise<T> {

@@ -37,6 +37,7 @@
     padding: 20px 10px 20px 10px;
     height: fit-content;
     direction: rtl;
+    margin: 1%;
 }
 
 .f-hold:hover>.select-bar,

@@ -53,10 +53,11 @@ export async function load(createRef: userRefType, folderID: string | undefined)
         rq.Where(x => x.TypeKind === "3");
     let data = await rq.Execute({ authorize: true });
     let componentItems: Array<FObjectKindComponent> = [];
-    for (let i of data) {
-        i.FObjectType = i.FObjectType === "Folder" ? 1 : 0;
-        componentItems.push(new FObjectKindComponent(i, createRef<HTMLDivElement>()))
-    }
+    if (data != null)
+        for (let i of data) {
+            i.FObjectType = i.FObjectType === "Folder" ? 1 : 0;
+            componentItems.push(new FObjectKindComponent(i, createRef<HTMLDivElement>()))
+        }
     return componentItems;
 };
 

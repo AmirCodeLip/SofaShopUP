@@ -32,7 +32,7 @@ class Queryable<TSource> implements IQueryable<TSource>
         let url = this.qOption.url + (this.qOption.url.includes("?") ? "" : "?");
         if (!['?', '&'].includes(url[url.length - 1])) url += "&";
         url += (this.qOption.filterSequences.length === 0) ? "" : `$filter=${execute(this.qOption.filterSequences)}`;
-        return (await DataTransmitter.GetRequest<any>(url, options)).value;
+        return (await DataTransmitter.GetRequest<any>(url, options))?.value;
     }
 }
 

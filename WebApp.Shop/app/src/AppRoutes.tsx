@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Home } from "./root/Home";
-import { Login } from './root/identity/Login'
-import { LoginLoader } from './Services/IdentityServices'
+import { IdentityPanel } from './root/identity/Login'
+import { identityLoader } from './Services/IdentityServices'
 import { FileManagerLoader } from './Services/FileManagerServices'
 import { PageLoader } from "./root/shared/PageLoader";
 import FileManager from './root/file_manager/FileManager'
@@ -18,19 +18,19 @@ const AppRoutes = [
   },
   {
     path: '/:culture/identity/login',
-    element: <PageLoader PageContainer={Login} pageLoaderOtpions={{ Loading: LoginLoader, allowAnonymous: true }} />
+    element: <PageLoader PageContainer={IdentityPanel} pageLoaderOtpions={{ Loading: identityLoader, allowAnonymous: true }} />
   },
   {
     path: '/:culture/manage_files/:fileId',
     element: <PageLoader PageContainer={FileManager} pageLoaderOtpions={{ Loading: FileManagerLoader, allowAnonymous: false }} />
   },
 ];
-const extera = [];
+const extera: Array<any> = [];
 for (let route of AppRoutes) {
   if (route.index)
     continue;
   extera.push({
-    path: route.path.replace('/:culture', ''),
+    path: route.path!!.replace('/:culture', ''),
     element: <GetDefaultCulture />
   })
 }

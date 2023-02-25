@@ -1,8 +1,11 @@
 import * as React from 'react';
 import { Container } from 'react-bootstrap';
 import * as  globalManage from './root/shared/GlobalManage'
-import { Link } from "react-router-dom";
-
+import {
+    useNavigation,
+    Form,
+    redirect, Link
+} from "react-router-dom";
 interface UrlContent {
     title: string,
     path: string,
@@ -16,10 +19,9 @@ export default class NavMenu extends React.Component {
             title: "PublicWord001.key003",
         });
         urlContents.push({
-            path: `/${window.cultureInfo.cultureInfo.Culture}/manage_files/root`,
+            path: `/${window.cultureInfo!!.cultureInfo.Culture}/manage_files/root`,
             title: "PublicWord001.key004",
-        });
-
+        }); 
         return (<div className='nav-menue'>
             <div className="header-line">
                 <div className="weblogo">
@@ -44,12 +46,12 @@ export default class NavMenu extends React.Component {
                     </a>
                     <ul>
                         <li>
-                            <Link className="nav-router" to={window.cultureInfo.cultureInfo.Culture + "/identity/login"}>
+                            <Link className="nav-router" to={window.cultureInfo!!.cultureInfo.Culture + "/identity/login"}>
                                 <globalManage.localizorHtml txtKey="PublicWord001.key006"></globalManage.localizorHtml>
                             </Link>
                         </li>
                         <li>
-                            <Link className="nav-router" to={window.cultureInfo.cultureInfo.Culture + "/identity/login"}>
+                            <Link className="nav-router" to={window.cultureInfo!!.cultureInfo.Culture + "/identity/login"}>
                                 <globalManage.localizorHtml txtKey="PublicWord001.key007"></globalManage.localizorHtml>
                             </Link>
                         </li>

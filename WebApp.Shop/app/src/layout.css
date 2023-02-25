@@ -17,6 +17,7 @@
     position: relative;
     overflow: hidden;
     height: 100%;
+    position: relative;
 }
 
 .link-list-item {
@@ -66,10 +67,12 @@
 }
 
 .drive-info {
-    height: 8vh;
+    height: 20px;
     grid-area: drive_info;
     padding: 0px 5px;
-    width: 99%;
+    /* width: 99%; */
+    position: fixed;
+    bottom: 35px;
 }
 
 .progress-view {

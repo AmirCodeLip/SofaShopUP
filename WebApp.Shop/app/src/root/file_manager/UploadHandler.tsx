@@ -2,21 +2,23 @@ import DataTransmitter from './../../Services/DataTransmitter'
 import { JsonResponseStatus, JsonResponse } from './../../models/JsonResponse';
 import { UrlData } from './../shared/GlobalManage';
 
+type uploadDoneType = (data: JsonResponse<undefined>, preFolderId: string) => void;
 export default class UploadHandler {
     driveBar: React.RefObject<HTMLDivElement>;
     queryString: UrlData;
     selectionElement: React.RefObject<HTMLDivElement>;
     selectionInfo: SelectionInfo;
-
-    constructor(driveBar: React.RefObject<HTMLDivElement>, queryString: UrlData, selectionElement: React.RefObject<HTMLDivElement>) {
+    onUploadDone: uploadDoneType;
+    constructor(driveBar: React.RefObject<HTMLDivElement>, queryString: UrlData, selectionElement: React.RefObject<HTMLDivElement>, onUploadDone: uploadDoneType) {
         this.driveBar = driveBar;
         this.selectionElement = selectionElement;
-        this.driveBar.current.addEventListener("drop", this.dropEvent)
-        this.driveBar.current.addEventListener("dragover", this.dragoverEvent)
-        this.driveBar.current.addEventListener("dragenter", this.dragenterEvent)
+        this.driveBar.current!!.addEventListener("drop", this.dropEvent);
+        this.driveBar.current!!.addEventListener("dragover", this.dragoverEvent);
+        this.driveBar.current!!.addEventListener("dragenter", this.dragenterEvent);
         window.addEventListener("mousedown", this.driveBarDown.bind(this));
         window.addEventListener("mousemove", this.driveBarMove.bind(this));
         window.addEventListener("mouseup", this.windowClick.bind(this));
+        this.onUploadDone = onUploadDone;
         this.queryString = queryString;
         this.selectionDrive = false;
     }
@@ -27,14 +29,17 @@ export default class UploadHandler {
     }
     public set selectionDrive(v: boolean) {
         this._selectionDrive = v;
+        if (!this.selectionElement.current)
+            return;
+
         if (this.selectionElement) {
             if (v) {
 
-                this.selectionElement.current.style.display = "block";
+                this.selectionElement.current!!.style.display = "block";
             }
             else {
-                this.selectionElement.current.style.display = "none";
-                this.selectionElement.current.style.width = "0px";
+                this.selectionElement.current!!.style.display = "none";
+                this.selectionElement.current!!.style.width = "0px";
                 // this.selectionElement.current.style.height = "0px";
             }
         }
@@ -83,10 +88,10 @@ export default class UploadHandler {
                 this.selectionInfo.height = distance;
             }
 
-            this.selectionElement.current.style.left = `${this.selectionInfo.left}px`;
-            this.selectionElement.current.style.width = `${this.selectionInfo.width}px`;
-            this.selectionElement.current.style.top = `${this.selectionInfo.top}px`;
-            this.selectionElement.current.style.height = `${this.selectionInfo.height}px`;
+            this.selectionElement.current!!.style.left = `${this.selectionInfo.left}px`;
+            this.selectionElement.current!!.style.width = `${this.selectionInfo.width}px`;
+            this.selectionElement.current!!.style.top = `${this.selectionInfo.top}px`;
+            this.selectionElement.current!!.style.height = `${this.selectionInfo.height}px`;
 
         }
     }
@@ -95,13 +100,14 @@ export default class UploadHandler {
     }
 
     drop(e: DragEvent) {
-        this.driveBar.current.classList.remove("dragenter");
-        if (e.dataTransfer.items) {
-            for (let i in e.dataTransfer.items) {
-                let item = e.dataTransfer.items[i];
+        this.driveBar.current!!.classList.remove("dragenter");
+        if (e.dataTransfer!!.items) {
+            for (let i in e.dataTransfer!!.items) {
+                let item = e.dataTransfer!!.items[i];
                 if (item.kind === 'file') {
-                    const file = item.getAsFile();
-                    this.upload(file);
+                    let file = item.getAsFile();
+                    if (file !== null)
+                        this.upload(file);
                 }
             }
         }
@@ -114,8 +120,8 @@ export default class UploadHandler {
     }
 
     dragenter(e: DragEvent) {
-        if (e.dataTransfer.types[0] === "Files") {
-            this.driveBar.current.classList.add("dragenter");
+        if (e.dataTransfer!!.types[0] === "Files") {
+            this.driveBar.current!!.classList.add("dragenter");
             e.preventDefault();
         }
     }
@@ -123,11 +129,12 @@ export default class UploadHandler {
     upload(file: File) {
         let url = `FileManager/Base/Upload`;
         let body: any = { folderId: null };
-        if (this.queryString.id !== "root") {
+        let folderId = this.queryString.id;
+        if (folderId !== "root") {
             body.folderId = this.queryString.id;
         }
-        DataTransmitter.Upload<JsonResponse<undefined>>(DataTransmitter.BaseUrl + url, file, body).then(x => {
-            console.log(x);
+        DataTransmitter.Upload<JsonResponse<undefined>>(DataTransmitter.BaseUrl + url, file, body).then(async x => {
+            await this.onUploadDone(x,folderId);
         });
     }
 

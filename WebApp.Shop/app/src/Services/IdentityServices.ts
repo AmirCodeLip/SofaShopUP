@@ -9,7 +9,11 @@ export async function loginService(model: LoginModel) {
     return result;
 }
 
-export async function LoginLoader() {
-    return DataTransmitter.GetRequest<IFormModel>(DataTransmitter.BaseUrl + "Identity/GetLoginForm");
+export async function identityLoader() {
+    return DataTransmitter.GetRequest<IFormModel>(DataTransmitter.BaseUrl + "Identity/GetIdentityForm");
 }
 
+export interface identityLoaderModel {
+    LoginModel: IFormModel;
+    RegisterModel: IFormModel;
+}

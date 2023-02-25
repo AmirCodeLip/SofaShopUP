@@ -81,6 +81,7 @@ abstract class FormModelItem {
                 case "InputDisplay":
                     let inputDisplay: IInputDisplay = <IInputDisplay>formDescriptors;
                     this.displayName = inputDisplay.Name;
+                    console.log(this.displayName)
                     break;
                 case "InputRequired":
                     let inputRequired: IInputRequired = <IInputRequired>formDescriptors;
@@ -218,7 +219,7 @@ export class FormModeInput extends FormModelItem {
         this.isValid = false;
         let errorBox = document.createElement("span");
         errorBox.innerText = error;
-        this.refError.current.innerHTML = "";
+        this.refError.current!.innerHTML = "";
         this.refError.current!.appendChild(errorBox);
     }
 
@@ -227,7 +228,7 @@ export class FormModeInput extends FormModelItem {
     }
 
     setValue(value: any) {
-        this.refInput.current.value = value;
+        this.refInput.current!.value = value;
     }
 
     validate() {

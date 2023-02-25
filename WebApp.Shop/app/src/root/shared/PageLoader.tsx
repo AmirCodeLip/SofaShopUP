@@ -2,6 +2,7 @@ import * as React from 'react';
 import { PageLoaderOtpions, PageLoaderModel } from './../../model_structure/interfaces/PageLoaderModel'
 import PageLoaderState from './../../model_structure/interfaces/PageLoaderState'
 import { CultureInfoImplement } from './GlobalManage'
+import { redirect } from "react-router-dom";
 
 export function Loading() {
     return (<div className="lds-ripple"><div></div><div></div></div>);
@@ -29,14 +30,14 @@ export class PageLoader extends React.Component<PageLoaderModel, PageLoaderState
             this.load();
             return (<Loading></Loading>);
         }
-        if (this.props.pageLoaderOtpions.allowAnonymous === false) {
+        if (this.props.pageLoaderOtpions?.allowAnonymous === false) {
             let jwt = localStorage.getItem("jwt");
             if (jwt == null)
                 window.location.replace("/identity/login");
         }
         return (<>
             {!this.state.isLoaded && (<Loading></Loading>)}
-            {this.state.isLoaded && <this.props.PageContainer model={this.state.model} />}
+            {this.state.isLoaded && this.props.PageContainer && <this.props.PageContainer model={this.state.model} />}
         </>)
     }
 
@@ -45,21 +46,24 @@ export class PageLoader extends React.Component<PageLoaderModel, PageLoaderState
     }
 
     async componentDidUpdate(prevProps: Readonly<PageLoaderModel>, prevState: Readonly<PageLoaderState>, snapshot?: any) {
-        // await this.load();
+
     }
 
     async componentDidMount() {
-        // let infoSalt = await cookies.pVInfoSetProcess();
-        // let info = await cookies.parseInfo(infoSalt);
-        // console.log(info);
-       
         await this.load();
     }
 
     async load() {
-        if (this.props.pageLoaderOtpions.Loading) {
+        if (this.props.pageLoaderOtpions?.Loading) {
             this.props.pageLoaderOtpions.Loading().then(data => {
-                this.setState({ model: data, isLoaded: true, pageName: this.pageName })
+                if (data == null) {
+                    localStorage.removeItem("jwt");
+                    redirect("/identity/login");
+                    return;
+                }
+                else {
+                    this.setState({ model: data, isLoaded: true, pageName: this.pageName })
+                }
             });
         }
     }
