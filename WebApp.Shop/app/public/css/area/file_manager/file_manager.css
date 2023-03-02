@@ -1,0 +1,156 @@
+﻿.folder {
+    stroke: var(--color_002);
+    fill: var(--color_001);
+    stroke-width: 4;
+    stroke-miterlimit: 10;
+    position: relative;
+    top: -28px;
+}
+
+.select-bar {
+    background-color: var(--color_005);
+    border: 4px solid;
+    border-color: var(--color_005);
+    border-radius: 50px;
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    height: 20px;
+    width: 20px;
+    display: none;
+}
+
+.hover-bar {
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    background-color: var(--color_005);
+    top: 0%;
+    left: 0%;
+    opacity: 0.4;
+    border-radius: 20px;
+    display: none;
+}
+
+
+
+.f-hold {
+    position: relative;
+    padding: 0px 0px 10px 0px;
+    height: fit-content;
+    direction: rtl;
+    margin: 1%;
+    border: 1px solid var(--color_008);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.f-hold:hover>.select-bar,
+.f-hold:hover>.hover-bar,
+.f-hold.selected-object-kind>.select-bar,
+.f-hold.selected-object-kind>.hover-bar {
+    display: block;
+}
+
+.f-hold.selected-object-kind>.select-bar {
+    background-color: var(--color_002);
+}
+
+.f-hold svg {
+
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+}
+
+.f-hold svg {
+    width: 100%;
+    position: relative;
+    height: 180px;
+    top: -38px;
+}
+
+.f-hold img {
+    width: 100%;
+    position: relative;
+    height: 180px;
+}
+
+.drive-bar {
+    margin-left: 15px;
+    margin-right: 15px;
+    min-height: 70vh;
+    position: relative;
+    min-height: 400px;
+    -webkit-user-select: none;
+    /* Safari */
+    -ms-user-select: none;
+    /* IE 10 and IE 11 */
+    user-select: none;
+    /* Standard syntax */
+}
+
+.f-hold-title {
+    width: 80%;
+    margin-right: 24px;
+    height: 24px;
+    overflow: hidden;
+}
+
+.drive-bar.dragenter::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color_001);
+    border: 7px dotted;
+    border-color: var(--color_007);
+    opacity: 0.1;
+    border-radius: 12px;
+
+}
+
+.drive-bar.dragenter::before {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    content: 'فایل خودرا اینجارها کنید';
+    color: var(--color_002);
+    font-size: 45px;
+    font-weight: 800;
+    line-height: 90vh;
+    text-align: center;
+    z-index: 4;
+    opacity: 1;
+}
+
+.selection-drive {
+    position: absolute;
+    height: 200px;
+    background-color: var(--color_002);
+    opacity: 0.2;
+    padding: 0 !important;
+}
+
+.view-main-center {
+    overflow: hidden;
+    box-shadow: var(--color_002) 1px 3px 4px;
+    border-left: 1px solid var(--color_002);
+}
+
+@media screen and (max-width: 1200px) and (min-width: 992px) {
+    .f-hold {
+        margin: 28px;
+    }
+}
+
+@media screen and (max-width: 992px) and (min-width: 768px) {
+    .f-hold {
+        margin: 10px 36px 10px 36px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .f-hold {
+        margin: 10px 0 0 0;
+    }
+}

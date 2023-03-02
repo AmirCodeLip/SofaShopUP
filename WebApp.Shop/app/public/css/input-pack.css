@@ -179,8 +179,8 @@ input.epo:focus {
 }
 
 .btn-outline-001 {
-  color: var(--color_001);
-  border-color: var(--color_001);
+  color: var(--color_002);
+  border-color: var(--color_002);
 }
 
 .btn-outline-001:hover {

@@ -26,12 +26,12 @@ let rootElt = document.getElementById('root');
     cssItems.push("/css/styles.css");
     cssItems.push("/css/nav-menu.css");
     cssItems.push("/css/area/identity/login_register.css");
-    cssItems.push("http://localhost:5220/staticdirectories/src/root/file_manager/file-manager.css");
+    cssItems.push("/css/area/file_manager/file_manager.css");
+    cssItems.push("/css/area/file_manager/layout.css");
     cssItems.push("http://localhost:5220/staticdirectories/src/root/web_modal/Web_Modal.css");
-    cssItems.push("http://localhost:5220/staticdirectories/src/layout.css");
     if (window.cultureInfo!!.cultureInfo.Rtl) {
         cssItems.push("/css/nav-menu.rtl.css");
-        cssItems.push("http://localhost:5220/staticdirectories/src/layout.rtl.css");
+        cssItems.push("/css/area/file_manager/layout.rtl.css");
     }
     ReactDOM.createRoot(document.getElementsByTagName("html")[0]).render(
         <>

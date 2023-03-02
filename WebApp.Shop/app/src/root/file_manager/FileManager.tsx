@@ -6,7 +6,7 @@ import { Col, Row } from 'react-bootstrap';
 import { Web_Modal, ModalOptions, ModalType } from './../web_modal/Web_Modal';
 import { FormModeInput, FormHandler, HiddenModeInput } from '../../mylibraries/asp-communication/components/FormModelItem';
 import FolderInfo from './../../webModels/FileManager/FolderInfo';
-import { load, editForm, FObjectKindComponent, parseId } from '../../Services/FileManagerServices'
+import { load, editForm, FObjectKindComponent } from '../../Services/FileManagerServices'
 import { JsonResponseStatus, JsonResponse } from './../../models/JsonResponse';
 import { FObjectType } from './../../webModels/FileManager/FObjectType';
 import DataTransmitter from '../../Services/DataTransmitter';
@@ -19,7 +19,6 @@ import Layout from './Layout';
 export default class FileManager extends React.Component<FileManagerProps, FileManagerState>  {
 
     driveBar: React.RefObject<HTMLDivElement>;
-    searchDrive: React.RefObject<HTMLInputElement>;
     selectionElement: React.RefObject<HTMLDivElement>;
     nameFolderOrFile: FormModeInput;
     fObjectInfoFormHandler: FormHandler;
@@ -28,18 +27,8 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     newData?: FObjectKindComponent;
     queryString: UrlData;
     folderId: string | undefined;
-    rootRegix = new RegExp('root(\/[a-zA-Z]{1,}){1,}');
     uploadHandler?: UploadHandler;
-    /** 
-     * every time some one search in search box 
-     * we count every second and put in this
-     * */
-    sendSearchRequestTimer?: NodeJS.Timer;
-    /**
-     * every time some one search in search box 
-     * we put their search in this
-     */
-    searchItems: Array<SearchItemHolder> = [];
+
 
     rightBarItems: Array<RightBarItem> =
         [
@@ -95,8 +84,6 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         super(props);
         this.queryString = new UrlData();
         this.driveBar = React.createRef<HTMLDivElement>();
-        /** search bar input element */
-        this.searchDrive = React.createRef<HTMLInputElement>();
         this.selectionElement = React.createRef<HTMLInputElement>();
         this.nameFolderOrFile = new FormModeInput(props.model.EditFolderOrFileForm, "Name");
         this.fObjectInfoFormHandler = new FormHandler(this.nameFolderOrFile,
@@ -119,10 +106,9 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         return (
             <Layout>
                 <>
-                    <input className="search-drive" ref={this.searchDrive} onKeyDown={this.checkPathKeys} onKeyUp={this.changePath.bind(this)} />
                     <Row className="drive-bar" ref={this.driveBar}>
                         {this.state.fData.filter(f => f.model.FObjectType === FObjectType.Folder).map((fData, i) => (
-                            <Col md={4} lg={2} className="f-hold" key={fData.id} ref={fData.refObject} >
+                            <Col xl={2} lg={3} md={4} sm={12} xs={12} className="f-hold" key={fData.id} ref={fData.refObject} >
                                 <FolderLogo></FolderLogo>
                                 <div className="f-hold-title right-item">
                                     {fData.model.Name}
@@ -132,7 +118,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
                             </Col>
                         ))}
                         {this.state.fData.filter(f => f.model.FObjectType === FObjectType.File).map((fData, i) => (
-                            <Col md={4} lg={2} className="f-hold" key={fData.id} ref={fData.refObject} >
+                            <Col xl={2} lg={3} md={4} sm={12} xs={12} className="f-hold" key={fData.id} ref={fData.refObject} >
                                 <img src={DataTransmitter.BaseUrl + "FileManager/Base/GetFileImage/" + fData.model.Id} />
                                 <div className="f-hold-title right-item">
                                     {fData.model.Name}
@@ -238,7 +224,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
             if (fModel!!.model.FObjectType === FObjectType.Folder) {
                 await this.setFolder(fModel!!.model.Id!!);
                 await this.loadData();
-                this.searchDrive.current!!.value = fModel!!.model.Path;
+                //to do change root search
             }
         }
     }
@@ -273,7 +259,8 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     async popstate(ev: PopStateEvent) {
         this.parseQueryString();
         this.loadData();
-        this.searchDrive.current!!.value = await parseId(this.queryString.id);
+        //to do change root search
+        // this.searchDrive.current!!.value = await parseId(this.queryString.id);
     }
 
     /** for editing file or folder*/
@@ -335,57 +322,19 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         this.parseQueryString();
     }
 
-    /**
-     * every time some one search in search box 
-     * first we get last time their search
-     * then if it not exist we clear search process
-     * if process is equal to  root and we aren't in root 
-     * we set folder to root and load data again
-     */
-    sendSearchRequest() {
-        let lastItem = this.searchItems[this.searchItems.length - 1];
-        if (!lastItem) {
-            clearInterval(this.sendSearchRequestTimer);
-            return;
-        }
-        if (lastItem.val === "root" && this.queryString.id !== "root") {
-            this.setFolder("root");
-            this.loadData();
-            this.searchDrive.current!!.value = "root";
-        }
-        else if (this.rootRegix.test(lastItem.val)) {
-            console.log(lastItem.val);
-            console.log("tryGetFolder");
-        }
-        this.searchItems = this.searchItems.filter(c => c.time > lastItem.time)
-    }
-
-    changePath(e: any) {
-        let val = e.target.value;
-        if (!this.sendSearchRequestTimer) {
-            this.sendSearchRequestTimer = setInterval(this.sendSearchRequest.bind(this), 1500);
-        }
-        this.searchItems.push({
-            val: val,
-            time: new Date().getTime()
-        });
-
-
-
-    }
-
-    checkPathKeys(e: any) {
-        let wrongKey = [9, 187, 188, 190, 192, 220, 222];
-        if (wrongKey.includes(e.keyCode)) {
-            e.preventDefault();
-            return;
-        }
-    }
-
     deselectAll() {
         for (let fKind of this.state.fData) {
             fKind.selected = false;
         }
+    }
+
+
+
+    getFixedElement(elemet: HTMLElement): HTMLElement {
+        if (elemet.classList[0] === "hover-bar" || elemet.classList[0] === "select-bar") {
+            return elemet!.parentElement as HTMLElement;
+        }
+        return elemet;
     }
 
     linkListItemClick(e: Event) {
@@ -394,44 +343,8 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         target = target.tagName === 'SPAN' || target.tagName === 'I' ? target.parentElement!! : target;
         let paths = target.href.split("/");
         let id = paths[paths.length - 1];
-        switch (id) {
-            case "images":
-                if (this.queryString.id !== "images") {
-                    this.setFolder("images");
-                    this.loadData();
-                    this.searchDrive.current!!.value = "images"
-                }
-                break;
-            case "root":
-                if (this.queryString.id !== "root") {
-                    this.setFolder("root");
-                    this.loadData();
-                    this.searchDrive.current!!.value = "root"
-                }
-                break;
-            case "audios":
-                if (this.queryString.id !== "audios") {
-                    this.setFolder("audios");
-                    this.loadData();
-                    this.searchDrive.current!!.value = "sounds"
-                }
-                break;
-            case "videos":
-                if (this.queryString.id !== "videos") {
-                    this.setFolder("videos");
-                    this.loadData();
-                    this.searchDrive.current!!.value = "videos"
-                }
-                break;
-        }
-        e.preventDefault();
-    }
 
-    getFixedElement(elemet: HTMLElement): HTMLElement {
-        if (elemet.classList[0] === "hover-bar" || elemet.classList[0] === "select-bar") {
-            return elemet!.parentElement as HTMLElement;
-        }
-        return elemet;
+        e.preventDefault();
     }
 
     componentWillUnmount() {
@@ -460,7 +373,6 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         setTimeout(async () => {
             this.uploadHandler = new UploadHandler(this.driveBar, this.queryString, this.selectionElement, this.onUploadDone.bind(this));
             await this.loadData();
-            this.searchDrive.current!!.value = await parseId(this.queryString.id);
         }, 1000);
     }
 
@@ -469,8 +381,4 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
             await this.loadData();
         }
     }
-}
-interface SearchItemHolder {
-    val: string,
-    time: number
 }

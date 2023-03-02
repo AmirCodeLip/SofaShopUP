@@ -65,13 +65,13 @@ export async function loadSingle(id: string) {
     // let data = await new OdataSetProtocol<FObjectKind>(DataTransmitter.BaseUrl + "odata/FObjectKind")).Execute({ authorize: true });
 }
 
-export async function parseId(id: string) {
-    if (id === "root")
-        return "root";
-    else {
-        return "";
-    }
-}
+// export function parseId(id: string) {
+//     if (id === "root")
+//         return "root";
+//     else {
+//         return "";
+//     }
+// }
 
 export async function FileManagerLoader() {
     return DataTransmitter.GetRequest<FileManagerOnLoadData>(DataTransmitter.BaseUrl + "FileManager/Base/FileManagerOnLoadData", { authorize: true });

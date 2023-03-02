@@ -53,37 +53,41 @@ export default class UploadHandler {
         if (ev.target === this.driveBar.current || (ev.target as HTMLElement).className[0] === "view-main-center") {
             this.selectionDrive = true;
             let sideGridCenter = document.getElementsByClassName("side-grid-center")[0];
-            let searchDrive = document.getElementsByClassName("search-drive")[0];
+            let headerBar = document.getElementsByClassName("header-bar")[0];
 
             this.selectionInfo = {
                 clientX: ev.clientX,
-                clientY: ev.clientY,
-
-
+                clientY: ev.clientY + window.scrollY,
+                scrollY: window.scrollY,
                 constDifferenceX: sideGridCenter.clientWidth,
-                constDifferenceY: searchDrive.clientHeight
+                constDifferenceY: headerBar.clientHeight
             };
         }
     }
     driveBarMove(ev: MouseEvent) {
         if (this.selectionDrive) {
+            ///drag right
             if (this.selectionInfo.clientX < ev.clientX) {
                 let distance = (ev.clientX - this.selectionInfo.clientX);
-                this.selectionInfo.left = this.selectionInfo.clientX - this.selectionInfo.constDifferenceX;
-                this.selectionInfo.width = distance - 10;
+                this.selectionInfo.left = this.selectionInfo.clientX - this.selectionInfo.constDifferenceX - 10;
+                this.selectionInfo.width = distance;
             }
+            ///drag left
             else if (this.selectionInfo.clientX > ev.clientX) {
-                // this.selectionInfo.width = 2;
+
                 let distance = (this.selectionInfo.clientX - ev.clientX);
                 this.selectionInfo.left = this.selectionInfo.clientX - distance - this.selectionInfo.constDifferenceX - 10;
-                this.selectionInfo.width = distance + 10;
+                this.selectionInfo.width = distance;
             }
+            ///drag bottom
             if (this.selectionInfo.clientY < ev.clientY) {
-                let distance = (ev.clientY - this.selectionInfo.clientY);
+                let distance = (ev.clientY + window.scrollY - this.selectionInfo.clientY);
                 this.selectionInfo.top = this.selectionInfo.clientY - this.selectionInfo.constDifferenceY;
                 this.selectionInfo.height = distance;
-            } else {
-                let distance = (this.selectionInfo.clientY - ev.clientY);
+            }
+            ///drag top 
+            else {
+                let distance = (this.selectionInfo.clientY - window.scrollY - ev.clientY);
                 this.selectionInfo.top = this.selectionInfo.clientY - distance - this.selectionInfo.constDifferenceY;
                 this.selectionInfo.height = distance;
             }
@@ -134,7 +138,7 @@ export default class UploadHandler {
             body.folderId = this.queryString.id;
         }
         DataTransmitter.Upload<JsonResponse<undefined>>(DataTransmitter.BaseUrl + url, file, body).then(async x => {
-            await this.onUploadDone(x,folderId);
+            await this.onUploadDone(x, folderId);
         });
     }
 
@@ -152,5 +156,6 @@ interface SelectionInfo {
     left?: number,
     width?: number,
     top?: number,
-    height?: number
+    height?: number,
+    scrollY: number
 }
