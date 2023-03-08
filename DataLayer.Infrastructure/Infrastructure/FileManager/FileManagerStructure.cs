@@ -69,7 +69,7 @@ namespace DataLayer.Infrastructure.Infrastructure
             }
             else
             {
-                if (fObjectKindInfo.Id == Guid.Empty)
+                if (fObjectKindInfo.Id == null || fObjectKindInfo.Id == Guid.Empty)
                 {
                     WebFolder folder = fObjectKindInfo;
                     folder.CreatorId = user.Id;
@@ -169,7 +169,8 @@ namespace DataLayer.Infrastructure.Infrastructure
                     CreatedDate = DateTime.Now,
                     Name = fileName,
                     FolderId = root.Id,
-                    Extension = ex
+                    Extension = ex,
+                    CreatorId = user.Id
                 };
                 if (!supportedTypes.ContainsEX(ex))
                 {

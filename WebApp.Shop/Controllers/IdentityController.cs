@@ -18,8 +18,8 @@ namespace WebApp.Shop.Controllers
         }
 
         [HttpGet]
-        public string GetLoginForm() =>
-            _identityManage.GetLoginForm();
+        public string GetIdentityForm() =>
+            _identityManage.GetIdentityForm();
 
         [HttpPost]
         public async Task<IActionResult> PostLogin([FromBody] LoginModel loginModel) =>

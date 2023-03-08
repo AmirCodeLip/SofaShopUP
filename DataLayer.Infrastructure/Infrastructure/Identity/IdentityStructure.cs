@@ -38,9 +38,13 @@ namespace DataLayer.Infrastructure.Infrastructure
 
         }
 
-        public string GetLoginForm()
+        public string GetIdentityForm()
         {
-            return JsonConvert.SerializeObject(FormManager.GetFromFrom(typeof(LoginModel)));
+            return JsonConvert.SerializeObject(new
+            {
+                LoginModel = FormManager.GetFromFrom(typeof(LoginModel)),
+                RegisterModel = FormManager.GetFromFrom(typeof(RegisterModel))
+            });
         }
 
         public async Task<ContentResult> Login(LoginModel loginModel, ModelStateDictionary modelState)
@@ -85,7 +89,7 @@ namespace DataLayer.Infrastructure.Infrastructure
                 else if (loginResult.Succeeded)
                 {
                     var tokenDescriptor = new SecurityTokenDescriptor
-                    { 
+                    {
                         Subject = new ClaimsIdentity(new Claim[]
                         {
                             new Claim("UserId",user.Id.ToString()),

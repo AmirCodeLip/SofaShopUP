@@ -53,10 +53,11 @@ export async function load(createRef: userRefType, folderID: string | undefined)
         rq.Where(x => x.TypeKind === "3");
     let data = await rq.Execute({ authorize: true });
     let componentItems: Array<FObjectKindComponent> = [];
-    for (let i of data) {
-        i.FObjectType = i.FObjectType === "Folder" ? 1 : 0;
-        componentItems.push(new FObjectKindComponent(i, createRef<HTMLDivElement>()))
-    }
+    if (data != null)
+        for (let i of data) {
+            i.FObjectType = i.FObjectType === "Folder" ? 1 : 0;
+            componentItems.push(new FObjectKindComponent(i, createRef<HTMLDivElement>()))
+        }
     return componentItems;
 };
 
@@ -64,13 +65,13 @@ export async function loadSingle(id: string) {
     // let data = await new OdataSetProtocol<FObjectKind>(DataTransmitter.BaseUrl + "odata/FObjectKind")).Execute({ authorize: true });
 }
 
-export async function parseId(id: string) {
-    if (id === "root")
-        return "root";
-    else {
-        return "";
-    }
-}
+// export function parseId(id: string) {
+//     if (id === "root")
+//         return "root";
+//     else {
+//         return "";
+//     }
+// }
 
 export async function FileManagerLoader() {
     return DataTransmitter.GetRequest<FileManagerOnLoadData>(DataTransmitter.BaseUrl + "FileManager/Base/FileManagerOnLoadData", { authorize: true });

@@ -1,0 +1,14 @@
+.identity-tabs .dx-tabpanel-tabs .dx-tabs .dx-tabs-wrapper {
+    display: flex;
+}
+
+.identity-tabs .dx-tabpanel-tabs .dx-tabs .dx-tabs-wrapper .dx-item {
+    width: 50%;
+}
+
+.identity-box {
+    width: 700px;
+    position: relative;
+    margin: auto;
+    top: 30px;
+}

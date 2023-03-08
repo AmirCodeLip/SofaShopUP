@@ -6,28 +6,30 @@ import { Col, Row } from 'react-bootstrap';
 import { Web_Modal, ModalOptions, ModalType } from './../web_modal/Web_Modal';
 import { FormModeInput, FormHandler, HiddenModeInput } from '../../mylibraries/asp-communication/components/FormModelItem';
 import FolderInfo from './../../webModels/FileManager/FolderInfo';
-import { load, editForm, FObjectKindComponent, parseId } from '../../Services/FileManagerServices'
+import { load, editForm, FObjectKindComponent } from '../../Services/FileManagerServices'
 import { JsonResponseStatus, JsonResponse } from './../../models/JsonResponse';
 import { FObjectType } from './../../webModels/FileManager/FObjectType';
 import DataTransmitter from '../../Services/DataTransmitter';
 import UploadHandler from './UploadHandler';
 import { UrlData } from './../shared/GlobalManage';
 import FObjectKind from './../../webModels/FileManager/FObjectKind';
+import Layout from './Layout';
+
 
 export default class FileManager extends React.Component<FileManagerProps, FileManagerState>  {
 
     driveBar: React.RefObject<HTMLDivElement>;
-    searchDrive: React.RefObject<HTMLInputElement>;
     selectionElement: React.RefObject<HTMLDivElement>;
-    fObjectInfoModelInput: FormModeInput;
+    nameFolderOrFile: FormModeInput;
     fObjectInfoFormHandler: FormHandler;
     contextMenuMiddleware: ModalOptions;
     fObjectMenuMiddleware: ModalOptions;
     newData?: FObjectKindComponent;
     queryString: UrlData;
     folderId: string | undefined;
-    rootRegix = new RegExp('root(\/[a-zA-Z]{1,}){1,}');
     uploadHandler?: UploadHandler;
+
+
     rightBarItems: Array<RightBarItem> =
         [
             {
@@ -51,7 +53,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
                         Name: "",
                         FObjectType: FObjectType.Folder,
                         Path: "",
-                        TypeKind: null
+                        TypeKind: ""
                     });
                     this.openEditFolderOrFile()
                 }
@@ -82,12 +84,13 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         super(props);
         this.queryString = new UrlData();
         this.driveBar = React.createRef<HTMLDivElement>();
-        this.searchDrive = React.createRef<HTMLInputElement>();
         this.selectionElement = React.createRef<HTMLInputElement>();
-        this.fObjectInfoModelInput = new FormModeInput(props.model.EditFolderOrFileForm, "Name");
-        this.fObjectInfoFormHandler = new FormHandler(this.fObjectInfoModelInput,
+        this.nameFolderOrFile = new FormModeInput(props.model.EditFolderOrFileForm, "Name");
+        this.fObjectInfoFormHandler = new FormHandler(this.nameFolderOrFile,
             new HiddenModeInput<string>(props.model.EditFolderOrFileForm, "Id"),
             new HiddenModeInput<string>(props.model.EditFolderOrFileForm, "FObjectType"),
+            new HiddenModeInput<string>(props.model.EditFolderOrFileForm, "Path"),
+            new HiddenModeInput<string>(props.model.EditFolderOrFileForm, "TypeKind"),
             new HiddenModeInput<string>(props.model.EditFolderOrFileForm, "FolderId"));
         this.state =
         {
@@ -101,66 +104,67 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
 
     render() {
         return (
-            <>
-                <input className="search-drive" ref={this.searchDrive} onKeyDown={this.checkPathKeys} onKeyUp={this.changePath.bind(this)} />
-                <Row className="drive-bar" ref={this.driveBar}>
-                    {this.state.fData.filter(f => f.model.FObjectType === FObjectType.Folder).map((fData, i) => (
-                        <Col md={4} lg={2} className="f-hold" key={fData.id} ref={fData.refObject} >
-                            <FolderLogo></FolderLogo>
-                            <div className="f-hold-title right-item">
-                                {fData.model.Name}
-                            </div>
-                            <div className="hover-bar"></div>
-                            <div className="select-bar"></div>
-                        </Col>
-                    ))}
-                    {this.state.fData.filter(f => f.model.FObjectType === FObjectType.File).map((fData, i) => (
-                        <Col md={4} lg={2} className="f-hold" key={fData.id} ref={fData.refObject} >
-                            <img src={DataTransmitter.BaseUrl + "FileManager/Base/GetFileImage/" + fData.model.Id} />
-                            <div className="f-hold-title right-item">
-                                {fData.model.Name}
-                            </div>
-                            <div className="hover-bar"></div>
-                            <div className="select-bar"></div>
-                        </Col>
-                    ))}
-                    <div ref={this.selectionElement} style={{ display: 'none' }} className='selection-drive'></div>
-                </Row>
-                <Web_Modal middleware={this.fObjectMenuMiddleware}>
-                    <>
-                        <div className="epo-form">
-                            <label className='epo-right right-item' ref={this.fObjectInfoModelInput.refLabel}></label>
-                            <input className="epo right-item" ref={this.fObjectInfoModelInput.refInput} />
-                            <div className="epo-border"></div>
-                            <div className="right-item" ref={this.fObjectInfoModelInput.refError} ></div>
-                        </div>
-                        <div className="epo-form" onClick={() => this.editFObject()}>
-                            <button className="btn btn-outline-001 btn-well">
-                                ثبت
-                            </button>
-                        </div>
-                    </>
-                </Web_Modal>
-                <Web_Modal middleware={this.contextMenuMiddleware}>
-                    <Row>
-                        {this.rightBarItems.filter(x => x.clickedSection === this.state.clickedSection).map((item, key) =>
-                            <Col lg={12} className='contextlist-each' ref={item.refItem} key={key} >
-                                <div className='contextlist-hold'>
-                                    <div className="contextlist-item-text right-item">
-                                        {item.text}
-                                    </div>
-                                    <div className='contextlist-item-icon'>
-                                        <i className={item.icon}></i>
-                                    </div>
+            <Layout>
+                <>
+                    <Row className="drive-bar" ref={this.driveBar}>
+                        {this.state.fData.filter(f => f.model.FObjectType === FObjectType.Folder).map((fData, i) => (
+                            <Col xl={2} lg={3} md={4} sm={12} xs={12} className="f-hold" key={fData.id} ref={fData.refObject} >
+                                <FolderLogo></FolderLogo>
+                                <div className="f-hold-title right-item">
+                                    {fData.model.Name}
                                 </div>
-                                <div className='command-line'>
-                                    {item.cmdText}
-                                </div>
+                                <div className="hover-bar"></div>
+                                <div className="select-bar"></div>
                             </Col>
-                        )}
+                        ))}
+                        {this.state.fData.filter(f => f.model.FObjectType === FObjectType.File).map((fData, i) => (
+                            <Col xl={2} lg={3} md={4} sm={12} xs={12} className="f-hold" key={fData.id} ref={fData.refObject} >
+                                <img src={DataTransmitter.BaseUrl + "FileManager/Base/GetFileImage/" + fData.model.Id} />
+                                <div className="f-hold-title right-item">
+                                    {fData.model.Name}
+                                </div>
+                                <div className="hover-bar"></div>
+                                <div className="select-bar"></div>
+                            </Col>
+                        ))}
+                        <div ref={this.selectionElement} style={{ display: 'none' }} className='selection-drive'></div>
                     </Row>
-                </Web_Modal>
-            </>
+                    <Web_Modal middleware={this.fObjectMenuMiddleware}>
+                        <>
+                            <div className="epo-form">
+                                <label className='epo-right right-item' ref={this.nameFolderOrFile.refLabel}></label>
+                                <input className="epo right-item" ref={this.nameFolderOrFile.refInput} />
+                                <div className="epo-border"></div>
+                                <div className="right-item" ref={this.nameFolderOrFile.refError} ></div>
+                            </div>
+                            <div className="epo-form" onClick={() => this.editFObject()}>
+                                <button className="btn btn-outline-001 btn-well">
+                                    ثبت
+                                </button>
+                            </div>
+                        </>
+                    </Web_Modal>
+                    <Web_Modal middleware={this.contextMenuMiddleware}>
+                        <Row>
+                            {this.rightBarItems.filter(x => x.clickedSection === this.state.clickedSection).map((item, key) =>
+                                <Col lg={12} className='contextlist-each' ref={item.refItem} key={key} >
+                                    <div className='contextlist-hold'>
+                                        <div className="contextlist-item-text right-item">
+                                            {item.text}
+                                        </div>
+                                        <div className='contextlist-item-icon'>
+                                            <i className={item.icon}></i>
+                                        </div>
+                                    </div>
+                                    <div className='command-line'>
+                                        {item.cmdText}
+                                    </div>
+                                </Col>
+                            )}
+                        </Row>
+                    </Web_Modal>
+                </>
+            </Layout>
         );
 
     }
@@ -220,7 +224,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
             if (fModel!!.model.FObjectType === FObjectType.Folder) {
                 await this.setFolder(fModel!!.model.Id!!);
                 await this.loadData();
-                this.searchDrive.current!!.value = fModel!!.model.Path;
+                //to do change root search
             }
         }
     }
@@ -247,12 +251,19 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         }
     }
 
+    /**
+     when time some one click on back button if
+     there is exist past location we will load data
+     again
+    */
     async popstate(ev: PopStateEvent) {
         this.parseQueryString();
         this.loadData();
-        this.searchDrive.current!!.value = await parseId(this.queryString.id);
+        //to do change root search
+        // this.searchDrive.current!!.value = await parseId(this.queryString.id);
     }
 
+    /** for editing file or folder*/
     async editFObject() {
         let formData = this.fObjectInfoFormHandler.getFormData<FObjectKind>();
         if (formData.FolderId === null) delete formData.Id;
@@ -268,6 +279,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         }
     }
 
+    /** open edit modal*/
     openEditFolderOrFile(): void {
         this.contextMenuMiddleware.enable = false;
         this.fObjectMenuMiddleware.enable = true;
@@ -279,13 +291,14 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
             }
         }
         setTimeout(() => {
-            if (!this.fObjectInfoModelInput.refLabel.current ||
-                !this.fObjectInfoModelInput.refInput || !this.fObjectInfoModelInput.refError)
+            if (!this.nameFolderOrFile.refLabel.current ||
+                !this.nameFolderOrFile.refInput || !this.nameFolderOrFile.refError)
                 return;
             this.fObjectInfoFormHandler.init();
         }, 60);
     }
 
+    /** get or refresh data */
     async loadData() {
         let data = await load(React.createRef, this.folderId);
         this.setState({
@@ -293,55 +306,20 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         });
     }
 
+    /** parse url of the page */
     parseQueryString() {
         this.queryString.update();
         this.folderId = this.queryString.id;
     }
 
+    /**
+     * when some one change folder we reload
+     * the data of the page
+     * @param folderId 
+     */
     setFolder(folderId: string) {
         window.history.pushState(null, "changeFolder", `/${this.queryString.culture}/manage_files/${folderId}`);
         this.parseQueryString();
-    }
-
-    sendSearchRequestTimer?: NodeJS.Timer;
-    searchItems: Array<SearchItemHolder> = [];
-    sendSearchRequest() {
-        let lastItem = this.searchItems[this.searchItems.length - 1];
-        if (!lastItem) {
-            clearInterval(this.sendSearchRequestTimer);
-            return;
-        }
-        if (lastItem.val === "root" && this.queryString.id !== "root") {
-            this.setFolder("root");
-            this.loadData();
-            this.searchDrive.current!!.value = "root";
-        }
-        else if (this.rootRegix.test(lastItem.val)) {
-            console.log("tryGetFolder");
-        }
-        this.searchItems = this.searchItems.filter(c => c.time > lastItem.time)
-    }
-
-    changePath(e: any) {
-        let val = e.target.value;
-        if (!this.sendSearchRequestTimer) {
-            this.sendSearchRequestTimer = setInterval(this.sendSearchRequest.bind(this), 1500);
-        }
-        this.searchItems.push({
-            val: val,
-            time: new Date().getTime()
-        });
-
-
-
-    }
-
-    checkPathKeys(e: any) {
-        let wrongKey = [9, 187, 188, 190, 192, 220, 222];
-        if (wrongKey.includes(e.keyCode)) {
-            e.preventDefault();
-            return;
-        }
     }
 
     deselectAll() {
@@ -350,50 +328,23 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         }
     }
 
-    linkListItemClick(e: Event) {
-        let target: HTMLElement | any = e.target!! as HTMLElement;
-        target = target.tagName === 'P' ? target.parentElement!!.parentElement!! : target;
-        target = target.tagName === 'SPAN' || target.tagName === 'I' ? target.parentElement!! : target;
-        let paths = target.href.split("/");
-        let id = paths[paths.length - 1];
-        switch (id) {
-            case "images":
-                if (this.queryString.id !== "images") {
-                    this.setFolder("images");
-                    this.loadData();
-                    this.searchDrive.current!!.value = "images"
-                }
-                break;
-            case "root":
-                if (this.queryString.id !== "root") {
-                    this.setFolder("root");
-                    this.loadData();
-                    this.searchDrive.current!!.value = "root"
-                }
-                break;
-            case "audios":
-                if (this.queryString.id !== "audios") {
-                    this.setFolder("audios");
-                    this.loadData();
-                    this.searchDrive.current!!.value = "sounds"
-                }
-                break;
-            case "videos":
-                if (this.queryString.id !== "videos") {
-                    this.setFolder("videos");
-                    this.loadData();
-                    this.searchDrive.current!!.value = "videos"
-                }
-                break;
-        }
-        e.preventDefault();
-    }
+
 
     getFixedElement(elemet: HTMLElement): HTMLElement {
         if (elemet.classList[0] === "hover-bar" || elemet.classList[0] === "select-bar") {
             return elemet!.parentElement as HTMLElement;
         }
         return elemet;
+    }
+
+    linkListItemClick(e: Event) {
+        let target: HTMLElement | any = e.target!! as HTMLElement;
+        target = target.tagName === 'P' ? target.parentElement!!.parentElement!! : target;
+        target = target.tagName === 'SPAN' || target.tagName === 'I' ? target.parentElement!! : target;
+        let paths = target.href.split("/");
+        let id = paths[paths.length - 1];
+
+        e.preventDefault();
     }
 
     componentWillUnmount() {
@@ -405,14 +356,12 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         for (let index = 0; index < items.length; index++) {
             items[index].removeEventListener("click", this.linkListItemClick);
         }
-        this.uploadHandler.componentWillUnmount();
+        this.uploadHandler!!.componentWillUnmount();
     }
 
-    componentWillMount(): void {
-        this.fObjectInfoFormHandler.initRef(React.createRef);
-    }
-
-    async componentDidMount() {
+    componentDidMount() {
+        if (this.fObjectInfoFormHandler)
+            this.fObjectInfoFormHandler.initRef(React.createRef);
         document.addEventListener("contextmenu", this.rightClick.bind(this));
         document.addEventListener("click", this.leftClick.bind(this));
         document.addEventListener("dblclick", this.leftDblClick.bind(this));
@@ -421,14 +370,15 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
             items[index].addEventListener("click", this.linkListItemClick.bind(this));
         window.addEventListener("popstate", this.popstate.bind(this));
         this.parseQueryString();
-        await this.loadData();
-        this.uploadHandler = new UploadHandler(this.driveBar, this.queryString, this.selectionElement);
-        this.searchDrive.current!!.value = await parseId(this.queryString.id);
-
-        // this.searchDrive.current.contentDocument.designMode = "on";
+        setTimeout(async () => {
+            this.uploadHandler = new UploadHandler(this.driveBar, this.queryString, this.selectionElement, this.onUploadDone.bind(this));
+            await this.loadData();
+        }, 1000);
     }
-}
-interface SearchItemHolder {
-    val: string,
-    time: number
+
+    async onUploadDone(response: JsonResponse<undefined>, preFolderId: string) {
+        if (this.queryString.id === preFolderId) {
+            await this.loadData();
+        }
+    }
 }
