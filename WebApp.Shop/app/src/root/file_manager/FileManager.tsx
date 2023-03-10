@@ -14,92 +14,76 @@ import UploadHandler from './UploadHandler';
 import { UrlData } from './../shared/GlobalManage';
 import FObjectKind from './../../webModels/FileManager/FObjectKind';
 import Layout from './Layout';
-
+import { isGuid } from '../../mylibraries/Utilities';
 
 export default class FileManager extends React.Component<FileManagerProps, FileManagerState>  {
 
-    driveBar: React.RefObject<HTMLDivElement>;
-    selectionElement: React.RefObject<HTMLDivElement>;
-    nameFolderOrFile: FormModeInput;
+    driveBar: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
+    selectionElement: React.RefObject<HTMLDivElement> = React.createRef<HTMLInputElement>();
+    nameFolderOrFile: FormModeInput = new FormModeInput(this.props.model.EditFolderOrFileForm, "Name");
     fObjectInfoFormHandler: FormHandler;
-    contextMenuMiddleware: ModalOptions;
-    fObjectMenuMiddleware: ModalOptions;
+    contextMenuMiddleware: ModalOptions = new ModalOptions(ModalType.contextModal);
+    fObjectMenuMiddleware: ModalOptions = new ModalOptions(ModalType.defualtModal);
+    queryString: UrlData = new UrlData();
     newData?: FObjectKindComponent;
-    queryString: UrlData;
     folderId: string | undefined;
     uploadHandler?: UploadHandler;
-
-
-    rightBarItems: Array<RightBarItem> =
-        [
-            {
-                text: 'رفرش',
-                cmdText: 'Ctrl+R',
-                icon: "fa-solid fa-arrows-rotate",
-                refItem: React.createRef<HTMLDivElement>(),
-                clickedSection: ClickedSection.driveBar,
-                clicked: () => { }
-            },
-            {
-                text: 'فولدر جدید',
-                cmdText: 'Ctrl+N+D',
-                icon: "fa-regular fa-folder",
-                refItem: React.createRef<HTMLDivElement>(),
-                clickedSection: ClickedSection.driveBar,
-                clicked: () => {
-                    this.newData = new FObjectKindComponent({
-                        // Id: null,
-                        FolderId: null,
-                        Name: "",
-                        FObjectType: FObjectType.Folder,
-                        Path: "",
-                        TypeKind: ""
-                    });
-                    this.openEditFolderOrFile()
-                }
-            },
-            {
-                text: 'تغییر نام فولدر',
-                cmdText: 'Ctrl+R+N',
-                icon: "fa-solid fa-pen",
-                refItem: React.createRef<HTMLDivElement>(),
-                clickedSection: ClickedSection.folder,
-                clicked: () => {
-                    this.openEditFolderOrFile()
-                }
-            },
-            {
-                text: 'تغییر نام فایل',
-                cmdText: 'Ctrl+R+N',
-                icon: "fa-solid fa-pen",
-                refItem: React.createRef<HTMLDivElement>(),
-                clickedSection: ClickedSection.file,
-                clicked: () => {
-                    this.openEditFolderOrFile()
-                }
+    rightBarItems: Array<RightBarItem> = [
+        {
+            text: 'رفرش',
+            cmdText: 'Ctrl+R',
+            icon: "fa-solid fa-arrows-rotate",
+            refItem: React.createRef<HTMLDivElement>(),
+            clickedSection: ClickedSection.driveBar,
+            clicked: () => { }
+        },
+        {
+            text: 'فولدر جدید',
+            cmdText: 'Ctrl+N+D',
+            icon: "fa-regular fa-folder",
+            refItem: React.createRef<HTMLDivElement>(),
+            clickedSection: ClickedSection.driveBar,
+            clicked: () => {
+                // let folderId = this.queryString.id == "root"
+                this.newData = new FObjectKindComponent({
+                    // Id: null,
+                    FolderId: isGuid(this.queryString.id) ? this.queryString.id : null,
+                    Name: "",
+                    FObjectType: FObjectType.Folder,
+                    Path: "",
+                    TypeKind: ""
+                });
+                this.openEditFolderOrFile()
             }
-        ];
+        },
+        {
+            text: 'تغییر نام فولدر',
+            cmdText: 'Ctrl+R+N',
+            icon: "fa-solid fa-pen",
+            refItem: React.createRef<HTMLDivElement>(),
+            clickedSection: ClickedSection.folder,
+            clicked: () => {
+                this.openEditFolderOrFile()
+            }
+        },
+        {
+            text: 'تغییر نام فایل',
+            cmdText: 'Ctrl+R+N',
+            icon: "fa-solid fa-pen",
+            refItem: React.createRef<HTMLDivElement>(),
+            clickedSection: ClickedSection.file,
+            clicked: () => {
+                this.openEditFolderOrFile()
+            }
+        }
+    ];
 
     constructor(props: FileManagerProps) {
         super(props);
-        this.queryString = new UrlData();
-        this.driveBar = React.createRef<HTMLDivElement>();
-        this.selectionElement = React.createRef<HTMLInputElement>();
-        this.nameFolderOrFile = new FormModeInput(props.model.EditFolderOrFileForm, "Name");
-        this.fObjectInfoFormHandler = new FormHandler(this.nameFolderOrFile,
-            new HiddenModeInput<string>(props.model.EditFolderOrFileForm, "Id"),
-            new HiddenModeInput<string>(props.model.EditFolderOrFileForm, "FObjectType"),
-            new HiddenModeInput<string>(props.model.EditFolderOrFileForm, "Path"),
-            new HiddenModeInput<string>(props.model.EditFolderOrFileForm, "TypeKind"),
-            new HiddenModeInput<string>(props.model.EditFolderOrFileForm, "FolderId"));
-        this.state =
-        {
-            showContextMenu: false,
-            fData: [],
-            clickedSection: undefined
-        };
-        this.contextMenuMiddleware = new ModalOptions(ModalType.contextModal);
-        this.fObjectMenuMiddleware = new ModalOptions(ModalType.defualtModal);
+        this.fObjectInfoFormHandler = new FormHandler(this.nameFolderOrFile);
+        ///set hidden inputs for edit folder modal
+        this.fObjectInfoFormHandler.addHiddens(props.model.EditFolderOrFileForm, "Id", "FObjectType", "Path", "TypeKind", "FolderId");
+        this.state = { showContextMenu: false, fData: [], clickedSection: undefined };
     }
 
     render() {
@@ -266,7 +250,6 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     /** for editing file or folder*/
     async editFObject() {
         let formData = this.fObjectInfoFormHandler.getFormData<FObjectKind>();
-        if (formData.FolderId === null) delete formData.Id;
         var data = await editForm(formData);
         if (data?.Status === JsonResponseStatus.Success) {
             this.fObjectMenuMiddleware.enable = false;
@@ -371,7 +354,10 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         window.addEventListener("popstate", this.popstate.bind(this));
         this.parseQueryString();
         setTimeout(async () => {
-            this.uploadHandler = new UploadHandler(this.driveBar, this.queryString, this.selectionElement, this.onUploadDone.bind(this));
+            this.uploadHandler = new UploadHandler(this.driveBar, this.queryString, this.selectionElement);
+            this.uploadHandler.onUploadDone = this.onUploadDone.bind(this);
+            this.uploadHandler.onselectFObject = this.onselectFObject.bind(this);
+
             await this.loadData();
         }, 1000);
     }
@@ -379,6 +365,19 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     async onUploadDone(response: JsonResponse<undefined>, preFolderId: string) {
         if (this.queryString.id === preFolderId) {
             await this.loadData();
+        }
+    }
+
+    onselectFObject() {
+        if (this.selectionElement.current.clientHeight > 400) {
+            let crSelection = this.selectionElement.current.getClientRects();
+            for (let fData of this.state.fData) {
+                let crElt = fData.refObject.current.getClientRects();
+
+
+
+                debugger;
+            }
         }
     }
 }

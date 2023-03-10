@@ -9,7 +9,9 @@ export default class UploadHandler {
     selectionElement: React.RefObject<HTMLDivElement>;
     selectionInfo: SelectionInfo;
     onUploadDone: uploadDoneType;
-    constructor(driveBar: React.RefObject<HTMLDivElement>, queryString: UrlData, selectionElement: React.RefObject<HTMLDivElement>, onUploadDone: uploadDoneType) {
+    onselectFObject: () => void;
+
+    constructor(driveBar: React.RefObject<HTMLDivElement>, queryString: UrlData, selectionElement: React.RefObject<HTMLDivElement>) {
         this.driveBar = driveBar;
         this.selectionElement = selectionElement;
         this.driveBar.current!!.addEventListener("drop", this.dropEvent);
@@ -18,7 +20,6 @@ export default class UploadHandler {
         window.addEventListener("mousedown", this.driveBarDown.bind(this));
         window.addEventListener("mousemove", this.driveBarMove.bind(this));
         window.addEventListener("mouseup", this.windowClick.bind(this));
-        this.onUploadDone = onUploadDone;
         this.queryString = queryString;
         this.selectionDrive = false;
     }
@@ -69,20 +70,24 @@ export default class UploadHandler {
             ///drag right
             if (this.selectionInfo.clientX < ev.clientX) {
                 let distance = (ev.clientX - this.selectionInfo.clientX);
-                this.selectionInfo.left = this.selectionInfo.clientX - this.selectionInfo.constDifferenceX - 10;
+                this.selectionInfo.left = this.selectionInfo.clientX - this.selectionInfo.constDifferenceX + 10;
                 this.selectionInfo.width = distance;
             }
             ///drag left
             else if (this.selectionInfo.clientX > ev.clientX) {
 
                 let distance = (this.selectionInfo.clientX - ev.clientX);
-                this.selectionInfo.left = this.selectionInfo.clientX - distance - this.selectionInfo.constDifferenceX - 10;
+                this.selectionInfo.left = this.selectionInfo.clientX - distance - this.selectionInfo.constDifferenceX + 10;
                 this.selectionInfo.width = distance;
             }
             ///drag bottom
             if (this.selectionInfo.clientY < ev.clientY) {
-                let distance = (ev.clientY + window.scrollY - this.selectionInfo.clientY);
+
+                // this.selectionInfo.top = this.selectionInfo.clientY - this.selectionInfo.constDifferenceY;
+
+                let distance = ev.clientY - window.scrollY - this.selectionInfo.clientY;
                 this.selectionInfo.top = this.selectionInfo.clientY - this.selectionInfo.constDifferenceY;
+
                 this.selectionInfo.height = distance;
             }
             ///drag top 
@@ -96,7 +101,7 @@ export default class UploadHandler {
             this.selectionElement.current!!.style.width = `${this.selectionInfo.width}px`;
             this.selectionElement.current!!.style.top = `${this.selectionInfo.top}px`;
             this.selectionElement.current!!.style.height = `${this.selectionInfo.height}px`;
-
+            this.onselectFObject();
         }
     }
     windowClick(ev: MouseEvent) {

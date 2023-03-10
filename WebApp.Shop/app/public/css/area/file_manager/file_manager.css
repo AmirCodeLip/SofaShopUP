@@ -39,7 +39,6 @@
     padding: 0px 0px 10px 0px;
     height: fit-content;
     direction: rtl;
-    margin: 1%;
     border: 1px solid var(--color_008);
     border-radius: 20px;
     overflow: hidden;
@@ -76,7 +75,7 @@
 }
 
 .drive-bar {
-    margin-left: 15px;
+    /* margin-left: 15px; */
     margin-right: 15px;
     min-height: 70vh;
     position: relative;
@@ -137,20 +136,31 @@
     border-left: 1px solid var(--color_002);
 }
 
+@media screen and (min-width: 1200px) {
+    .f-hold {
+        margin: 5px 10px 10px 20px;
+    }
+}
+
 @media screen and (max-width: 1200px) and (min-width: 992px) {
     .f-hold {
         margin: 28px;
     }
 }
 
-@media screen and (max-width: 992px) and (min-width: 768px) {
+
+@media screen and (max-width: 992px) and (min-width: 767px) {
     .f-hold {
-        margin: 10px 36px 10px 36px;
+        margin: 10px 0px 11px 105px;
     }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 767px) {
     .f-hold {
-        margin: 10px 0 0 0;
+        margin: 5px 0% 0px 11%;
+        width: 80%;
+    }
+    .f-hold img{
+        height: 380px;
     }
 }

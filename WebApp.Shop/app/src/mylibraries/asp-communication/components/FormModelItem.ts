@@ -20,6 +20,11 @@ export class FormHandler {
     formModelItems: Array<FormModelItem>;
     isInited: boolean = false;
 
+    addHiddens(formModels: IFormModel, ...names: string[]) {
+        for (let itemName of names) {
+            this.formModelItems.push(new HiddenModeInput<string>(formModels, itemName));
+        }
+    }
     addError(key: string, error: string) {
         this.formModelItems.find(x => x.name === key)!.addError(error);
     }
@@ -53,7 +58,7 @@ export class FormHandler {
                 // console.log(item.getValue());
             }
             else {
-                throw "the input with name " + name + " is not exist";        
+                throw "the input with name " + name + " is not exist";
                 // console.log(name);
             }
         }
