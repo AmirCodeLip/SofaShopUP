@@ -28,6 +28,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     newData?: FObjectKindComponent;
     folderId: string | undefined;
     uploadHandler?: UploadHandler;
+    preventDeselectAll: boolean = false;
     rightBarItems: Array<RightBarItem> = [
         {
             text: 'رفرش',
@@ -305,7 +306,11 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         this.parseQueryString();
     }
 
-    deselectAll() {
+    deselectAll(force = false) {
+        if (this.preventDeselectAll && !force) {
+            this.preventDeselectAll = false;
+            return;
+        }
         for (let fKind of this.state.fData) {
             fKind.selected = false;
         }
@@ -326,7 +331,6 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         target = target.tagName === 'SPAN' || target.tagName === 'I' ? target.parentElement!! : target;
         let paths = target.href.split("/");
         let id = paths[paths.length - 1];
-
         e.preventDefault();
     }
 
@@ -369,15 +373,18 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     }
 
     onselectFObject() {
-        if (this.selectionElement.current.clientHeight > 400) {
-            let crSelection = this.selectionElement.current.getClientRects();
-            for (let fData of this.state.fData) {
-                let crElt = fData.refObject.current.getClientRects();
-
-
-
-                debugger;
+        this.deselectAll(true);
+        let crSelection = this.selectionElement.current.getClientRects();
+        for (let fData of this.state.fData) {
+            let crElt = fData.refObject.current.getClientRects();
+            // debugger;
+            let widthCondition = crSelection[0].left < (crElt[0].left + crElt[0].width) && crElt[0].left < (crSelection[0].left + crSelection[0].width);
+            let heightCondition = crSelection[0].top < (crElt[0].top + crElt[0].height) && crElt[0].top < (crSelection[0].top + crSelection[0].height);
+            if (widthCondition && heightCondition) {
+                fData.selected = true;
             }
+
         }
+        this.preventDeselectAll = true;
     }
 }

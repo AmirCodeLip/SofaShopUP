@@ -58,7 +58,7 @@ export default class UploadHandler {
 
             this.selectionInfo = {
                 clientX: ev.clientX,
-                clientY: ev.clientY + window.scrollY,
+                clientY: ev.clientY,
                 scrollY: window.scrollY,
                 constDifferenceX: sideGridCenter.clientWidth,
                 constDifferenceY: headerBar.clientHeight
@@ -80,21 +80,37 @@ export default class UploadHandler {
                 this.selectionInfo.left = this.selectionInfo.clientX - distance - this.selectionInfo.constDifferenceX + 10;
                 this.selectionInfo.width = distance;
             }
+            console.clear();
             ///drag bottom
-            if (this.selectionInfo.clientY < ev.clientY) {
-
-                // this.selectionInfo.top = this.selectionInfo.clientY - this.selectionInfo.constDifferenceY;
-
-                let distance = ev.clientY - window.scrollY - this.selectionInfo.clientY;
+            if ((this.selectionInfo.clientY) < ev.clientY) {
+                let distance = (ev.clientY - this.selectionInfo.clientY);
                 this.selectionInfo.top = this.selectionInfo.clientY - this.selectionInfo.constDifferenceY;
-
                 this.selectionInfo.height = distance;
+                let diff = Math.abs(window.scrollY - this.selectionInfo.scrollY);
+                if (diff === 0) {
+                    this.selectionInfo.top += this.selectionInfo.scrollY;
+                    console.log("b1");
+
+                }
+                else {
+                    console.log("b2");
+                    this.selectionInfo.height += diff;
+                }
             }
             ///drag top 
             else {
-                let distance = (this.selectionInfo.clientY - window.scrollY - ev.clientY);
+                let distance = (this.selectionInfo.clientY - ev.clientY);
                 this.selectionInfo.top = this.selectionInfo.clientY - distance - this.selectionInfo.constDifferenceY;
                 this.selectionInfo.height = distance;
+                let diff = Math.abs(window.scrollY - this.selectionInfo.scrollY);
+                if (diff === 0) {
+                    console.log("t1");
+                    this.selectionInfo.top += this.selectionInfo.scrollY;
+                }
+                else {
+                    console.log("t2");
+                    this.selectionInfo.height += diff;
+                }
             }
 
             this.selectionElement.current!!.style.left = `${this.selectionInfo.left}px`;
