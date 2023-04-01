@@ -13,8 +13,6 @@ type userRefType = {
     <T = undefined>(): React.MutableRefObject<T>;
 };
 
-// import DataTransmitter from './Services/DataTransmitter'
-
 export class FObjectKindComponent {
     constructor(model: FObjectKind, refObject?: React.MutableRefObject<HTMLDivElement>) {
         this.id = uuidv4();
@@ -38,8 +36,6 @@ export class FObjectKindComponent {
                 currentItem.classList.remove("selected-object-kind");
         this._selected = v;
     }
-
-
 }
 
 export async function load(createRef: userRefType, folderID: string | undefined) {
@@ -61,17 +57,10 @@ export async function load(createRef: userRefType, folderID: string | undefined)
     return componentItems;
 };
 
-export async function loadSingle(id: string) {
+//export async function loadSingle(id: string) {
     // let data = await new OdataSetProtocol<FObjectKind>(DataTransmitter.BaseUrl + "odata/FObjectKind")).Execute({ authorize: true });
-}
-
-// export function parseId(id: string) {
-//     if (id === "root")
-//         return "root";
-//     else {
-//         return "";
-//     }
-// }
+//}
+ 
 
 export async function FileManagerLoader() {
     return DataTransmitter.GetRequest<FileManagerOnLoadData>(DataTransmitter.BaseUrl + "FileManager/Base/FileManagerOnLoadData", { authorize: true });

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DataLayer.Infrastructure.WebModels
 {
-    [TSModelUsage(CompileOption = CompileOption.ignore)]
+    [TSModelUsage(CompileOption = CompileOption.compile)]
     public class LoginModel
     {
         [Required(ErrorMessage = SharedRegix.RequiredError)]
@@ -20,8 +20,7 @@ namespace DataLayer.Infrastructure.WebModels
         [DataType(DataType.Password)]
         [Display(Name = "گذرواژه")]
         public string Password { get; set; }
-        [Display(Name = "مرا به خاطر بسپار؟")]
-        public bool RememberMe { get; set; }
+        public string Token { get; set; }
     }
 
 }

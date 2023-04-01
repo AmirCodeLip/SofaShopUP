@@ -1,6 +1,14 @@
 {
   "Files": [
     {
+      "Id": "D:\\SofaShop\\WebApp.Shop\\wwwroot\\base_definition\\file_structures.json",
+      "PackagePath": "staticwebassets\\base_definition\\file_structures.json"
+    },
+    {
+      "Id": "D:\\SofaShop\\WebApp.Shop\\wwwroot\\base_definition\\outputs\\rf_iris.onnx",
+      "PackagePath": "staticwebassets\\base_definition\\outputs\\rf_iris.onnx"
+    },
+    {
       "Id": "D:\\SofaShop\\WebApp.Shop\\wwwroot\\default_images\\unknown.png",
       "PackagePath": "staticwebassets\\default_images\\unknown.png"
     },

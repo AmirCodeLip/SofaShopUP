@@ -25,7 +25,7 @@ export class BootstrapRecognizer {
   involve() {
     for (let i of this.dimensions) {
       if (i.media.matches) {
-        console.log(i.phoneOrTablet)
+        // console.log(i.phoneOrTablet)
         this.events.forEach(x => x(i));
         break;
       }

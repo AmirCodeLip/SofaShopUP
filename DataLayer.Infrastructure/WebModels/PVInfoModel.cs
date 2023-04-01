@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace DataLayer.Infrastructure.WebModels
 {
-    [TSModelUsage(CompileOption = CompileOption.ignore)]
+    [TSModelUsage(CompileOption = CompileOption.compile)]
     public class PVInfoModel
     {
         public string Language { get; set; }
+        public List<UserInfo> UserInfoList { get; set; }
     }
 }

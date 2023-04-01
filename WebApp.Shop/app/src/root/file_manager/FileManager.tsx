@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {
-    FolderLogo, FileManagerProps, FileManagerState, RightBarItem, EventClickType, ClickedSection
+    FolderLogo, FileManagerProps, FileManagerState, RightBarItem, EventClickType, ClickedSection, EventType
 } from './FolderModules';
 import { Col, Row } from 'react-bootstrap';
 import { Web_Modal, ModalOptions, ModalType } from './../web_modal/Web_Modal';
@@ -15,9 +15,9 @@ import { UrlData } from './../shared/GlobalManage';
 import FObjectKind from './../../webModels/FileManager/FObjectKind';
 import Layout from './Layout';
 import { isGuid } from '../../mylibraries/Utilities';
+import * as  globalManage from '../shared/GlobalManage'
 
 export default class FileManager extends React.Component<FileManagerProps, FileManagerState>  {
-
     driveBar: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
     selectionElement: React.RefObject<HTMLDivElement> = React.createRef<HTMLInputElement>();
     nameFolderOrFile: FormModeInput = new FormModeInput(this.props.model.EditFolderOrFileForm, "Name");
@@ -29,9 +29,12 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     folderId: string | undefined;
     uploadHandler?: UploadHandler;
     preventDeselectAll: boolean = false;
+    events: Array<EventType> = [];
+
     rightBarItems: Array<RightBarItem> = [
         {
-            text: 'رفرش',
+            text: <globalManage.localizorHtml txtKey={'PublicWord001.key012'}></globalManage.localizorHtml>,
+            //text: 'رفرش',
             cmdText: 'Ctrl+R',
             icon: "fa-solid fa-arrows-rotate",
             refItem: React.createRef<HTMLDivElement>(),
@@ -39,12 +42,14 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
             clicked: () => { }
         },
         {
-            text: 'فولدر جدید',
+            text: <globalManage.localizorHtml txtKey={'PublicWord001.key013'}></globalManage.localizorHtml>,
+            //'فولدر جدید',
             cmdText: 'Ctrl+N+D',
             icon: "fa-regular fa-folder",
             refItem: React.createRef<HTMLDivElement>(),
             clickedSection: ClickedSection.driveBar,
             clicked: () => {
+                let t = <globalManage.localizorHtml txtKey={'PublicWord001.key016'}></globalManage.localizorHtml>
                 // let folderId = this.queryString.id == "root"
                 this.newData = new FObjectKindComponent({
                     // Id: null,
@@ -58,7 +63,9 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
             }
         },
         {
-            text: 'تغییر نام فولدر',
+            text: <globalManage.localizorHtml txtKey={'PublicWord001.key015'}></globalManage.localizorHtml>,
+
+            //text: 'تغییر نام فولدر',
             cmdText: 'Ctrl+R+N',
             icon: "fa-solid fa-pen",
             refItem: React.createRef<HTMLDivElement>(),
@@ -68,7 +75,9 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
             }
         },
         {
-            text: 'تغییر نام فایل',
+            text: <globalManage.localizorHtml txtKey={'PublicWord001.key015'}></globalManage.localizorHtml>,
+
+            // text: 'تغییر نام فایل',
             cmdText: 'Ctrl+R+N',
             icon: "fa-solid fa-pen",
             refItem: React.createRef<HTMLDivElement>(),
@@ -325,6 +334,16 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         return elemet;
     }
 
+    invokeEvent<T>(name: string) {
+        let result = this.events.find(x => x.name === name).action();
+        if (result !== undefined)
+            return result as T;
+    }
+
+    addEvent(name: string, action: () => void) {
+        this.events.push({ name: name, action: action })
+    }
+
     linkListItemClick(e: Event) {
         let target: HTMLElement | any = e.target!! as HTMLElement;
         target = target.tagName === 'P' ? target.parentElement!!.parentElement!! : target;
@@ -358,9 +377,10 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         window.addEventListener("popstate", this.popstate.bind(this));
         this.parseQueryString();
         setTimeout(async () => {
-            this.uploadHandler = new UploadHandler(this.driveBar, this.queryString, this.selectionElement);
-            this.uploadHandler.onUploadDone = this.onUploadDone.bind(this);
-            this.uploadHandler.onselectFObject = this.onselectFObject.bind(this);
+            this.uploadHandler = new UploadHandler(this.driveBar, this.queryString, this.selectionElement, this.invokeEvent.bind(this));
+            this.addEvent("SelectFObject", this.onselectFObject.bind(this));
+            this.addEvent("UploadDone", this.onUploadDone.bind(this));
+            // this.addEvent("", this.onselectFObject.bind(this));
 
             await this.loadData();
         }, 1000);

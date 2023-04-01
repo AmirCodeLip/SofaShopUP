@@ -1,14 +1,10 @@
-﻿using DataLayer.UnitOfWork;
-using System;
-using System.Collections.Generic;
+﻿using DataLayer.Infrastructure.Services;
+using DataLayer.UnitOfWork;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace DataLayer.Infrastructure.WebModels
 {
+    [TSModelUsage(CompileOption = CompileOption.ignore)]
     public class RegisterModel
     {
         [Required(ErrorMessage = SharedRegix.RequiredError)]
@@ -19,5 +15,6 @@ namespace DataLayer.Infrastructure.WebModels
         [DataType(DataType.Password)]
         [Display(Name = "گذرواژه")]
         public string Password { get; set; }
+        public string Token { get; set; }
     }
 }

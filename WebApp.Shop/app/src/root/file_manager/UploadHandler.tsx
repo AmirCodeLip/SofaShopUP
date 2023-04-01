@@ -8,10 +8,12 @@ export default class UploadHandler {
     queryString: UrlData;
     selectionElement: React.RefObject<HTMLDivElement>;
     selectionInfo: SelectionInfo;
-    onUploadDone: uploadDoneType;
-    onselectFObject: () => void;
+    invokeEvent: (<T>(name: "SelectFObject" | "UploadDone") => T);
+    // onUploadDone: uploadDoneType;
+    // onselectFObject: () => void;
 
-    constructor(driveBar: React.RefObject<HTMLDivElement>, queryString: UrlData, selectionElement: React.RefObject<HTMLDivElement>) {
+    constructor(driveBar: React.RefObject<HTMLDivElement>, queryString: UrlData,
+        selectionElement: React.RefObject<HTMLDivElement>, invokeEvent: (<T>(name: string) => T)) {
         this.driveBar = driveBar;
         this.selectionElement = selectionElement;
         this.driveBar.current!!.addEventListener("drop", this.dropEvent);
@@ -22,6 +24,7 @@ export default class UploadHandler {
         window.addEventListener("mouseup", this.windowClick.bind(this));
         this.queryString = queryString;
         this.selectionDrive = false;
+        this.invokeEvent = invokeEvent;
     }
 
     private _selectionDrive: boolean;
@@ -35,13 +38,11 @@ export default class UploadHandler {
 
         if (this.selectionElement) {
             if (v) {
-
                 this.selectionElement.current!!.style.display = "block";
             }
             else {
                 this.selectionElement.current!!.style.display = "none";
                 this.selectionElement.current!!.style.width = "0px";
-                // this.selectionElement.current.style.height = "0px";
             }
         }
 
@@ -67,49 +68,53 @@ export default class UploadHandler {
     }
     driveBarMove(ev: MouseEvent) {
         if (this.selectionDrive) {
+            let isRtl = window.cultureInfo.cultureInfo.Rtl;
             ///drag right
             if (this.selectionInfo.clientX < ev.clientX) {
                 let distance = (ev.clientX - this.selectionInfo.clientX);
-                this.selectionInfo.left = this.selectionInfo.clientX - this.selectionInfo.constDifferenceX + 10;
+                this.selectionInfo.left = this.selectionInfo.clientX - (isRtl ? 0 : this.selectionInfo.constDifferenceX) + 10;
                 this.selectionInfo.width = distance;
             }
             ///drag left
             else if (this.selectionInfo.clientX > ev.clientX) {
 
                 let distance = (this.selectionInfo.clientX - ev.clientX);
-                this.selectionInfo.left = this.selectionInfo.clientX - distance - this.selectionInfo.constDifferenceX + 10;
+                this.selectionInfo.left = this.selectionInfo.clientX - distance - (isRtl ? 0 : this.selectionInfo.constDifferenceX) + 10;
                 this.selectionInfo.width = distance;
             }
-            console.clear();
             ///drag bottom
-            if ((this.selectionInfo.clientY) < ev.clientY) {
+            if ((this.selectionInfo.clientY) < (ev.clientY + (window.scrollY - this.selectionInfo.scrollY))) {
                 let distance = (ev.clientY - this.selectionInfo.clientY);
-                this.selectionInfo.top = this.selectionInfo.clientY - this.selectionInfo.constDifferenceY;
+                this.selectionInfo.top = this.selectionInfo.clientY;
                 this.selectionInfo.height = distance;
-                let diff = Math.abs(window.scrollY - this.selectionInfo.scrollY);
-                if (diff === 0) {
-                    this.selectionInfo.top += this.selectionInfo.scrollY;
-                    console.log("b1");
-
+                if (this.selectionInfo.scrollY !== 0) {
+                    let diff = window.scrollY - this.selectionInfo.scrollY;
+                    this.selectionInfo.top += this.selectionInfo.scrollY - this.selectionInfo.constDifferenceY;
+                    this.selectionInfo.height += diff;
                 }
                 else {
-                    console.log("b2");
-                    this.selectionInfo.height += diff;
+                    this.selectionInfo.top -= this.selectionInfo.constDifferenceY;
+                    this.selectionInfo.height += window.scrollY;
                 }
             }
             ///drag top 
             else {
                 let distance = (this.selectionInfo.clientY - ev.clientY);
-                this.selectionInfo.top = this.selectionInfo.clientY - distance - this.selectionInfo.constDifferenceY;
+                this.selectionInfo.top = this.selectionInfo.clientY - distance;
                 this.selectionInfo.height = distance;
-                let diff = Math.abs(window.scrollY - this.selectionInfo.scrollY);
-                if (diff === 0) {
-                    console.log("t1");
-                    this.selectionInfo.top += this.selectionInfo.scrollY;
+                if (this.selectionInfo.scrollY !== 0) {
+                    let diff = this.selectionInfo.scrollY - window.scrollY;
+                    if (diff > 0) {
+                        this.selectionInfo.top += this.selectionInfo.scrollY - diff - this.selectionInfo.constDifferenceY;
+                        this.selectionInfo.height += diff;
+
+                    } else {
+                        this.selectionInfo.top += this.selectionInfo.scrollY - this.selectionInfo.constDifferenceY;
+                    }
                 }
                 else {
-                    console.log("t2");
-                    this.selectionInfo.height += diff;
+                    this.selectionInfo.top -= this.selectionInfo.constDifferenceY;
+                    //  this.selectionInfo.height += this.selectionInfo.constDifferenceY;
                 }
             }
 
@@ -117,7 +122,8 @@ export default class UploadHandler {
             this.selectionElement.current!!.style.width = `${this.selectionInfo.width}px`;
             this.selectionElement.current!!.style.top = `${this.selectionInfo.top}px`;
             this.selectionElement.current!!.style.height = `${this.selectionInfo.height}px`;
-            this.onselectFObject();
+            // this.onselectFObject();
+            this.invokeEvent("SelectFObject");
         }
     }
     windowClick(ev: MouseEvent) {
@@ -159,7 +165,8 @@ export default class UploadHandler {
             body.folderId = this.queryString.id;
         }
         DataTransmitter.Upload<JsonResponse<undefined>>(DataTransmitter.BaseUrl + url, file, body).then(async x => {
-            await this.onUploadDone(x, folderId);
+            // await this.onUploadDone(x, folderId);
+            await this.invokeEvent("UploadDone");
         });
     }
 

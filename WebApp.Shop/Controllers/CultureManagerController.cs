@@ -15,13 +15,13 @@ namespace WebApp.Shop.Controllers
         public static Version CultureVersion = new Version(0, 0, 0);
 
         [HttpPost]
-        public string GetCultureInfo([FromBody] Tuple<string> info)
+        public string GetCultureInfo([FromBody] PVInfoModel info)
         {
             PublicWord001.Culture = ConstTypes.SupportedLanguages.List[ConstTypes.SupportedLanguages.faIR].CultureInfo;
-            var culture = global::System.Globalization.CultureInfo.GetCultureInfoByIetfLanguageTag(info.Item1);
+            var culture = global::System.Globalization.CultureInfo.GetCultureInfoByIetfLanguageTag(info.Language);
             return JsonConvert.SerializeObject(new CultureInfo
             {
-                Culture = info.Item1,
+                Culture = info.Language,
                 Rtl = culture.TextInfo.IsRightToLeft,
                 Version = CultureVersion.ToString()
             });

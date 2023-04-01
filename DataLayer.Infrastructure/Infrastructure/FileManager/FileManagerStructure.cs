@@ -44,7 +44,7 @@ namespace DataLayer.Infrastructure.Infrastructure
             this.fileVersionRepository = fileVersionRepository;
             this.actorOrArtistRepository = actorOrArtistRepository;
             this.fileVersionActorOrArtistRepository = fileVersionActorOrArtistRepository;
-            supportedTypes = new SupportedTypes();
+            supportedTypes = new SupportedTypes(hostingEnv.WebRootPath);
         }
 
         public async Task<JsonResponse> EditFObject(FObjectKind fObjectKindInfo, CentralizeData centralizeData)
@@ -163,6 +163,7 @@ namespace DataLayer.Infrastructure.Infrastructure
                 var root = await (folderId.HasValue ? folderRepository.FindAsync(folderId) : RootFolderAsync(user.Id));
                 var fileName = Path.GetFileNameWithoutExtension(file.FileName);
                 var ex = Path.GetExtension(file.FileName);
+                var fileStructure = supportedTypes.GetByEx(ex);
                 var fileInfo = new WebFile
                 {
                     Id = Guid.NewGuid(),
@@ -172,11 +173,6 @@ namespace DataLayer.Infrastructure.Infrastructure
                     Extension = ex,
                     CreatorId = user.Id
                 };
-                if (!supportedTypes.ContainsEX(ex))
-                {
-                    result.AddError(UploadErrorCode.NotSupportedFile.ToString(), "");
-                    return result;
-                }
                 var tempPath = Path.Combine(hostingEnv.ContentRootPath, "tempPath");
                 var tempFilePath = Path.Combine(tempPath, Guid.NewGuid().ToString()) + ex;
                 if (!Directory.Exists(tempPath))
@@ -184,10 +180,18 @@ namespace DataLayer.Infrastructure.Infrastructure
                 using (var stream = new FileStream(tempFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite))
                 {
                     await file.CopyToAsync(stream);
+                    if (fileStructure != null)
+                    {
+                        var validContent = fileStructure.HexSignatures.Any(x => this.SquenceEqual(stream, x));
+                        if (!validContent)
+                        {
+                            result.AddError(UploadErrorCode.NotSupportedFile.ToString(), "");
+                            return result;
+                        }
+                    }
                 }
                 var info = ProssesFile(tempFilePath);
-                var contentTypeInfo = supportedTypes.GetByEx(ex);
-                fileInfo.TypeKind = contentTypeInfo?.TypeKind;
+                fileInfo.TypeKind = fileStructure?.TypeKind;
                 await fileRepository.AddAsync(fileInfo);
                 await context.SaveChangesAsync();
                 var fileData = new WebFileVersion { FileId = fileInfo.Id };
@@ -245,13 +249,19 @@ namespace DataLayer.Infrastructure.Infrastructure
                             fileDescriptor.BroadCastTime = new DateTime((int)f.Tag.Year, 1, 1);
                         foreach (var picture in f.Tag.Pictures)
                         {
-                            var pictureEx = supportedTypes.Images.GetByMime(picture.MimeType);
+                            var pictureEx = supportedTypes.GetByMimeType(picture.MimeType);
                             if (pictureEx != null)
+                            {
                                 fileVersions.Add(new WebFileVersion
                                 {
                                     FileData = picture.Data.Data,
-                                    Extension = pictureEx?.Ex
+                                    Extension = pictureEx?.FileNameExtensions.FirstOrDefault()
                                 });
+                            }
+                            else
+                            {
+                                throw new NotSupportedException($"file name with mime type {picture.MimeType} is not supported");
+                            }
                         }
                     }
                     break;
@@ -268,7 +278,7 @@ namespace DataLayer.Infrastructure.Infrastructure
                 {
                     var webFileVersions = file.WebFileVersions.OrderByDescending(x => x.CreatedDate).FirstOrDefault();
                     var t = supportedTypes.GetByEx(file.Extension);
-                    return new FileContentResult(webFileVersions.FileData, supportedTypes.GetByEx(file.Extension)?.ContentType);
+                    return new FileContentResult(webFileVersions.FileData, supportedTypes.GetByEx(file.Extension)?.ContentTypes.FirstOrDefault());
                 }
                 else
                 {
@@ -276,12 +286,11 @@ namespace DataLayer.Infrastructure.Infrastructure
                     var firstImg = await fileVersionRepository.FirstOrDefaultAsync(x => x.ParentId == webFileVersions.Id);
                     if (firstImg != null)
                     {
-                        return new FileContentResult(firstImg.FileData, supportedTypes.GetByEx(file.Extension)?.ContentType);
+                        return new FileContentResult(firstImg.FileData, supportedTypes.GetByEx(file.Extension)?.ContentTypes.FirstOrDefault());
                     }
-
                 }
             }
-            return new FileContentResult(await File.ReadAllBytesAsync(Path.Combine(hostingEnv.WebRootPath, "default_images", "unknown.png")), supportedTypes.GetByEx(".png")?.ContentType);
+            return new FileContentResult(await File.ReadAllBytesAsync(Path.Combine(hostingEnv.WebRootPath, "default_images", "unknown.png")), supportedTypes.GetByEx(".png")?.ContentTypes.FirstOrDefault());
         }
 
         public async Task SetFolderPath(WebFolder webFolder)
@@ -306,6 +315,20 @@ namespace DataLayer.Infrastructure.Infrastructure
             webFolder.Path = string.Join("/", paths);
         }
 
+        private bool SquenceEqual(FileStream stream, List<byte> contents)
+        {
+            stream.Seek(0, SeekOrigin.Begin);
+            stream.Position = 0;
+            bool validFormat = true;
 
+            foreach (var content in contents)
+            {
+                if (stream.ReadByte() != content)
+                {
+                    validFormat = false;
+                }
+            }
+            return validFormat;
+        }
     }
 }

@@ -1,15 +1,13 @@
-import * as React from 'react';
-import DataTransmitter from '../../Services/DataTransmitter'
-import IFormModel from './../../mylibraries/asp-communication/interfaces/IFormModel'
-import { FormModeInput, FormHandler } from '../../mylibraries/asp-communication/components/FormModelItem';
-import { loginService } from '../../Services/IdentityServices'
-import { JsonResponseStatus } from '../../models/JsonResponse';
+import * as React from 'react'
+import IFormModel from '../../mylibraries/asp-communication/interfaces/IFormModel'
+import { FormModeInput, FormHandler } from '../../mylibraries/asp-communication/components/FormModelItem'
+import { loginService, registerService } from '../../Services/IdentityServices'
+import { JsonResponseStatus } from '../../models/JsonResponse'
 import { Container } from 'react-bootstrap'
-import { from } from 'rxjs';
-import CheckBox from 'devextreme-react/check-box';
-import TabPanel from 'devextreme-react/tab-panel';
-import { identityLoaderModel } from './../../Services/IdentityServices'
-
+import TabPanel from 'devextreme-react/tab-panel'
+import { identityLoaderModel } from '../../Services/IdentityServices'
+import { cookies } from '../shared/GlobalManage'
+import LoginModel from '../../webModels/LoginModel'
 
 interface LoginProps {
     data: tabInfo
@@ -66,25 +64,24 @@ class IdentityForm extends React.PureComponent<LoginProps, any> {
             this.phoneOrEmailModel = new FormModeInput(loginModel, "PhoneOrEmail");
             this.passwordModel = new FormModeInput(loginModel, "Password");
             this.formHandler = new FormHandler(this.phoneOrEmailModel, this.passwordModel);
-        }else
-        {
+            this.formHandler.addHiddens(loginModel, "Token");
+        } else {
             let registerModel = props.data.getModel();
             this.phoneOrEmailModel = new FormModeInput(registerModel, "PhoneOrEmail");
             this.passwordModel = new FormModeInput(registerModel, "Password");
             this.formHandler = new FormHandler(this.phoneOrEmailModel, this.passwordModel);
+            this.formHandler.addHiddens(registerModel, "Token");
         }
+        this.formHandler.initRef(React.createRef);
 
     }
-    componentWillMount(): void {
+    componentDidMount(): void {
         if (this.isLogin) {
-            this.formHandler.initRef(React.createRef);
             setTimeout(() => {
                 this.formHandler.init();
             }, 50)
         }
-        else
-        {
-            this.formHandler.initRef(React.createRef);
+        else {
             setTimeout(() => {
                 this.formHandler.init();
             }, 50)
@@ -129,7 +126,7 @@ class IdentityForm extends React.PureComponent<LoginProps, any> {
                         <div className="epo-border"></div>
                         <div className="right-item" ref={this.passwordModel.refError} ></div>
                     </div>
-                    <div className="epo-form">
+                    <div className="epo-form" onClick={this.register.bind(this)}>
                         <button className="btn btn-outline-001 btn-well">
                             عضویت
                         </button>
@@ -138,16 +135,34 @@ class IdentityForm extends React.PureComponent<LoginProps, any> {
             );
         }
     }
+
+    async register() {
+        if (this.formHandler.isValid()) {
+            let token = cookies.pVInfoGetRaw();
+            this.formHandler.setFormData({ Token: token });
+            let registerResult = await registerService(this.formHandler.getFormData<LoginModel>());
+            if (registerResult!.Status === JsonResponseStatus.Success) {
+                cookies.pVInfoSetRaw(registerResult.TResult001.Token);
+                cookies.parseInfo(registerResult.TResult001.Token);
+                window.location.href = "/manage_files/root";
+            } else {
+                for (let key in registerResult!.InfoData) {
+                    let data = registerResult!.InfoData[key];
+                    this.formHandler.addError(key, data);
+                }
+            }
+        }
+    }
+
     async login() {
         if (this.formHandler.isValid()) {
-            let loginResult = await loginService({
-                PhoneOrEmail: this.phoneOrEmailModel.refInput.current!.value,
-                Password: this.passwordModel.refInput.current!.value
-            });
+            let token = cookies.pVInfoGetRaw();
+            this.formHandler.setFormData({ Token: token });
+            let loginResult = await loginService(this.formHandler.getFormData<LoginModel>());
             if (loginResult!.Status === JsonResponseStatus.Success) {
-                console.log(loginResult?.TResult001);
-                localStorage.setItem("jwt", loginResult!.TResult001!.Token);
-                window.location.href = `/${window.cultureInfo!!.cultureInfo.Culture}/manage_files/root`;
+                cookies.pVInfoSetRaw(loginResult.TResult001.Token);
+                cookies.parseInfo(loginResult.TResult001.Token);
+                window.location.href = "/manage_files/root";
             } else {
                 for (let key in loginResult!.InfoData) {
                     let data = loginResult!.InfoData[key];

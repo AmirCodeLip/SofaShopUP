@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Home } from "./root/Home";
-import { IdentityPanel } from './root/identity/Login'
+import { IdentityPanel } from './root/identity/IdentityPanel'
 import { identityLoader } from './Services/IdentityServices'
 import { FileManagerLoader } from './Services/FileManagerServices'
 import { PageLoader } from "./root/shared/PageLoader";
@@ -14,16 +14,16 @@ const AppRoutes = [
   },
   {
     path: '/:culture',
-    element: <Home />
+    element: <PageLoader PageContainer={Home}></PageLoader>
   },
   {
-    path: '/:culture/identity/login',
+    path: '/:culture/identity/login_register',
     element: <PageLoader PageContainer={IdentityPanel} pageLoaderOtpions={{ Loading: identityLoader, allowAnonymous: true }} />
   },
   {
     path: '/:culture/manage_files/:fileId',
     element: <PageLoader PageContainer={FileManager} pageLoaderOtpions={{ Loading: FileManagerLoader, allowAnonymous: false }} />
-  },
+  }
 ];
 const extera: Array<any> = [];
 for (let route of AppRoutes) {

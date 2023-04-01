@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "VkRWMwrxCqNHrKz1qaoN5ou/Mr+OZZFw3OEoYnumIl0=",
+  "Hash": "mVgzuNZrUQbIIfj6Bx18RHibQcnWPsm9cp7wlkicJsQ=",
   "Source": "WebApp.Shop",
   "BasePath": "_content/WebApp.Shop",
   "Mode": "Default",
@@ -16,6 +16,40 @@
     }
   ],
   "Assets": [
+    {
+      "Identity": "D:\\SofaShop\\WebApp.Shop\\wwwroot\\base_definition\\file_structures.json",
+      "SourceId": "WebApp.Shop",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\SofaShop\\WebApp.Shop\\wwwroot\\",
+      "BasePath": "_content/WebApp.Shop",
+      "RelativePath": "base_definition/file_structures.json",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\base_definition\\file_structures.json"
+    },
+    {
+      "Identity": "D:\\SofaShop\\WebApp.Shop\\wwwroot\\base_definition\\outputs\\rf_iris.onnx",
+      "SourceId": "WebApp.Shop",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\SofaShop\\WebApp.Shop\\wwwroot\\",
+      "BasePath": "_content/WebApp.Shop",
+      "RelativePath": "base_definition/outputs/rf_iris.onnx",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\base_definition\\outputs\\rf_iris.onnx"
+    },
     {
       "Identity": "D:\\SofaShop\\WebApp.Shop\\wwwroot\\default_images\\unknown.png",
       "SourceId": "WebApp.Shop",

@@ -11,7 +11,7 @@ using System.Xml.Linq;
 
 namespace DataLayer.Infrastructure.WebModels.FileManager
 {
-    [TSModelUsage(CompileOption = CompileOption.compile)]
+    [TSModelUsage(CompileOption = CompileOption.ignore)]
     public class FObjectKind
     {
         [TSModelDescription(Optional = true)]

@@ -1,8 +1,8 @@
 export interface PageLoaderModel {
     PageContainer?: React.ElementType;
-    pageLoaderOtpions?: PageLoaderOtpions
+    pageLoaderOtpions?: PageLoaderOtpions;
 }
 export interface PageLoaderOtpions {
     Loading?: () => Promise<any>;
-    allowAnonymous?: boolean
+    allowAnonymous?: boolean;
 }

@@ -1,4 +1,6 @@
+import UserInfo from './UserInfo'
 
 export default interface PVInfoModel {
-    Language: string
+    Language: string,
+    UserInfoList: Array<UserInfo>
 }

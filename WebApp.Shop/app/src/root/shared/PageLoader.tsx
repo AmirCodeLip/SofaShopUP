@@ -30,12 +30,10 @@ export class PageLoader extends React.Component<PageLoaderModel, PageLoaderState
             this.load();
             return (<Loading></Loading>);
         }
-        if (this.props.pageLoaderOtpions?.allowAnonymous === false) {
-            let jwt = localStorage.getItem("jwt");
-            if (jwt == null)
+        if (!window.pVInfo.UserInfoList.find(x=>x.IsDefault)?.Token) {
                 window.location.replace("/identity/login");
         }
-        return (<>
+        return (<> 
             {!this.state.isLoaded && (<Loading></Loading>)}
             {this.state.isLoaded && this.props.PageContainer && <this.props.PageContainer model={this.state.model} />}
         </>)
@@ -46,7 +44,7 @@ export class PageLoader extends React.Component<PageLoaderModel, PageLoaderState
     }
 
     async componentDidUpdate(prevProps: Readonly<PageLoaderModel>, prevState: Readonly<PageLoaderState>, snapshot?: any) {
-
+        console.log(this.state.pageName)
     }
 
     async componentDidMount() {
@@ -54,10 +52,13 @@ export class PageLoader extends React.Component<PageLoaderModel, PageLoaderState
     }
 
     async load() {
-        if (this.props.pageLoaderOtpions?.Loading) {
+        if(!this.props.pageLoaderOtpions)
+        {
+            this.setState({ model: null, isLoaded: true, pageName: this.pageName });
+        }
+        else if (this.props.pageLoaderOtpions?.Loading) {
             this.props.pageLoaderOtpions.Loading().then(data => {
                 if (data == null) {
-                    localStorage.removeItem("jwt");
                     redirect("/identity/login");
                     return;
                 }

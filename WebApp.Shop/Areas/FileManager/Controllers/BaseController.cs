@@ -15,6 +15,7 @@ namespace WebApp.Shop.Areas.FileManager.Controllers
         public BaseController(FileManagerStructure fileManagerStructure)
         {
             this.fileManagerStructure = fileManagerStructure;
+            
         }
 
         [Authorize]

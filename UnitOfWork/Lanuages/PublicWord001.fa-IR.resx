@@ -150,4 +150,19 @@
   <data name="key011" xml:space="preserve">
     <value>صداها</value>
   </data>
+  <data name="key012" xml:space="preserve">
+    <value>رفرش</value>
+  </data>
+  <data name="key013" xml:space="preserve">
+    <value>فولدر جدید</value>
+  </data>
+  <data name="key014" xml:space="preserve">
+    <value />
+  </data>
+  <data name="key015" xml:space="preserve">
+    <value>تغییر نام</value>
+  </data>
+  <data name="key016" xml:space="preserve">
+    <value>فولدر جدید</value>
+  </data>
 </root>

@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "filename_extensions": [ "png" ],
+    "hex_signatures": [
+      [ "89", "50", "4E", "47", "0D", "0A", "1A", "0A" ]
+    ],
+    "content_types": [
+      "image/png"
+    ],
+    "type_kind": "1"
+  },
+  {
+    "id": 2,
+    "filename_extensions": [ "jpg", "jpeg" ],
+    "hex_signatures": [
+      [ "FF", "D8", "FF", "DB" ],
+      [ "FF", "D8", "FF", "EE" ],
+      [ "FF", "D8", "FF", "E0", "00", "10", "4A", "46", "49", "46", "00", "01" ]
+    ],
+    "content_types": [
+      "image/jpg"
+    ],
+    "type_kind": "1"
+  }
+]

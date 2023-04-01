@@ -150,4 +150,19 @@
   <data name="key011" xml:space="preserve">
     <value>Sounds</value>
   </data>
+  <data name="key012" xml:space="preserve">
+    <value>refresh</value>
+  </data>
+  <data name="key013" xml:space="preserve">
+    <value>new folder</value>
+  </data>
+  <data name="key014" xml:space="preserve">
+    <value />
+  </data>
+  <data name="key015" xml:space="preserve">
+    <value>rename</value>
+  </data>
+  <data name="key016" xml:space="preserve">
+    <value>new folder</value>
+  </data>
 </root>

@@ -9,8 +9,6 @@ namespace DataLayer.Access.Services
 {
     public interface IUserRepository : IBaseRepository<WebUser>
     {
-        Task<(bool success, Dictionary<string, string> errors)> RegisterAsync(Register Input, ILogger logger);
-
 
         Task<WebUser> GetUserAsync(ClaimsPrincipal principal);
 
@@ -24,6 +22,6 @@ namespace DataLayer.Access.Services
 
         string GetNewId(string userName);
 
-
+        Task<WebUser> GetUserByMatch(string phoneOrEmail);
     }
 }

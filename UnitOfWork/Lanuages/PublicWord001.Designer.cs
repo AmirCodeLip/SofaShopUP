@@ -63,15 +63,6 @@ namespace DataLayer.UnitOfWork.Lanuages {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string key001 {
-            get {
-                return ResourceManager.GetString("key001", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
         public static string key002 {
             get {
                 return ResourceManager.GetString("key002", resourceCulture);
@@ -156,6 +147,51 @@ namespace DataLayer.UnitOfWork.Lanuages {
         public static string key011 {
             get {
                 return ResourceManager.GetString("key011", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string key012 {
+            get {
+                return ResourceManager.GetString("key012", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string key013 {
+            get {
+                return ResourceManager.GetString("key013", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string key014 {
+            get {
+                return ResourceManager.GetString("key014", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string key015 {
+            get {
+                return ResourceManager.GetString("key015", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string key016 {
+            get {
+                return ResourceManager.GetString("key016", resourceCulture);
             }
         }
     }

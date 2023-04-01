@@ -1,15 +1,8 @@
 ﻿using DataLayer.Infrastructure.ViewModels.Form;
 using Microsoft.AspNetCore.Hosting;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Primitives;
 using System.Reflection;
-using System.Numerics;
-using DataLayer.Domin;
+using System.Text;
 
 namespace DataLayer.Infrastructure.Services
 {
@@ -42,7 +35,6 @@ namespace DataLayer.Infrastructure.Services
             return (destination, webPathLocation);
         }
 
-
         static List<DefaultTSComponent> DefaultModels
         {
             get
@@ -65,19 +57,95 @@ namespace DataLayer.Infrastructure.Services
             AddWebModels(types, $"{hostingEnv.ContentRootPath}app\\src\\webModels", DefaultModels, WebModelsPath);
         }
 
-#if NEWSGENERATOR
-        public static void AddNewsGeneratorWebModel()
+        private static inPublicTypeResponse inPublicType(Type propertyType, argumentPulbic ap)
         {
-            string webModelsPath = "DataLayer.Infrastructure.NGWebModels";
-            var types = typeof(InfrastructureResolveDependencies).Assembly.GetTypes().Where(x => (x.Namespace ?? "").StartsWith(webModelsPath));
-            AddWebModels(types, $"D:\\AppUI\\news-template\\src\\webModels", null, webModelsPath);
+            var response = new inPublicTypeResponse();
+            if (propertyType.Namespace == "System" && propertyType.Name == "Nullable`1")
+            {
+                response.IsNullable = true;
+                propertyType = propertyType.GetGenericArguments()[0]; // use this...
+            }
+            if (propertyType == typeof(String))
+            {
+                response.PropertyTypeString = propertyType.Name.ToLower();
+            }
+            else if (propertyType == typeof(Guid))
+            {
+                response.PropertyTypeString = "string";
+            }
+            else if (propertyType == typeof(int))
+            {
+                response.PropertyTypeString = "number";
+            }
+            else if (propertyType == typeof(bool))
+            {
+                response.PropertyTypeString = "boolean";
+            }
+            else if (propertyType.IsGenericType)
+            {
+                var generic = getGenericType(propertyType, ap);
+                response.FileHeaderData.Append(generic.FileHeaderData);
+                response.PropertyTypeString = generic.PropertyTypeString;
+            }
+            else if ((propertyType.Namespace ?? "").StartsWith(WebModelsPath))
+            {
+                response.PropertyTypeString = propertyType.Name;
+                var folderInfoProp = GetFolder(ap.destinationRoot, propertyType, ap.webModelsPath);
+                var folderInfoPropWPN = folderInfoProp.webPathLocation.StartsWith(folderInfoProp.webPathLocation) ?
+                    folderInfoProp.webPathLocation.Substring(folderInfoProp.webPathLocation.Length,
+                    folderInfoProp.webPathLocation.Length - folderInfoProp.webPathLocation.Length)
+                    : folderInfoProp.webPathLocation;
+                if (propertyType.BaseType == typeof(Enum))
+                {
+                    response.FileHeaderData.AppendLine(@$"import {{{propertyType.Name}}} from './{folderInfoPropWPN}{propertyType.Name}'");
+                }
+                else
+                {
+                    response.FileHeaderData.AppendLine(@$"import {propertyType.Name} from './{folderInfoPropWPN}{propertyType.Name}'");
+                }
+            }
+            else if (ap.defaultModels != null && ap.defaultModels.Any(x => x.ModelType == propertyType))
+            {
+                var defaultModel = ap.defaultModels.FirstOrDefault(x => x.ModelType == propertyType);
+                response.FileHeaderData.AppendLine(defaultModel?.Header);
+                response.PropertyTypeString = defaultModel.HasDefaultName ? defaultModel.DefaultName : defaultModel.ModelType.Name;
+            }
+            else
+            {
+                response.State = false;
+            }
+            return response;
         }
-#endif
+
+        private static inPublicTypeResponse getGenericType(Type propertyType, argumentPulbic ap)
+        {
+            inPublicTypeResponse response = new();
+            if (propertyType.Name == "List`1" && propertyType.Namespace == "System.Collections.Generic")
+            {
+                var generic = propertyType.GetGenericArguments()[0];
+
+                if (generic.IsGenericType)
+                {
+                    var g2 = getGenericType(generic, ap);
+                    response.FileHeaderData.Append(g2.FileHeaderData);
+                    response.PropertyTypeInfo = $"Array<{g2.PropertyTypeString}>";
+                }
+                var exist = inPublicType(generic, ap);
+                if (exist.State)
+                {
+                    response.FileHeaderData.Append(exist.FileHeaderData);
+                    response.PropertyTypeString = $"Array<{exist.PropertyTypeString}>";
+                }
+
+            }
+            return response;
+        }
 
         public static void AddWebModels(IEnumerable<Type> types, string destinationRoot, List<DefaultTSComponent> defaultModels, string webModelsPath)
         {
             if (!Directory.Exists(destinationRoot))
                 Directory.CreateDirectory(destinationRoot);
+            argumentPulbic argumentPulbic = new(destinationRoot, webModelsPath, defaultModels);
             foreach (var model in types)
             {
                 var usageType = model.GetCustomAttributes<TSModelUsageAttribute>().FirstOrDefault();
@@ -118,55 +186,13 @@ namespace DataLayer.Infrastructure.Services
                             var modelDescription = property.GetCustomAttribute<TSModelDescriptionAttribute>();
                             string propertyTypeString = "";
                             var propertyType = property.PropertyType;
-                            bool isNullable = false;
-                            if (propertyType.Namespace == "System" && propertyType.Name == "Nullable`1")
-                            {
-                                isNullable = true;
-                                propertyType = propertyType.GetGenericArguments()[0]; // use this...
-                            }
-                            if (propertyType == typeof(String))
-                            {
-                                propertyTypeString = propertyType.Name.ToLower();
-                            }
-                            else if (propertyType == typeof(Guid))
-                            {
-                                propertyTypeString = "string";
-                            }
-                            else if (propertyType == typeof(int))
-                            {
-                                propertyTypeString = "number";
-                            }
-                            else if (propertyType == typeof(bool))
-                            {
-                                propertyTypeString = "boolean";
-                            }
-                            else if ((propertyType.Namespace ?? "").StartsWith(WebModelsPath))
-                            {
-                                propertyTypeString = propertyType.Name;
-                                var folderInfoProp = GetFolder(destinationRoot, propertyType, webModelsPath);
-                                var folderInfoPropWPN = folderInfoProp.webPathLocation.StartsWith(folderInfo.webPathLocation) ?
-                                    folderInfoProp.webPathLocation.Substring(folderInfo.webPathLocation.Length,
-                                    folderInfoProp.webPathLocation.Length - folderInfo.webPathLocation.Length)
-                                    : folderInfoProp.webPathLocation;
-                                if (propertyType.BaseType == typeof(Enum))
-                                {
-                                    fileHeaderData.AppendLine(@$"import {{{propertyType.Name}}} from './{folderInfoPropWPN}{propertyType.Name}'");
-                                }
-                                else
-                                {
-                                    fileHeaderData.AppendLine(@$"import {propertyType.Name} from './{folderInfoPropWPN}{propertyType.Name}'");
-                                }
-                            }
-                            else if (defaultModels != null && defaultModels.Any(x => x.ModelType == propertyType))
-                            {
-                                var defaultModel = defaultModels.FirstOrDefault(x => x.ModelType == propertyType);
-                                fileHeaderData.AppendLine(defaultModel?.Header);
-                                propertyTypeString = defaultModel.HasDefaultName ? defaultModel.DefaultName : defaultModel.ModelType.Name;
-                            }
+                            var exist = inPublicType(propertyType, argumentPulbic);
+                            fileHeaderData.Append(exist.FileHeaderData);
+                            if (exist.State)
+                                propertyTypeString = exist.PropertyTypeString;
                             if (string.IsNullOrEmpty(propertyTypeString))
                                 continue;
-
-                            var resultLine = $"{property.Name + ((modelDescription != null && modelDescription.Optional) ? "?" : "")}: {propertyTypeString}" + (isNullable ? " | null" : "");
+                            var resultLine = $"    {property.Name + ((modelDescription != null && modelDescription.Optional) ? "?" : "")}: {propertyTypeString}" + (exist.IsNullable ? " | null" : "");
                             if (i != properties.Length - 1)
                                 resultLine += ",";
                             fileData.AppendLine(resultLine);
@@ -180,7 +206,31 @@ namespace DataLayer.Infrastructure.Services
                 }
             }
         }
-
+        private class inPublicTypeResponse
+        {
+            public inPublicTypeResponse()
+            {
+                FileHeaderData = new StringBuilder();
+                State = true;
+            }
+            public bool IsNullable { get; set; }
+            public string PropertyTypeInfo { get; set; }
+            public string PropertyTypeString { get; set; }
+            public StringBuilder FileHeaderData { get; set; }
+            public bool State { get; set; }
+        }
+        public class argumentPulbic
+        {
+            public argumentPulbic(string destinationRoot, string webModelsPath, List<DefaultTSComponent> defaultModels)
+            {
+                this.destinationRoot = destinationRoot;
+                this.webModelsPath = webModelsPath;
+                this.defaultModels = defaultModels;
+            }
+            public readonly string webModelsPath;
+            public readonly string destinationRoot;
+            public readonly List<DefaultTSComponent> defaultModels;
+        }
     }
 
     public class DefaultTSComponent
@@ -223,8 +273,6 @@ namespace DataLayer.Infrastructure.Services
         }
         public bool Optional { set; get; } = false;
     }
-
-
 
     public enum CompileOption
     {

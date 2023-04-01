@@ -10,7 +10,7 @@ export function FolderLogo() {
     return (
         <>
             <svg xmlns="http://www.w3.org/2000/svg" width="2000" height="2000" viewBox="0 0 1200 1000">
-                <path className="folder"  d="M549.95,556.19L490.989,601l0.285-90Z" />
+                <path className="folder" d="M549.95,556.19L490.989,601l0.285-90Z" />
                 <path className="folder" d="M258.812,560H941.188a0,0,0,0,1,0,0V865.844a20,20,0,0,1-20,20H278.812a20,20,0,0,1-20-20V560A0,0,0,0,1,258.812,560Z" />
                 <path className="folder" d="M259.733,511.374l233.056,0.35h0l0.1,49.3h0l-233.055-.35h0l-0.105-49.3h0Z" />
             </svg>
@@ -35,7 +35,7 @@ export class FileManagerState {
 }
 
 export interface RightBarItem {
-    text: string,
+    text:  JSX.Element,
     cmdText: string,
     icon: string,
     refItem: React.RefObject<HTMLDivElement>,
@@ -45,4 +45,9 @@ export interface RightBarItem {
 
 export enum ClickedSection {
     driveBar, folder, file
+}
+
+export interface EventType {
+    action: () => any | void;
+    name: string;
 }

@@ -2,21 +2,13 @@
 using DataLayer.Access;
 using DataLayer.Access.Data;
 using DataLayer.Domin.Models.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.Extensions.Configuration;
 using DataLayer.Infrastructure.Services;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Builder;
-using DataLayer.UnitOfWork;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace DataLayer.Infrastructure
 {
@@ -25,19 +17,18 @@ namespace DataLayer.Infrastructure
         private static void addInternals(this IServiceCollection services)
         {
             var type = typeof(InfrastructureResolveDependencies);
-            var types = type.Assembly.GetTypes().Where(x => x.Namespace == "DataLayer.Infrastructure.Infrastructure");
+            var types = type.Assembly.GetTypes().Where(x => x.Namespace != null && x.Namespace.StartsWith("DataLayer.Infrastructure.Infrastructure"));
             foreach (var Infrastructure in types.Where(n => n.Name.EndsWith("Structure")))
             {
                 services.AddScoped(Infrastructure);
             }
         }
+
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, ConfigurationManager configuration)
         {
             services.Configure<ApplicationSettings>(configuration.GetSection(nameof(ApplicationSettings)));
             services.AddAccessServices();
             services.addInternals();
-
-            
             services.AddSingleton(new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new MappingProfile());
@@ -83,8 +74,5 @@ namespace DataLayer.Infrastructure
             });
             return services;
         }
-
-
-
     }
 }

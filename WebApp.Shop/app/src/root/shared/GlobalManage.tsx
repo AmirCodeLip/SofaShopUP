@@ -4,12 +4,13 @@ import CultureInfo from '../../webModels/CultureInfo'
 import DataTransmitter from '../../Services/DataTransmitter'
 import { KeyValuePair, JsonResponse } from '../../models/JsonResponse'
 import { stringify } from 'uuid'
-
 declare global {
     interface Window {
         cultureInfo: undefined | CultureInfoImplement;
+        pVInfo: PVInfoModel;
     }
 }
+var lastTransmitWord: Date = null;
 
 export const supportedCultures = {
     enUS: "en-US",
@@ -61,18 +62,12 @@ export class UrlData {
 
 export class CultureInfoImplement {
     static keyItem = "lang_Data";
-    // Rtl: boolean;
-    // Culture: string;
-    // Version: string;
     data: Array<KeyValuePair<string, string>>;
     promiseWord: Array<string>;
     inProgress: boolean;
     cultureInfo: CultureInfo;
     constructor(cultureInfo: CultureInfo) {
         if (cultureInfo) {
-            // this.Culture = cultureInfo.Culture;
-            // this.Rtl = cultureInfo.Rtl;
-            // this.Version = cultureInfo.Version;
             this.cultureInfo = cultureInfo;
             this.data = [];
             this.promiseWord = [];
@@ -93,17 +88,32 @@ export class CultureInfoImplement {
 
     async TransmitWord() {
         try {
+            let lastTry = new Date();
+            if (lastTransmitWord === null)
+                lastTransmitWord = lastTry;
+            else {
+                let diff = (lastTry.getTime() - (lastTransmitWord!!).getTime());
+                if (diff < 2000)
+                    return;
+                lastTransmitWord = lastTry;
+            }
             if (this.inProgress)
                 return;
             this.inProgress = true;
             this.flush();
+            new Date()
             await this.LoadList(this.promiseWord);
             document.querySelectorAll("[not-localized]").forEach(notLocalized => {
                 let key = notLocalized.getAttribute("not-localized");
                 let dt = this.data.find(x => x.Key == key);
-                if (dt) {
-                    notLocalized.parentElement.replaceWith(notLocalized, document.createTextNode(dt.Value));
-                    notLocalized.remove();
+                if (dt && notLocalized) {
+                    try {
+                        notLocalized.parentElement.replaceWith(notLocalized, document.createTextNode(dt.Value));
+                        notLocalized.remove();
+                        // notLocalized.parentElement.appendChild(document.createTextNode(dt.Value))
+                    } catch (e) {
+                        debugger;
+                    }
                 }
             });
         }
@@ -155,7 +165,7 @@ export class CultureInfoImplement {
         }
         if (!window.cultureInfo) {
             let response = await DataTransmitter.PostRequest<CultureInfo>(DataTransmitter.BaseUrl + `CultureManager/GetCultureInfo`, {
-                body: { Item1: info.Language }
+                body: info
             });
             window.cultureInfo = new CultureInfoImplement(response);
             return window.cultureInfo;
@@ -188,40 +198,59 @@ export class cookies {
         return null;
     }
 
+    static pVInfoGetRaw() {
+        let info = localStorage.getItem(this.keyItem);
+        return info;
+    }
+
+    static pVInfoSetRaw(token: string) {
+        localStorage.setItem(this.keyItem, token);
+    }
+
     static async pVInfoSetProcess(newInfo?: PVInfoModel) {
-        let info = cookies.getCookie(this.keyItem);
+        let info = localStorage.getItem(this.keyItem);
+        // let info = cookies.getCookie(this.keyItem);
         if (info == null) {
             let urlData = new UrlData();
             if (!urlData.culture) {
                 getDefault();
                 return;
             }
-            let data: PVInfoModel = { Language: urlData.culture };
+            let data: PVInfoModel = { Language: urlData.culture, UserInfoList: [] };
             let response = await DataTransmitter.PostRequest<JsonResponse<string>>(DataTransmitter.BaseUrl + `PVInfo/Set`, {
                 body: data
             });
             info = response.TResult001;
-            cookies.setCookie(this.keyItem, response.TResult001, 30);
+            localStorage.setItem(this.keyItem, response.TResult001);
+            // cookies.setCookie(this.keyItem, response.TResult001, 30);
         }
         else if (newInfo) {
             let response = await DataTransmitter.PostRequest<JsonResponse<string>>(DataTransmitter.BaseUrl + `PVInfo/Set`, {
                 body: newInfo
             });
             info = response.TResult001;
-            cookies.setCookie(this.keyItem, response.TResult001, 30);
+            localStorage.setItem(this.keyItem, response.TResult001);
+            // cookies.setCookie(this.keyItem, response.TResult001, 30);
         }
         return info;
     }
 
-    static async parseInfo(data: string) {
+    static async parseInfo(data?: string) {
+        if (!data) {
+            if (window.pVInfo)
+                return window.pVInfo;
+            else return window.pVInfo;
+        }
         let response = await DataTransmitter.PostRequest<JsonResponse<PVInfoModel>>(DataTransmitter.BaseUrl + `PVInfo/Get`, {
             body: { Item1: data }
         });
         let urlData = new UrlData();
         if (urlData.culture && urlData.culture !== response.TResult001.Language) {
-            await this.pVInfoSetProcess({ Language: urlData.culture });
+            response.TResult001.Language = urlData.culture;
+            await this.pVInfoSetProcess(response.TResult001);
             window.location.reload();
         }
+        window.pVInfo = response.TResult001;
         return response.TResult001;
     }
 }

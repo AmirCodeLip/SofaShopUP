@@ -55,11 +55,6 @@ export class FormHandler {
             let item = this.formModelItems.find(x => x.name === name);
             if (item) {
                 item.setValue(model[name]);
-                // console.log(item.getValue());
-            }
-            else {
-                throw "the input with name " + name + " is not exist";
-                // console.log(name);
             }
         }
     }
@@ -69,8 +64,11 @@ export class FormHandler {
         for (let formModelItem of this.formModelItems) {
             switch (formModelItem.dataType) {
                 case AspDataType.Text:
+                case AspDataType.Password:
                     model[formModelItem.name] = formModelItem.getValue();
                     break;
+                default:
+                    console.log(formModelItem.dataType);
             }
         }
         return model as FormType;
@@ -86,7 +84,6 @@ abstract class FormModelItem {
                 case "InputDisplay":
                     let inputDisplay: IInputDisplay = <IInputDisplay>formDescriptors;
                     this.displayName = inputDisplay.Name;
-                    console.log(this.displayName)
                     break;
                 case "InputRequired":
                     let inputRequired: IInputRequired = <IInputRequired>formDescriptors;
@@ -203,7 +200,9 @@ export class FormModeInput extends FormModelItem {
             switch (this.dataType) {
                 case AspDataType.Password:
                     this.refInput.current!.type = "password";
+                    break;
                 case AspDataType.Text:
+                default:
                     this.refInput.current!.type = "text";
             }
         }

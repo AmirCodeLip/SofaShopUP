@@ -7,7 +7,7 @@ export default class DataTransmitter {
         {
         };
         if (options.authorize) {
-            let jwt = localStorage.getItem("jwt");
+            let jwt = window.pVInfo.UserInfoList.find(x=>x.IsDefault)?.Token;
             if (jwt == null) {
                 window.location.replace("/identity/login");
                 return;
@@ -31,7 +31,7 @@ export default class DataTransmitter {
             'Content-Type': 'application/json',
         };
         if (options.authorize) {
-            let jwt = localStorage.getItem("jwt");
+            let jwt = window.pVInfo.UserInfoList.find(x=>x.IsDefault)?.Token;
             if (jwt == null) {
                 window.location.replace("/identity/login");
                 return;

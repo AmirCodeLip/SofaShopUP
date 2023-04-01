@@ -9,6 +9,11 @@ export async function loginService(model: LoginModel) {
     return result;
 }
 
+export async function registerService(model: LoginModel) {
+    let result = await DataTransmitter.PostRequest<JsonResponse<LoginOkResult>>(`${DataTransmitter.BaseUrl}Identity/PostRegister`, { body: model });
+    return result;
+}
+
 export async function identityLoader() {
     return DataTransmitter.GetRequest<IFormModel>(DataTransmitter.BaseUrl + "Identity/GetIdentityForm");
 }

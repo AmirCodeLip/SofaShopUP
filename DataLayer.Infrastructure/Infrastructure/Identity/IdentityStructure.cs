@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 using DataLayer.Access.Services.Identity;
 using DataLayer.Access.Services;
 
-namespace DataLayer.Infrastructure.Infrastructure
+namespace DataLayer.Infrastructure.Infrastructure.Identity
 {
     public class IdentityStructure
     {
@@ -27,7 +27,10 @@ namespace DataLayer.Infrastructure.Infrastructure
         private readonly UserManager<WebUser> _userManager;
         private readonly SignInManager<WebUser> _signInManager;
         private readonly ApplicationSettings _applicationSettings;
-        public IdentityStructure(UserManager<WebUser> userManager, IUserStore<WebUser> userStore, SignInManager<WebUser> signInManager, IUserRepository userRepository, IOptions<ApplicationSettings> applicationSettings, IWebUserSpecificationRepository webUserSpecification)
+        private readonly PVInfoStructure _pVInfoStructure;
+        private JwtSecurityTokenHandler tokenHandler { get; }
+
+        public IdentityStructure(UserManager<WebUser> userManager, IUserStore<WebUser> userStore, SignInManager<WebUser> signInManager, IUserRepository userRepository, IOptions<ApplicationSettings> applicationSettings, IWebUserSpecificationRepository webUserSpecification, PVInfoStructure pVInfoStructure)
         {
             _userStore = userStore;
             _userManager = userManager;
@@ -35,7 +38,8 @@ namespace DataLayer.Infrastructure.Infrastructure
             _user = userRepository;
             _applicationSettings = applicationSettings.Value;
             _webUserSpecification = webUserSpecification;
-
+            _pVInfoStructure = pVInfoStructure;
+            this.tokenHandler = new JwtSecurityTokenHandler();
         }
 
         public string GetIdentityForm()
@@ -47,9 +51,118 @@ namespace DataLayer.Infrastructure.Infrastructure
             });
         }
 
+        public async Task AddTokenToUser(PVInfoModel pVInfo, string tokenStr)
+        {
+            if (pVInfo.UserInfoList == null)
+                pVInfo.UserInfoList = new List<UserInfo>();
+            var userId = tokenHandler.ReadJwtToken(tokenStr).Claims.FirstOrDefault(x => x.Type == "UserId").Value;
+            var user = await this.GetUserWithSpecification(Guid.Parse(userId));
+            var preData = pVInfo.UserInfoList.FirstOrDefault(x => x.UserName == user.Email || x.UserName == user.PhoneNumber);
+            foreach (var infoList in pVInfo.UserInfoList)
+            {
+                infoList.IsDefault = false;
+            }
+            if (preData == null)
+            {
+                pVInfo.UserInfoList.Add(new UserInfo
+                {
+                    IsDefault = true,
+                    Token = tokenStr,
+                    UserName = string.IsNullOrWhiteSpace(user.Email) ? user.PhoneNumber : user.Email,
+                    Name = user.UserSpecification.Name ?? "No Name"
+                });
+            }
+            else
+            {
+                preData.IsDefault = true;
+                preData.Token = tokenStr;
+            }
+        }
+
+        public async Task<WebUser> GetUserWithSpecification(Guid userId)
+        {
+            var user = await _user.FindAsync(userId);
+            user.UserSpecification = _webUserSpecification.FirstOrDefault(x => x.UserId == userId);
+            if (user.UserSpecification == null)
+            {
+                user.UserSpecification = new WebUserSpecification { UserId = user.Id };
+                await _webUserSpecification.AddAsync(user.UserSpecification);
+                await _webUserSpecification.SaveChangesAsync();
+            }
+            return user;
+        }
+
+        public async Task<ContentResult> Register(RegisterModel registerModel, ModelStateDictionary modelState)
+        {
+            var result = new JsonResponse<LoginOkResult>();
+            var pvTokenRaw = _pVInfoStructure.Get(registerModel.Token).TResult001;
+            bool isValidEmail = false;
+            bool isValidPhone = false;
+
+            if (modelState.IsValid)
+            {
+                if (!(isValidEmail = SharedRegix.RgEmail.IsMatch(registerModel.PhoneOrEmail)) && !(isValidPhone = SharedRegix.RgPhone.IsMatch(registerModel.PhoneOrEmail)))
+                {
+                    result.AddError("PhoneOrEmail", "فیلد مشابه شماره همراه و یا ایمل نمیباشد");
+                }
+                else if (await _user.AnyAsync(x => x.Email == registerModel.PhoneOrEmail))
+                {
+                    if (isValidEmail)
+                        result.AddError("PhoneOrEmail", "ایمیل با این نام موجود هست");
+                    else if (isValidPhone)
+                        result.AddError("PhoneOrEmail", "ایمیل با این نام موجود هست");
+                }
+                else
+                {
+                    try
+                    {
+                        WebUser user = _user.CreateUser();
+                        user.Email = isValidEmail ? registerModel.PhoneOrEmail : null;
+                        user.PhoneNumber = isValidPhone ? registerModel.PhoneOrEmail : null;
+                        var createResult = await _userManager.CreateAsync(user, registerModel.Password);
+                        if (createResult.Succeeded)
+                        {
+                            var userId = await _userManager.GetUserIdAsync(user);
+                            await LoginToken(pvTokenRaw, Guid.Parse(userId), result);
+                        }
+                        else
+                        {
+                            foreach (var error in createResult.Errors)
+                            {
+                                if (error.Code == "DuplicateUserName")
+                                {
+                                    result.AddError("PhoneOrEmail", SharedRegix.DuplicateUserNameError(user.UserName));
+                                }
+                                else
+                                {
+                                    throw new NotImplementedException(error.Code + " " + error.Description);
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        //   var result = await _userManager.CreateAsync(user, Input.Password);
+
+                        //   return (false, errors);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var state in modelState)
+                {
+                    result.AddError(state.Key, state.Value.Errors[0].ErrorMessage);
+                }
+            }
+            return result.GetJson();
+        }
+
         public async Task<ContentResult> Login(LoginModel loginModel, ModelStateDictionary modelState)
         {
             var result = new JsonResponse<LoginOkResult>();
+            var pvTokenRaw = _pVInfoStructure.Get(loginModel.Token).TResult001;
             if (!modelState.IsValid)
             {
                 foreach (var state in modelState)
@@ -58,16 +171,8 @@ namespace DataLayer.Infrastructure.Infrastructure
                 }
                 return result.GetJson();
             }
-            WebUser user = null;
-            if (SharedRegix.RgEmail.IsMatch(loginModel.PhoneOrEmail))
-            {
-                user = _user.FirstOrDefault(x => x.Email == loginModel.PhoneOrEmail);
-            }
-            else if (SharedRegix.RgPhone.IsMatch(loginModel.PhoneOrEmail))
-            {
-                user = _user.FirstOrDefault(x => x.PhoneNumber == loginModel.PhoneOrEmail);
-            }
-            else
+            WebUser user = await _user.GetUserByMatch(loginModel.PhoneOrEmail);
+            if (user == null)
             {
                 result.AddError("PhoneOrEmail", "فیلد مشابه شماره همراه و یا ایمل نمیباشد");
             }
@@ -77,7 +182,7 @@ namespace DataLayer.Infrastructure.Infrastructure
             }
             if (result.Status == JsonResponseStatus.Success)
             {
-                var loginResult = await _signInManager.PasswordSignInAsync(user, loginModel.Password, loginModel.RememberMe, lockoutOnFailure: false);
+                var loginResult = await _signInManager.PasswordSignInAsync(user, loginModel.Password, false, lockoutOnFailure: false);
                 if (loginResult.RequiresTwoFactor)
                 {
                     throw new NotImplementedException();
@@ -88,25 +193,7 @@ namespace DataLayer.Infrastructure.Infrastructure
                 }
                 else if (loginResult.Succeeded)
                 {
-                    var tokenDescriptor = new SecurityTokenDescriptor
-                    {
-                        Subject = new ClaimsIdentity(new Claim[]
-                        {
-                            new Claim("UserId",user.Id.ToString()),
-                            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),  // This line is important.
-
-                        }),
-                        Expires = DateTime.UtcNow.AddMonths(1),
-                        SigningCredentials = new SigningCredentials(
-                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_applicationSettings.JWT)), SecurityAlgorithms.HmacSha256)
-                    };
-                    var tokenHandler = new JwtSecurityTokenHandler();
-                    var securityToken = tokenHandler.CreateToken(tokenDescriptor);
-                    var token = tokenHandler.WriteToken(securityToken);
-                    result.TResult001 = new LoginOkResult
-                    {
-                        Token = token,
-                    };
+                    await LoginToken(pvTokenRaw, user.Id, result);
                 }
                 else
                 {
@@ -114,6 +201,28 @@ namespace DataLayer.Infrastructure.Infrastructure
                 }
             }
             return result.GetJson();
+        }
+
+        public async Task LoginToken(PVInfoModel pvTokenRaw, Guid userId, JsonResponse<LoginOkResult> result)
+        {
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                        {
+                            new Claim("UserId",userId.ToString()),
+                            new Claim(ClaimTypes.NameIdentifier, userId.ToString())
+                        }),
+                Expires = DateTime.UtcNow.AddMonths(1),
+                SigningCredentials = new SigningCredentials(
+                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_applicationSettings.JWT)), SecurityAlgorithms.HmacSha256)
+            };
+            var securityToken = tokenHandler.CreateToken(tokenDescriptor);
+            var token = tokenHandler.WriteToken(securityToken);
+            await AddTokenToUser(pvTokenRaw, token);
+            result.TResult001 = new LoginOkResult
+            {
+                Token = _pVInfoStructure.Set(pvTokenRaw).TResult001
+            };
         }
 
         public async Task<JsonResponse<UserPersonalInfo>> GetUserProfile(ClaimsPrincipal user)

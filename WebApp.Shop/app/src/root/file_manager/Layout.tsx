@@ -69,6 +69,18 @@ export default class Layout extends React.Component<ChildItemModel, LayoutState>
           </div>
         </div>
       </div>
+      <div className='user-info-frame'>
+        <div className='user-info-header'>
+          <img className="user-info-img" src="/personal.jpg"></img>
+          <div className="user-info-profile">
+            amir code lip
+          </div>
+          <div className='user-setting'>
+            <i className="fa-solid fa-gear"></i>
+          </div>
+        </div>
+        <div className="setting-devider"></div>
+      </div>
       <div className='shutter-view'>
         <div className='main-loader hide'><div className='main-loader-spin'></div></div>
         <div className={this.getClassItem("view-side-center")} style={this.getSideNavStyle()}>
@@ -131,6 +143,14 @@ export default class Layout extends React.Component<ChildItemModel, LayoutState>
     }).bind(this), 10);
   }
 
+  flexClient(ev: MouseEvent): number {
+    let clientX = window.cultureInfo.cultureInfo.Rtl ? document.body.offsetWidth - ev.clientX : ev.clientX;
+    if (clientX > 300) {
+      clientX = 300;
+    }
+    return clientX;
+  }
+
   rightBorderMouseDown(ev: MouseEvent) {
     this.changeSide = true
     if (this.state.navMode !== "openFullSide") {
@@ -141,18 +161,22 @@ export default class Layout extends React.Component<ChildItemModel, LayoutState>
   mouseup(ev: MouseEvent) {
     if (!this.changeSide) return;
     this.changeSide = false;
-    if (ev.clientX < 115) {
+    if (this.flexClient(ev) < 115) {
       this.setState({ navMode: "close", sideWidth: 4 });
     }
   }
 
   checkSideNavMove(ev: MouseEvent) {
     if (!this.changeSide) return;
-    let clientX = ev.clientX;
-    if (clientX > 300) {
-      clientX = 300;
+    let rtl = window.cultureInfo.cultureInfo.Rtl;
+    let width = 0;
+    let clientX = this.flexClient(ev);
+    if (rtl) {
+      width = (100 * clientX) / document.body.offsetWidth;
     }
-    let width = (100 * clientX) / document.body.offsetWidth;
+    else {
+      width = (100 * clientX) / document.body.offsetWidth;
+    }
     this.setState({
       sideWidth: width,
     });
@@ -243,18 +267,6 @@ export default class Layout extends React.Component<ChildItemModel, LayoutState>
    */
   sendSearchRequest() {
     let lastItem = this.searchItems[this.searchItems.length - 1];
-    // if (!lastItem) {
-    //   clearInterval(this.sendSearchRequestTimer);
-    //   return;
-    // }
-    // if (lastItem.val === "root" && this.queryString.id !== "root") {
-    //   this.setFolder("root");
-    //   this.loadData();
-    // }
-    // else if (this.rootRegix.test(lastItem.val)) {
-    //   console.log(lastItem.val);
-    //   console.log("tryGetFolder");
-    // }
     this.searchItems = this.searchItems.filter(c => c.time > lastItem.time)
   }
 
