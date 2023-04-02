@@ -18,3 +18,6 @@ D:\SofaShop\UnitOfWork\obj\Debug\net6.0\DataLayer.UnitOfWork.dll
 D:\SofaShop\UnitOfWork\obj\Debug\net6.0\refint\DataLayer.UnitOfWork.dll
 D:\SofaShop\UnitOfWork\obj\Debug\net6.0\DataLayer.UnitOfWork.pdb
 D:\SofaShop\UnitOfWork\obj\Debug\net6.0\ref\DataLayer.UnitOfWork.dll
+D:\SofaShop\UnitOfWork\obj\Debug\net6.0\DataLayer.UnitOfWork.Lanuages.DisplayAndAnnotations.resources
+D:\SofaShop\UnitOfWork\obj\Debug\net6.0\DataLayer.UnitOfWork.Lanuages.DisplayAndAnnotations.en-US.resources
+D:\SofaShop\UnitOfWork\obj\Debug\net6.0\DataLayer.UnitOfWork.Lanuages.DisplayAndAnnotations.fa-IR.resources

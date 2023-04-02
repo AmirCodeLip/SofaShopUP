@@ -28,6 +28,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseReactCommunication();
+app.UseGlobalMiddleware();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseCors(builder => builder

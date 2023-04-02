@@ -1,11 +1,14 @@
-﻿using DataLayer.Infrastructure.ViewModels.Form;
+﻿using DataLayer.Infrastructure.ViewModels;
+using DataLayer.Infrastructure.ViewModels.Form;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using DataLayer.UnitOfWork;
 
 namespace DataLayer.Infrastructure.Infrastructure
 {
@@ -17,6 +20,11 @@ namespace DataLayer.Infrastructure.Infrastructure
         private static Type stringLengthType = typeof(StringLengthAttribute);
         public static FormModel GetFromFrom(Type inputModel)
         {
+            //var culture = centralizeData.httpContext.Request.Headers["Culture"].FirstOrDefault();
+            //if (culture != null)
+            //{
+            //    Thread.CurrentThread.CurrentCulture = ConstTypes.SupportedLanguages.List[ConstTypes.SupportedLanguages.faIR].CultureInfo;
+            //}
             FormModel formModel = new FormModel();
             foreach (var property in TypeDescriptor.GetProperties(inputModel))
             {
@@ -31,7 +39,16 @@ namespace DataLayer.Infrastructure.Infrastructure
                 if (required != null)
                     formItem.FormDescriptors.Add(new InputRequired(true, required.ErrorMessage));
                 if (display != null)
-                    formItem.FormDescriptors.Add(new InputDisplay(display.Name));
+                {
+                    if (display.ResourceType == null)
+                        formItem.FormDescriptors.Add(new InputDisplay(display.Name));
+                    else
+                    {
+                        display.ResourceType.GetProperty("Culture").SetValue(null, Thread.CurrentThread.CurrentCulture);
+                        var nameProperty = display.ResourceType.GetProperty(display.Name, BindingFlags.Static | BindingFlags.Public).GetValue(null) as string;
+                        formItem.FormDescriptors.Add(new InputDisplay(nameProperty));
+                    }
+                }
                 if (dataType != null)
                     formItem.FormDescriptors.Add(new InputDataType(dataType.DataType));
                 if (stringLength != null)

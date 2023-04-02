@@ -34,7 +34,8 @@ namespace WebApp.Shop.Controllers
             var response = new JsonResponse<List<KeyValuePair<string, string>>>();
             response.TResult001 = new List<KeyValuePair<string, string>>();
             var cellers = wordModels.Select(x => x.Celler).Distinct();
-            var cultureInfo = global::System.Globalization.CultureInfo.GetCultureInfo(data.CultureInfo.Culture);
+            //var cultureInfo = global::System.Globalization.CultureInfo.GetCultureInfo(data.CultureInfo.Culture);
+            var cultureInfo = Thread.CurrentThread.CurrentCulture;
             foreach (var celler in cellers)
             {
                 var rm = Constants.CellerWordList.List[celler];

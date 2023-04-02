@@ -34,7 +34,6 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     rightBarItems: Array<RightBarItem> = [
         {
             text: <globalManage.localizorHtml txtKey={'PublicWord001.key012'}></globalManage.localizorHtml>,
-            //text: 'رفرش',
             cmdText: 'Ctrl+R',
             icon: "fa-solid fa-arrows-rotate",
             refItem: React.createRef<HTMLDivElement>(),
@@ -43,16 +42,13 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         },
         {
             text: <globalManage.localizorHtml txtKey={'PublicWord001.key013'}></globalManage.localizorHtml>,
-            //'فولدر جدید',
             cmdText: 'Ctrl+N+D',
             icon: "fa-regular fa-folder",
             refItem: React.createRef<HTMLDivElement>(),
             clickedSection: ClickedSection.driveBar,
             clicked: () => {
                 let t = <globalManage.localizorHtml txtKey={'PublicWord001.key016'}></globalManage.localizorHtml>
-                // let folderId = this.queryString.id == "root"
                 this.newData = new FObjectKindComponent({
-                    // Id: null,
                     FolderId: isGuid(this.queryString.id) ? this.queryString.id : null,
                     Name: "",
                     FObjectType: FObjectType.Folder,
@@ -64,8 +60,6 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         },
         {
             text: <globalManage.localizorHtml txtKey={'PublicWord001.key015'}></globalManage.localizorHtml>,
-
-            //text: 'تغییر نام فولدر',
             cmdText: 'Ctrl+R+N',
             icon: "fa-solid fa-pen",
             refItem: React.createRef<HTMLDivElement>(),
@@ -76,8 +70,6 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         },
         {
             text: <globalManage.localizorHtml txtKey={'PublicWord001.key015'}></globalManage.localizorHtml>,
-
-            // text: 'تغییر نام فایل',
             cmdText: 'Ctrl+R+N',
             icon: "fa-solid fa-pen",
             refItem: React.createRef<HTMLDivElement>(),

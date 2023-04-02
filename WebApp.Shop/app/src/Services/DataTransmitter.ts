@@ -7,12 +7,16 @@ export default class DataTransmitter {
         {
         };
         if (options.authorize) {
-            let jwt = window.pVInfo.UserInfoList.find(x=>x.IsDefault)?.Token;
+            let jwt = window.pVInfo.UserInfoList.find(x => x.IsDefault)?.Token;
             if (jwt == null) {
                 window.location.replace("/identity/login");
                 return;
             }
             headers["Authorization"] = `Bearer ${jwt}`;
+        }
+        if (window.cultureInfo) {
+            let culture = window.cultureInfo.cultureInfo.Culture;
+            headers["Culture"] = culture;
         }
         try {
             let request = await fetch(url, { headers: headers });
@@ -24,6 +28,7 @@ export default class DataTransmitter {
     }
 
     static async PostRequest<TOutput>(url: string, options?: DataTransmitterOptions) {
+        console.log(window.cultureInfo)
         if (!options)
             options = {};
         let headers: HeadersInit =
@@ -31,12 +36,16 @@ export default class DataTransmitter {
             'Content-Type': 'application/json',
         };
         if (options.authorize) {
-            let jwt = window.pVInfo.UserInfoList.find(x=>x.IsDefault)?.Token;
+            let jwt = window.pVInfo.UserInfoList.find(x => x.IsDefault)?.Token;
             if (jwt == null) {
                 window.location.replace("/identity/login");
                 return;
             }
             headers["Authorization"] = `Bearer ${jwt}`;
+        }
+        if (window.cultureInfo) {
+            let culture = window.cultureInfo.cultureInfo.Culture;
+            headers["Culture"] = culture;
         }
         let requestInit: RequestInit = {
             method: "POST",

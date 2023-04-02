@@ -9,6 +9,11 @@
 		<InvariantGlobalization>true</InvariantGlobalization>
 	</PropertyGroup>
 	<ItemGroup>
+	  <Compile Update="Lanuages\DisplayAndAnnotations.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>DisplayAndAnnotations.resx</DependentUpon>
+	  </Compile>
 	  <Compile Update="Lanuages\PublicWord001.Designer.cs">
 	    <DesignTime>True</DesignTime>
 	    <AutoGen>True</AutoGen>
@@ -17,6 +22,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<EmbeddedResource Update="Lanuages\DisplayAndAnnotations.resx">
+		  <Generator>PublicResXFileCodeGenerator</Generator>
+		  <LastGenOutput>DisplayAndAnnotations.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
 		<EmbeddedResource Update="Lanuages\PublicWord001.resx">
 			<Generator>PublicResXFileCodeGenerator</Generator>
 			<LastGenOutput>PublicWord001.Designer.cs</LastGenOutput>

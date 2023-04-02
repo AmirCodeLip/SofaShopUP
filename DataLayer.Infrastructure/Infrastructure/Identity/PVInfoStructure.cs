@@ -39,7 +39,7 @@ namespace DataLayer.Infrastructure.Infrastructure.Identity
         public JsonResponse<string> Set(PVInfoModel pVInfoModel)
         {
             var data = new JsonResponse<string>();
-            if (string.IsNullOrWhiteSpace(pVInfoModel.Language))
+            if (!string.IsNullOrWhiteSpace(pVInfoModel.Language))
             {
                 pVInfoModel.Language = UnitOfWork.ConstTypes.SupportedLanguages.List[pVInfoModel.Language].Value;
             }

@@ -18,9 +18,16 @@ namespace WebApp.Shop.Neptons
             return app.UseMiddleware<UrlMiddleware>();
         }
 
+        public static IApplicationBuilder UseGlobalMiddleware(this IApplicationBuilder app)
+        {
+            return app.UseMiddleware<GlobalMiddleware>();
+        }
+
         public static CentralizeData CentralizeDataFiller(this Controller controller)
         {
             return new CentralizeData(controller.HttpContext, controller.ModelState);
         }
+
+
     }
 }

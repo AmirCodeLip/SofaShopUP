@@ -158,7 +158,8 @@
     border-radius: 8px;
 }
 
-.search-box {
+.search-box,
+.search-box-empty {
     width: 50%;
     background-color: var(--color_001);
     position: relative;
@@ -168,6 +169,10 @@
     overflow: hidden;
     display: flex;
     order: 2;
+}
+
+.search-box-empty {
+    background-color: unset;
 }
 
 .user-settings {
@@ -300,10 +305,11 @@
     height: fit-content;
     width: fit-content;
     position: absolute;
-    right: 19px;
-    top: 22px;
-    font-size: 20px;
+    right: 10px;
+    top: 27px;
+    font-size: 17px;
     cursor: pointer;
+    color: var(--color_002);
 }
 
 .user-info-header {
@@ -315,6 +321,7 @@
 
 .user-info-profile {
     padding: 12px 15px 11px 13px;
+    color: var(--color_002);
 }
 
 .user-info-img {
@@ -332,12 +339,69 @@
     box-shadow: 2px 2px 3px var(--color_002);
     top: 95px;
     border-radius: 6px;
-    /* padding: 5px; */
+    padding: 1px 1px 18px 1px;
     background-color: white;
     width: 340px;
     z-index: 2;
+    border-top: 3px solid var(--color_002);
+    border-right: 3px solid var(--color_002);
 }
 
+.profile-box {
+    display: flex;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.profile-icon {
+    width: 40px;
+    position: relative;
+    margin-right: 10px;
+}
+
+.profile-name {
+    margin-left: 5%;
+    color: var(--color_002);
+}
+
+.profile-user-name {
+    width: 90%;
+    margin-left: 20%;
+    color: var(--color_002);
+}
+
+.profile-icon img {
+    border-radius: 100px;
+    width: 40px;
+    height: 40px;
+    position: relative;
+    border-radius: 100%;
+    top: 2px;
+    left: 18px;
+    position: absolute;
+}
+
+.profile-setting li {
+    list-style-type: none;
+    margin: 28px 9px 0px 10px;
+    height: fit-content;
+    position: relative;
+    width: fit-content;
+    color: var(--color_002);
+    cursor: pointer;
+    font-size: 17px;
+}
+
+.profile-setting li:hover,
+.user-setting:hover {
+    color: var(--color_003)
+}
+
+.profile-setting {
+    position: absolute;
+    right: 8px;
+    display: inline-flex;
+}
 
 @media screen and (max-width: 992px) {
     .view-side-center {
@@ -361,7 +425,8 @@
         width: 50%;
     }
 
-    .search-box {
+    .search-box,
+    .search-box-empty {
         order: 3;
         display: none;
     }

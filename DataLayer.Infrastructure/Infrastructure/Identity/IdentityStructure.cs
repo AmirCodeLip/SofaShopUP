@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using DataLayer.Access.Services.Identity;
 using DataLayer.Access.Services;
+using DataLayer.Infrastructure.ViewModels;
 
 namespace DataLayer.Infrastructure.Infrastructure.Identity
 {

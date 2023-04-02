@@ -1,9 +1,12 @@
-import * as React from 'react';
-import ChildItemModel from '../../model_structure/interfaces/ChildItemModel';
+import * as React from 'react'
+import ChildItemModel from '../../model_structure/interfaces/ChildItemModel'
 import * as  globalManage from '../shared/GlobalManage'
-import { Loading } from '../shared/PageLoader';
-import { useNavigation, Route, Routes, Link } from "react-router-dom";
+import { Loading } from '../shared/PageLoader'
+import { useNavigation, Route, Routes, Link } from "react-router-dom"
 import { BootstrapRecognizer, BTSizes } from "./../../mylibraries/BootstrapRecognizer"
+import { UserInfoFrame } from "./../shared/UserInfoFrame"
+
+
 interface LayoutState {
   navMode: "openFullSide" | "close",
   sideWidth: number,
@@ -49,38 +52,8 @@ export default class Layout extends React.Component<ChildItemModel, LayoutState>
       return (<Loading></Loading>);
 
     return (<>
-      <div className='header-bar border-hide-bottom'>
-        <div className='logo-box'>
-          <img src="/logo192.png" />
-          <div className='content-title'>
-            file manager
-          </div>
-        </div>
-        <div className='search-box'>
-          <button>
-            <i className='fa fa-search'></i>
-          </button>
-          <input className="search-drive" ref={this.searchDrive} onKeyDown={this.checkPathKeys} onKeyUp={this.search.bind(this)} />
-          <div className="s-place-holder">search here</div>
-        </div>
-        <div className='adjustment-toolbar'>
-          <div className='user-settings'>
-            <img className='user-icon' src='/personal.jpg' />
-          </div>
-        </div>
-      </div>
-      <div className='user-info-frame'>
-        <div className='user-info-header'>
-          <img className="user-info-img" src="/personal.jpg"></img>
-          <div className="user-info-profile">
-            amir code lip
-          </div>
-          <div className='user-setting'>
-            <i className="fa-solid fa-gear"></i>
-          </div>
-        </div>
-        <div className="setting-devider"></div>
-      </div>
+    {/* onKeyDown={this.checkPathKeys} onKeyUp={this.search.bind(this) */}
+      <UserInfoFrame isFileManager={true}></UserInfoFrame>
       <div className='shutter-view'>
         <div className='main-loader hide'><div className='main-loader-spin'></div></div>
         <div className={this.getClassItem("view-side-center")} style={this.getSideNavStyle()}>
