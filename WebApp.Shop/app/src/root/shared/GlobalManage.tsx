@@ -33,12 +33,12 @@ export function localizorHtml(prop: { txtKey: string }) {
         let data = window.cultureInfo;
         let word = data.GetString(prop.txtKey);
         if (word != null) {
-            return (<p>{word}</p>);
+            return (<span>{word}</span>);
         }
     }
-    return (<span {...{ "not-localized": `${prop.txtKey}` }}>
+    return (<span><span {...{ "not-localized": `${prop.txtKey}` }}>
         ...
-    </span>)
+    </span></span>)
 }
 
 export class UrlData {
@@ -58,6 +58,17 @@ export class UrlData {
     culture: string;
     data: Array<string>;
     id: string;
+    isEqualPath(path: string) {
+        if (path[0] === "/")
+            path = path.substring(1, path.length - 1);
+        let data = path.split("/");
+        if (data.length !== this.data.length)
+            return false;
+        for (let i = 0; i < data.length; i++)
+            if (data[i] !== this.data[i])
+                return false;
+        return true;
+    }
 }
 
 export class CultureInfoImplement {

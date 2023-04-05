@@ -1,0 +1,12 @@
+label.epo-right {
+    right: 0!important;
+    left: unset;
+}
+
+.epo-border {
+    direction: ltr;
+}
+
+.epo-en-right {
+    direction: ltr;
+}

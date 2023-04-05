@@ -41,6 +41,7 @@ export class FormHandler {
     isValid() {
         let valid = true;
         for (let formModelItem of this.formModelItems) {
+            debugger;
             formModelItem.validate();
             if (!formModelItem.isValid) {
                 valid = false;
@@ -96,7 +97,7 @@ abstract class FormModelItem {
                     break;
                 case "InputStringLength":
                     let inputStringLength: InputStringLength = <InputStringLength>formDescriptors;
-
+                    this.stringLength = inputStringLength;
                     // validators.push(Validators.minLength(inputStringLength.MinimumLength));
                     // validators.push(Validators.maxLength(inputStringLength.MaximumLength));
                     // infoInput.MaxLength = inputStringLength.MaximumLength;
@@ -113,6 +114,7 @@ abstract class FormModelItem {
     displayName: string | undefined;
     required: boolean;
     requiredErrorMsg: string;
+    stringLength?: InputStringLength;
     dataType: AspDataType | undefined;
     abstract isValid: boolean;
     abstract getValue(): any;
@@ -244,7 +246,10 @@ export class FormModeInput extends FormModelItem {
         if (currentVal.length === 0) {
             this.HaveValue = false;
             if (this.required)
-                this.errorList.push(this.requiredErrorMsg.replace("{0}", this.displayName!));
+                this.errorList.push(this.requiredErrorMsg);
+        }
+        else if (this.stringLength && (currentVal.length < this.stringLength.MinimumLength || currentVal.length > this.stringLength.MaximumLength)) {
+            this.errorList.push(this.stringLength.ErrorMessage);
         }
         else {
             this.HaveValue = true;

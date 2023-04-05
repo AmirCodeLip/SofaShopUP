@@ -14,6 +14,7 @@ html,
 #root {
     height: 100%;
 }
+
 body {
     height: 100%;
     margin: 0px;
@@ -25,8 +26,8 @@ body {
 
 
 .right-item {
-    text-align: right;
-    direction: rtl;
+    text-align: left;
+    direction: ltr;
 }
 
 .left-item {
@@ -89,11 +90,11 @@ body {
     border-radius: 0px 3px 3px;
 }
 
-    .inner-grid img {
-        width: 100%;
-        border-radius: 2px;
-        height: 280px;
-    }
+.inner-grid img {
+    width: 100%;
+    border-radius: 2px;
+    height: 280px;
+}
 
 footer {
     height: 200px;
@@ -121,9 +122,9 @@ footer {
     margin-left: 76px;
 }
 
-    .center-helder .row {
-        width: 100%
-    }
+.center-helder .row {
+    width: 100%
+}
 
 .nav-router {
     color: var(--color_001);
@@ -132,9 +133,9 @@ footer {
     font-weight: 600 !important;
 }
 
-    .nav-router:hover {
-        color: var(--color_002);
-    }
+.nav-router:hover {
+    color: var(--color_002);
+}
 
 .link-active a,
 .link-active a :hover {

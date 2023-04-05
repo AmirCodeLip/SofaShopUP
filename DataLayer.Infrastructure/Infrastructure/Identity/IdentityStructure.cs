@@ -1,22 +1,20 @@
-﻿using Newtonsoft.Json;
-using DataLayer.UnitOfWork;
+﻿using DataLayer.Access.Services;
+using DataLayer.Access.Services.Identity;
 using DataLayer.Access.ViewModel;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
 using DataLayer.Domin.Models.Identity;
+using DataLayer.Infrastructure.Services;
+using DataLayer.Infrastructure.WebModels;
+using DataLayer.UnitOfWork;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.IdentityModel.Tokens.Jwt;
-using DataLayer.Infrastructure.Services;
-using Microsoft.Extensions.Options;
-using Microsoft.EntityFrameworkCore;
-using DataLayer.Infrastructure.WebModels;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
-using DataLayer.Access.Services.Identity;
-using DataLayer.Access.Services;
-using DataLayer.Infrastructure.ViewModels;
+using DataLayer.UnitOfWork.Lanuages;
 
 namespace DataLayer.Infrastructure.Infrastructure.Identity
 {
@@ -96,6 +94,7 @@ namespace DataLayer.Infrastructure.Infrastructure.Identity
         public async Task<ContentResult> Register(RegisterModel registerModel, ModelStateDictionary modelState)
         {
             var result = new JsonResponse<LoginOkResult>();
+            DisplayAndAnnotations.Culture = Thread.CurrentThread.CurrentCulture;
             var pvTokenRaw = _pVInfoStructure.Get(registerModel.Token).TResult001;
             bool isValidEmail = false;
             bool isValidPhone = false;
@@ -104,14 +103,14 @@ namespace DataLayer.Infrastructure.Infrastructure.Identity
             {
                 if (!(isValidEmail = SharedRegix.RgEmail.IsMatch(registerModel.PhoneOrEmail)) && !(isValidPhone = SharedRegix.RgPhone.IsMatch(registerModel.PhoneOrEmail)))
                 {
-                    result.AddError("PhoneOrEmail", "فیلد مشابه شماره همراه و یا ایمل نمیباشد");
+                    result.AddError("PhoneOrEmail", DisplayAndAnnotations.NotEmailOrPhone);
                 }
                 else if (await _user.AnyAsync(x => x.Email == registerModel.PhoneOrEmail))
                 {
                     if (isValidEmail)
-                        result.AddError("PhoneOrEmail", "ایمیل با این نام موجود هست");
+                        result.AddError("PhoneOrEmail", DisplayAndAnnotations.ExistEmail);
                     else if (isValidPhone)
-                        result.AddError("PhoneOrEmail", "ایمیل با این نام موجود هست");
+                        result.AddError("PhoneOrEmail", DisplayAndAnnotations.ExistPhone);
                 }
                 else
                 {
@@ -163,6 +162,7 @@ namespace DataLayer.Infrastructure.Infrastructure.Identity
         public async Task<ContentResult> Login(LoginModel loginModel, ModelStateDictionary modelState)
         {
             var result = new JsonResponse<LoginOkResult>();
+            DisplayAndAnnotations.Culture = Thread.CurrentThread.CurrentCulture;
             var pvTokenRaw = _pVInfoStructure.Get(loginModel.Token).TResult001;
             if (!modelState.IsValid)
             {
@@ -175,11 +175,11 @@ namespace DataLayer.Infrastructure.Infrastructure.Identity
             WebUser user = await _user.GetUserByMatch(loginModel.PhoneOrEmail);
             if (user == null)
             {
-                result.AddError("PhoneOrEmail", "فیلد مشابه شماره همراه و یا ایمل نمیباشد");
+                result.AddError("PhoneOrEmail", DisplayAndAnnotations.NotEmailOrPhone);
             }
             if (user == null && result.Status == JsonResponseStatus.Success)
             {
-                result.AddError("PhoneOrEmail", "نام کاربری و یا گذرواژه فاقد اعتبار");
+                result.AddError("PhoneOrEmail", DisplayAndAnnotations.NOPNotCorrect);
             }
             if (result.Status == JsonResponseStatus.Success)
             {
@@ -198,7 +198,7 @@ namespace DataLayer.Infrastructure.Infrastructure.Identity
                 }
                 else
                 {
-                    result.AddError("PhoneOrEmail", "نام کاربری و یا گذرواژه فاقد اعتبار");
+                    result.AddError("PhoneOrEmail", DisplayAndAnnotations.NOPNotCorrect);
                 }
             }
             return result.GetJson();

@@ -10,6 +10,7 @@ namespace DataLayer.UnitOfWork
         public const string email = @"^([a-zA-Z0-9_\-\.]+)@(" + suportedMails + ").(com|net|ir)";
         //public const string phone = @"[0-9]{10,11}";
         public const string SLError = " {0} " + "باید حداقل" + " {2} " + "وحداکثر" + " {1} " + "کاراکترباشد";
+        
         public const string RequiredError = "لطفا فیلد" + " {0} " + "را وارد کنید";
         public const string EmialError = "لطفا آدرس ایمیل صحیح وارد کنید";
         public const string PhoneError = "لطفا تلفن همراه صحیح وارد کنید";

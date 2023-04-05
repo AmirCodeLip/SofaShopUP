@@ -14,13 +14,14 @@ namespace DataLayer.Infrastructure.WebModels
     [TSModelUsage(CompileOption = CompileOption.compile)]
     public class LoginModel
     {
-        [Required(ErrorMessage = "RequiredError")]
+        [Required(ErrorMessage = "RequiredError", ErrorMessageResourceType = typeof(DisplayAndAnnotations))]
         [Display(Name = "PhoneOrEmail", ResourceType = typeof(DisplayAndAnnotations))]
         public string PhoneOrEmail { get; set; }
-        [Required(ErrorMessage = SharedRegix.RequiredError)]
-        [StringLength(100, ErrorMessage = SharedRegix.SLError, MinimumLength = 6)]
+        [Required(ErrorMessage = "RequiredError", ErrorMessageResourceType = typeof(DisplayAndAnnotations))]
+        //[Required(ErrorMessage = SharedRegix.RequiredError)]
+        [StringLength(100, ErrorMessage = "SLError", ErrorMessageResourceType = typeof(DisplayAndAnnotations), MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "گذرواژه")]
+        [Display(Name = "Password", ResourceType = typeof(DisplayAndAnnotations))]
         public string Password { get; set; }
         public string Token { get; set; }
     }

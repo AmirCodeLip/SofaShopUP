@@ -1,8 +1,9 @@
-import * as React from 'react';
+import * as React from 'react'
 import { PageLoaderOtpions, PageLoaderModel } from './../../model_structure/interfaces/PageLoaderModel'
 import PageLoaderState from './../../model_structure/interfaces/PageLoaderState'
-import { redirect } from "react-router-dom";
+import { redirect } from "react-router-dom"
 import { UserInfoFrame } from "./../shared/UserInfoFrame"
+import { UrlData } from './../shared/GlobalManage'
 
 
 export function Loading() {
@@ -11,8 +12,11 @@ export function Loading() {
 
 export class PageLoader extends React.Component<PageLoaderModel, PageLoaderState>
 {
+    queryString: UrlData = new UrlData();
+    allowAnonymous = false;
     constructor(model: PageLoaderModel) {
         super(model);
+        this.allowAnonymous = model.pageLoaderOtpions.allowAnonymous;
         this.state = {
             isLoaded: false,
             pageName: ''
@@ -31,8 +35,8 @@ export class PageLoader extends React.Component<PageLoaderModel, PageLoaderState
             this.load();
             return (<Loading></Loading>);
         }
-        if (!window.pVInfo.UserInfoList.find(x => x.IsDefault)?.Token) {
-            window.location.replace("/identity/login");
+        if (!this.allowAnonymous && !window.pVInfo.UserInfoList.find(x => x.IsDefault)?.Token) {
+            window.location.replace("/identity/login_register");
         }
         return (<>
             {!this.state.isLoaded && (<Loading></Loading>)}
@@ -70,7 +74,7 @@ export class PageLoader extends React.Component<PageLoaderModel, PageLoaderState
         else if (this.props.pageLoaderOtpions?.Loading) {
             this.props.pageLoaderOtpions.Loading().then(data => {
                 if (data == null) {
-                    redirect("/identity/login");
+                    redirect("/identity/login_register");
                     return;
                 }
                 else {

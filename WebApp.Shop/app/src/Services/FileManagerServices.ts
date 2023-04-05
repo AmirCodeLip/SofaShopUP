@@ -1,11 +1,10 @@
 import DataTransmitter from './DataTransmitter'
 import FileManagerOnLoadData from './../webModels/FileManager/FileManagerOnLoadData'
 import FObjectKind from './../webModels/FileManager/FObjectKind'
-import FolderInfo from './../webModels/FileManager/FolderInfo'
-import { SupportedTypeKinds } from './../webModels/FileManager/SupportedTypeKinds'
-import { OdataSetProtocol } from './OdataServices';
-import { JsonResponse } from '../models/JsonResponse';
-import { v4 as uuidv4 } from 'uuid';
+import { OdataSetProtocol } from './OdataServices'
+import { JsonResponse } from '../models/JsonResponse'
+import { v4 as uuidv4 } from 'uuid'
+import * as globalManage from './../root/shared/GlobalManage'
 
 type userRefType = {
     <T>(initialValue: T): React.MutableRefObject<T>;
@@ -58,11 +57,14 @@ export async function load(createRef: userRefType, folderID: string | undefined)
 };
 
 //export async function loadSingle(id: string) {
-    // let data = await new OdataSetProtocol<FObjectKind>(DataTransmitter.BaseUrl + "odata/FObjectKind")).Execute({ authorize: true });
+// let data = await new OdataSetProtocol<FObjectKind>(DataTransmitter.BaseUrl + "odata/FObjectKind")).Execute({ authorize: true });
 //}
- 
+
 
 export async function FileManagerLoader() {
+    let cultureInfo = (await globalManage.CultureInfoImplement.Get())!!;
+    await cultureInfo.GetStrings("PublicWord001.key012", "PublicWord001.key013", "PublicWord001.key015", "PublicWord001.key016");
+
     return DataTransmitter.GetRequest<FileManagerOnLoadData>(DataTransmitter.BaseUrl + "FileManager/Base/FileManagerOnLoadData", { authorize: true });
 }
 

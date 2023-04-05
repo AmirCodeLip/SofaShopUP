@@ -14,7 +14,7 @@ const AppRoutes = [
   },
   {
     path: '/:culture',
-    element: <PageLoader PageContainer={Home}></PageLoader>
+    element: <PageLoader PageContainer={Home} pageLoaderOtpions={{ allowAnonymous: true }}></PageLoader>
   },
   {
     path: '/:culture/identity/login_register',

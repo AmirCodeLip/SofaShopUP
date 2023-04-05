@@ -24,8 +24,6 @@ interface Props {
         "PublicWord001.key011");
     await cultureInfo.TransmitWord();
     let cssItems: Array<string> = [];
-
-
     cssItems.push("/css/loading.css");
     cssItems.push("/css/bootstrap.min.css");
     cssItems.push("/css/fontawesome/all.min.css");
@@ -40,6 +38,8 @@ interface Props {
     if (window.cultureInfo!!.cultureInfo.Rtl) {
         cssItems.push("/css/nav-menu.rtl.css");
         cssItems.push("/css/area/file_manager/layout.rtl.css");
+        cssItems.push("/css/input-pack.rtl.css");
+        cssItems.push("/css/styles.rtl.css");
     }
 
     ReactDOM.createRoot(document.getElementsByTagName("html")[0]).render(

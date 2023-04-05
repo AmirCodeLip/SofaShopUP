@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using DataLayer.UnitOfWork;
+using System.Xml.Linq;
 
 namespace DataLayer.Infrastructure.Infrastructure
 {
@@ -36,23 +37,44 @@ namespace DataLayer.Infrastructure.Infrastructure
                 var stringLength = attributes.FirstOrDefault(x => x.GetType() == stringLengthType) as StringLengthAttribute;
                 var formItem = new FormItem();
                 formItem.Name = propertyDescriptor.Name;
-                if (required != null)
-                    formItem.FormDescriptors.Add(new InputRequired(true, required.ErrorMessage));
+                var displayName = "";
                 if (display != null)
                 {
                     if (display.ResourceType == null)
-                        formItem.FormDescriptors.Add(new InputDisplay(display.Name));
+                        displayName = display.Name;
                     else
                     {
                         display.ResourceType.GetProperty("Culture").SetValue(null, Thread.CurrentThread.CurrentCulture);
-                        var nameProperty = display.ResourceType.GetProperty(display.Name, BindingFlags.Static | BindingFlags.Public).GetValue(null) as string;
-                        formItem.FormDescriptors.Add(new InputDisplay(nameProperty));
+                        displayName = display.ResourceType.GetProperty(display.Name, BindingFlags.Static | BindingFlags.Public).GetValue(null) as string;
+                    }
+                    formItem.FormDescriptors.Add(new InputDisplay(displayName));
+                }
+                if (required != null)
+                {
+
+                    if (required.ErrorMessageResourceType == null)
+                        formItem.FormDescriptors.Add(new InputRequired(true, string.Format(required.ErrorMessage, displayName)));
+                    else
+                    {
+                        required.ErrorMessageResourceType.GetProperty("Culture").SetValue(null, Thread.CurrentThread.CurrentCulture);
+                        var errorMessage = required.ErrorMessageResourceType.GetProperty(required.ErrorMessage, BindingFlags.Static | BindingFlags.Public).GetValue(null) as string;
+                        formItem.FormDescriptors.Add(new InputRequired(true, string.Format(errorMessage, displayName)));
                     }
                 }
                 if (dataType != null)
                     formItem.FormDescriptors.Add(new InputDataType(dataType.DataType));
                 if (stringLength != null)
-                    formItem.FormDescriptors.Add(new InputStringLength(stringLength.ErrorMessage, stringLength.MinimumLength, stringLength.MaximumLength));
+                {
+                    var slError = "";
+                    if (stringLength.ErrorMessageResourceType == null)
+                        slError = stringLength.ErrorMessage;
+                    else
+                    {
+                        stringLength.ErrorMessageResourceType.GetProperty("Culture").SetValue(null, Thread.CurrentThread.CurrentCulture);
+                        slError = stringLength.ErrorMessageResourceType.GetProperty(stringLength.ErrorMessage, BindingFlags.Static | BindingFlags.Public).GetValue(null) as string;
+                    }
+                    formItem.FormDescriptors.Add(new InputStringLength(string.Format(slError, displayName, stringLength.MinimumLength, stringLength.MaximumLength), stringLength.MinimumLength, stringLength.MaximumLength));
+                }
                 formModel.Add(formItem);
             }
             return formModel;

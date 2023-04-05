@@ -9,7 +9,7 @@ export default class DataTransmitter {
         if (options.authorize) {
             let jwt = window.pVInfo.UserInfoList.find(x => x.IsDefault)?.Token;
             if (jwt == null) {
-                window.location.replace("/identity/login");
+                window.location.replace("/identity/login_register");
                 return;
             }
             headers["Authorization"] = `Bearer ${jwt}`;
@@ -28,7 +28,6 @@ export default class DataTransmitter {
     }
 
     static async PostRequest<TOutput>(url: string, options?: DataTransmitterOptions) {
-        console.log(window.cultureInfo)
         if (!options)
             options = {};
         let headers: HeadersInit =
@@ -38,7 +37,7 @@ export default class DataTransmitter {
         if (options.authorize) {
             let jwt = window.pVInfo.UserInfoList.find(x => x.IsDefault)?.Token;
             if (jwt == null) {
-                window.location.replace("/identity/login");
+                window.location.replace("/identity/login_register");
                 return;
             }
             headers["Authorization"] = `Bearer ${jwt}`;
@@ -75,13 +74,12 @@ export default class DataTransmitter {
             xhr.open("POST", url, true);
             let jwt = localStorage.getItem("jwt");
             if (jwt == null) {
-                window.location.replace("/identity/login");
+                window.location.replace("/identity/login_register");
                 return;
             }
             xhr.setRequestHeader("Authorization", `Bearer ${jwt}`);
             xhr.upload.onprogress = function (e) {
                 var percentComplete = Math.ceil((e.loaded / e.total) * 100);
-                console.log(percentComplete);
             };
             xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {

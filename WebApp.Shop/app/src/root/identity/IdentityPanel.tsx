@@ -8,6 +8,8 @@ import TabPanel from 'devextreme-react/tab-panel'
 import { identityLoaderModel } from '../../Services/IdentityServices'
 import { cookies } from '../shared/GlobalManage'
 import LoginModel from '../../webModels/LoginModel'
+import * as globalManage from './../shared/GlobalManage'
+// import * as   from '../shared/GlobalManage'
 
 interface LoginProps {
     data: tabInfo
@@ -46,7 +48,7 @@ export class IdentityPanel extends React.Component<IdentityPanelProps, any> {
         );
     }
     itemTitleRender(info: tabInfo) {
-        return <span>{info.name === "login" ? "ورود" : "عضویت"}</span>;
+        return <globalManage.localizorHtml txtKey={info.name === "login" ? 'PublicWord001.key006' : 'PublicWord001.key007'}></globalManage.localizorHtml>
     }
 }
 
@@ -103,9 +105,10 @@ class IdentityForm extends React.PureComponent<LoginProps, any> {
                         <div className="epo-border"></div>
                         <div className="right-item" ref={this.passwordModel.refError} ></div>
                     </div>
-                    <div className="epo-form" onClick={this.login.bind(this)}>
+                    <div className="epo-form epo-en-right" onClick={this.login.bind(this)}>
                         <button className="btn btn-outline-001 btn-well">
-                            ورود
+                            {/* login */}
+                            <globalManage.localizorHtml txtKey={'PublicWord001.key006'}></globalManage.localizorHtml>
                         </button>
                     </div>
                 </Container>
@@ -126,9 +129,11 @@ class IdentityForm extends React.PureComponent<LoginProps, any> {
                         <div className="epo-border"></div>
                         <div className="right-item" ref={this.passwordModel.refError} ></div>
                     </div>
-                    <div className="epo-form" onClick={this.register.bind(this)}>
+                    <div className="epo-form epo-en-right" onClick={this.register.bind(this)}>
                         <button className="btn btn-outline-001 btn-well">
-                            عضویت
+                            {/* register */}
+                            <globalManage.localizorHtml txtKey={'PublicWord001.key007'}></globalManage.localizorHtml>
+
                         </button>
                     </div>
                 </Container>

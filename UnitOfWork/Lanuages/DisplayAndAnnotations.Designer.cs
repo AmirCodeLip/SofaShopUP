@@ -63,9 +63,72 @@ namespace DataLayer.UnitOfWork.Lanuages {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string ExistEmail {
+            get {
+                return ResourceManager.GetString("ExistEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string ExistPhone {
+            get {
+                return ResourceManager.GetString("ExistPhone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string NOPNotCorrect {
+            get {
+                return ResourceManager.GetString("NOPNotCorrect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string NotEmailOrPhone {
+            get {
+                return ResourceManager.GetString("NotEmailOrPhone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string Password {
+            get {
+                return ResourceManager.GetString("Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string PhoneOrEmail {
             get {
                 return ResourceManager.GetString("PhoneOrEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string RequiredError {
+            get {
+                return ResourceManager.GetString("RequiredError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string SLError {
+            get {
+                return ResourceManager.GetString("SLError", resourceCulture);
             }
         }
     }
