@@ -1,6 +1,11 @@
 /*============form============*/
 
-.epo-form {
+.epo-btn-group {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.epo-form{
   position: relative;
   margin: 8px 30px 0 0;
 }
@@ -184,6 +189,11 @@ input.epo:focus {
   border-color: var(--color_002);
 }
 
+.btn-outline-002 {
+  color: #dc2727;
+  border-color: #dc2727;
+}
+
 .btn-outline-001:hover {
   color: white;
   background-color: var(--color_001);
@@ -196,4 +206,8 @@ input.epo:focus {
 
 .btn p {
   margin: 0;
+}
+
+.epo-btn-group .btn {
+  margin: 0 0px 0 10px;
 }

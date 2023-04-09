@@ -63,6 +63,15 @@ namespace DataLayer.UnitOfWork.Lanuages {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string key001 {
+            get {
+                return ResourceManager.GetString("key001", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string key002 {
             get {
                 return ResourceManager.GetString("key002", resourceCulture);
@@ -192,6 +201,33 @@ namespace DataLayer.UnitOfWork.Lanuages {
         public static string key016 {
             get {
                 return ResourceManager.GetString("key016", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string key017 {
+            get {
+                return ResourceManager.GetString("key017", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string key018 {
+            get {
+                return ResourceManager.GetString("key018", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string key019 {
+            get {
+                return ResourceManager.GetString("key019", resourceCulture);
             }
         }
     }

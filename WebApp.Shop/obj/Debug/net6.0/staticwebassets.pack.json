@@ -17,6 +17,10 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
+      "Id": "D:\\SofaShop\\WebApp.Shop\\wwwroot\\icons\\folder.psd",
+      "PackagePath": "staticwebassets\\icons\\folder.psd"
+    },
+    {
       "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.WebApp.Shop.Microsoft.AspNetCore.StaticWebAssets.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
     },

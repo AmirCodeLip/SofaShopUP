@@ -1,10 +1,11 @@
 import * as React from 'react'
-import FileManagerOnLoadData from './../../webModels/FileManager/FileManagerOnLoadData'
-import FolderInfo from './../../webModels/FileManager/FolderInfo'
-import FObjectKind from './../../webModels/FileManager/FObjectKind'
+import FileManagerOnLoadData from '../../webModels/FileManager/FileManagerOnLoadData'
+import FolderInfo from '../../webModels/FileManager/FolderInfo'
+import FObjectKind from '../../webModels/FileManager/FObjectKind'
 import { FObjectKindComponent } from '../../Services/FileManagerServices'
+import { BaseLoader } from '../../model_structure/BaseLoader'
+import { LoaderCommunicator } from '../../model_structure/BaseLoader'
 
-export type EventClickType = (ev: MouseEvent) => void;
 
 export function FolderLogo() {
     return (
@@ -22,11 +23,13 @@ export function FolderLogo() {
         </>);
 }
 
-export class FileManagerProps {
-    model: FileManagerOnLoadData;
-    folderId: string;
-}
+export type EventClickType = (ev: MouseEvent) => void;
 
+export class FileManagerProps extends BaseLoader<FileManagerOnLoadData> {
+    // model: ;
+    folderId: string;
+    
+}
 
 export class FileManagerState {
     showContextMenu: boolean = false;
@@ -35,7 +38,7 @@ export class FileManagerState {
 }
 
 export interface RightBarItem {
-    text:  JSX.Element,
+    text: JSX.Element,
     cmdText: string,
     icon: string,
     refItem: React.RefObject<HTMLDivElement>,
@@ -48,6 +51,36 @@ export enum ClickedSection {
 }
 
 export interface EventType {
-    action: () => any | void;
+    action: (...params: Array<any>) => any | void;
     name: string;
+}
+
+export interface PLayout {
+    children: JSX.Element;
+    loaderCommunicator: LoaderCommunicator;
+    invokeEvent: <T>(name: string, ...params: Array<any>) => T;
+}
+
+export interface LayoutState {
+    navMode: "openFullSide" | "close",
+    sideWidth: number,
+    load: Boolean,
+    phoneOrTablet: boolean
+}
+
+export interface SearchItemHolder {
+    val: string,
+    time: number
+}
+
+export interface SelectionInfo {
+    clientX: number,
+    clientY: number,
+    constDifferenceX: number,
+    constDifferenceY: number,
+    left?: number,
+    width?: number,
+    top?: number,
+    height?: number,
+    scrollY: number
 }

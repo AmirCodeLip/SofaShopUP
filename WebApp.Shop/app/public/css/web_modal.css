@@ -1,7 +1,7 @@
 .web-modal,
 .web-modal-context {
     position: absolute;
-    z-index: 1;
+    z-index: 3;
     /* padding-top: 100px; */
     left: 0;
     top: 0;
@@ -74,6 +74,7 @@
 
 .contextlist-item-text {
     padding-right: 22px;
+    text-align: right;
 }
 
 .contextlist-item-icon {

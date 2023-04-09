@@ -34,7 +34,7 @@ interface Props {
     cssItems.push("/css/area/identity/login_register.css");
     cssItems.push("/css/area/file_manager/file_manager.css");
     cssItems.push("/css/area/file_manager/layout.css");
-    cssItems.push("http://localhost:5220/staticdirectories/src/root/web_modal/Web_Modal.css");
+    cssItems.push("/css/web_modal.css");
     if (window.cultureInfo!!.cultureInfo.Rtl) {
         cssItems.push("/css/nav-menu.rtl.css");
         cssItems.push("/css/area/file_manager/layout.rtl.css");

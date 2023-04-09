@@ -1,8 +1,8 @@
 import DataTransmitter from './../../Services/DataTransmitter'
-import { JsonResponseStatus, JsonResponse } from './../../models/JsonResponse';
+import { JsonResponseStatus, JsonResponse } from '../../model_structure/JsonResponse';
 import { UrlData } from './../shared/GlobalManage';
+import {SelectionInfo} from './TypeAndModules'
 
-type uploadDoneType = (data: JsonResponse<undefined>, preFolderId: string) => void;
 export default class UploadHandler {
     driveBar: React.RefObject<HTMLDivElement>;
     queryString: UrlData;
@@ -175,15 +175,4 @@ export default class UploadHandler {
         window.removeEventListener("mousemove", this.driveBarMove);
         window.removeEventListener("mousedown", this.driveBarDown);
     }
-}
-interface SelectionInfo {
-    clientX: number,
-    clientY: number,
-    constDifferenceX: number,
-    constDifferenceY: number,
-    left?: number,
-    width?: number,
-    top?: number,
-    height?: number,
-    scrollY: number
 }

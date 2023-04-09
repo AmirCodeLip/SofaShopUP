@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "mVgzuNZrUQbIIfj6Bx18RHibQcnWPsm9cp7wlkicJsQ=",
+  "Hash": "3QmQeMb7fAgV0nEvqeIwugNy/x/Qn/0fAjxEnN2Q49o=",
   "Source": "WebApp.Shop",
   "BasePath": "_content/WebApp.Shop",
   "Mode": "Default",
@@ -83,6 +83,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\favicon.ico"
+    },
+    {
+      "Identity": "D:\\SofaShop\\WebApp.Shop\\wwwroot\\icons\\folder.psd",
+      "SourceId": "WebApp.Shop",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\SofaShop\\WebApp.Shop\\wwwroot\\",
+      "BasePath": "_content/WebApp.Shop",
+      "RelativePath": "icons/folder.psd",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\icons\\folder.psd"
     }
   ]
 }

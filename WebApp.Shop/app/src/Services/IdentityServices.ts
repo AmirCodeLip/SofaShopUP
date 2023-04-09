@@ -2,7 +2,7 @@ import IFormModel from './../mylibraries/asp-communication/interfaces/IFormModel
 import DataTransmitter from './DataTransmitter'
 import LoginModel from './../webModels/LoginModel'
 import LoginOkResult from './../webModels/LoginOkResult';
-import { JsonResponse } from '../models/JsonResponse';
+import { JsonResponse } from '../model_structure/JsonResponse';
 
 export async function loginService(model: LoginModel) {
     let result = await DataTransmitter.PostRequest<JsonResponse<LoginOkResult>>(`${DataTransmitter.BaseUrl}Identity/PostLogin`, { body: model });

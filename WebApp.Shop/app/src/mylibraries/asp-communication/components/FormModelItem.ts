@@ -41,7 +41,6 @@ export class FormHandler {
     isValid() {
         let valid = true;
         for (let formModelItem of this.formModelItems) {
-            debugger;
             formModelItem.validate();
             if (!formModelItem.isValid) {
                 valid = false;

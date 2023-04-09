@@ -2,7 +2,7 @@ import DataTransmitter from './DataTransmitter'
 import FileManagerOnLoadData from './../webModels/FileManager/FileManagerOnLoadData'
 import FObjectKind from './../webModels/FileManager/FObjectKind'
 import { OdataSetProtocol } from './OdataServices'
-import { JsonResponse } from '../models/JsonResponse'
+import { JsonResponse } from '../model_structure/JsonResponse'
 import { v4 as uuidv4 } from 'uuid'
 import * as globalManage from './../root/shared/GlobalManage'
 
@@ -63,8 +63,7 @@ export async function load(createRef: userRefType, folderID: string | undefined)
 
 export async function FileManagerLoader() {
     let cultureInfo = (await globalManage.CultureInfoImplement.Get())!!;
-    await cultureInfo.GetStrings("PublicWord001.key012", "PublicWord001.key013", "PublicWord001.key015", "PublicWord001.key016");
-
+    cultureInfo.GetStrings("PublicWord001.key012", "PublicWord001.key013", "PublicWord001.key015", "PublicWord001.key016");
     return DataTransmitter.GetRequest<FileManagerOnLoadData>(DataTransmitter.BaseUrl + "FileManager/Base/FileManagerOnLoadData", { authorize: true });
 }
 

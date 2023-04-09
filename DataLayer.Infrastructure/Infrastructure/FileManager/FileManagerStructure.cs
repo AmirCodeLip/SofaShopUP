@@ -30,6 +30,8 @@ namespace DataLayer.Infrastructure.Infrastructure
         private readonly ApplicationDbContext context;
         private readonly UserManager<WebUser> userManager;
         private readonly SupportedTypes supportedTypes;
+        private static string[] _rootRoad = new string[] { "images", "videos", "audios" };
+
         public FileManagerStructure(IWebHostEnvironment hostingEnv, IFolderRepository folderRepository,
             IFileRepository fileRepository, IFileVersionRepository fileVersionRepository,
             IActorOrArtistRepository actorOrArtistRepository, IFileVersionActorOrArtistRepository fileVersionActorOrArtistRepository,
@@ -117,9 +119,10 @@ namespace DataLayer.Infrastructure.Infrastructure
         {
             var user = await userManager.GetUserAsync(httpContext.User);
             Guid? fixedFolderId = null;
+
             if (!string.IsNullOrEmpty(folderID))
             {
-                if (folderID == "root")
+                if (folderID == "root" || _rootRoad.Contains(folderID))
                     fixedFolderId = (await RootFolderAsync(user.Id)).Id;
                 else if (!SupportedTypeKinds.ListItem.Values.Contains(folderID))
                     fixedFolderId = Guid.Parse(folderID);

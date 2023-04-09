@@ -2,7 +2,7 @@ import * as React from 'react'
 import PVInfoModel from '../../webModels/PVInfoModel'
 import CultureInfo from '../../webModels/CultureInfo'
 import DataTransmitter from '../../Services/DataTransmitter'
-import { KeyValuePair, JsonResponse } from '../../models/JsonResponse'
+import { KeyValuePair, JsonResponse } from '../../model_structure/JsonResponse'
 import { stringify } from 'uuid'
 declare global {
     interface Window {

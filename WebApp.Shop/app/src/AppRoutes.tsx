@@ -6,6 +6,8 @@ import { FileManagerLoader } from './Services/FileManagerServices'
 import { PageLoader } from "./root/shared/PageLoader";
 import FileManager from './root/file_manager/FileManager'
 import { GetDefaultCulture } from './root/shared/GlobalManage'
+import { PageLoaderOtpions } from './model_structure/interfaces/PageLoaderModel'
+
 
 const AppRoutes = [
   {
@@ -14,15 +16,15 @@ const AppRoutes = [
   },
   {
     path: '/:culture',
-    element: <PageLoader PageContainer={Home} pageLoaderOtpions={{ allowAnonymous: true }}></PageLoader>
+    element: <PageLoader PageContainer={Home} pageLoaderOtpions={new PageLoaderOtpions()}></PageLoader>
   },
   {
     path: '/:culture/identity/login_register',
-    element: <PageLoader PageContainer={IdentityPanel} pageLoaderOtpions={{ Loading: identityLoader, allowAnonymous: true }} />
+    element: <PageLoader PageContainer={IdentityPanel} pageLoaderOtpions={new PageLoaderOtpions(identityLoader, true, false, false)} />
   },
   {
     path: '/:culture/manage_files/:fileId',
-    element: <PageLoader PageContainer={FileManager} pageLoaderOtpions={{ Loading: FileManagerLoader, allowAnonymous: false }} />
+    element: <PageLoader PageContainer={FileManager} pageLoaderOtpions={new PageLoaderOtpions(FileManagerLoader, true, true, true)} />
   }
 ];
 const extera: Array<any> = [];

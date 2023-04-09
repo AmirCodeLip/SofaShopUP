@@ -1,25 +1,29 @@
 import * as React from 'react'
 import {
     FolderLogo, FileManagerProps, FileManagerState, RightBarItem, EventClickType, ClickedSection, EventType
-} from './FolderModules';
+} from './TypeAndModules'
 import { Col, Row } from 'react-bootstrap';
-import { Web_Modal, ModalOptions, ModalType } from './../web_modal/Web_Modal';
-import { FormModeInput, FormHandler, HiddenModeInput } from '../../mylibraries/asp-communication/components/FormModelItem';
+import { Web_Modal, ModalOptions, ModalType } from './../web_modal/Web_Modal'
+import { FormModeInput, FormHandler, HiddenModeInput } from '../../mylibraries/asp-communication/components/FormModelItem'
 import FolderInfo from './../../webModels/FileManager/FolderInfo';
 import { load, editForm, FObjectKindComponent } from '../../Services/FileManagerServices'
-import { JsonResponseStatus, JsonResponse } from './../../models/JsonResponse';
-import { FObjectType } from './../../webModels/FileManager/FObjectType';
-import DataTransmitter from '../../Services/DataTransmitter';
-import UploadHandler from './UploadHandler';
-import { UrlData } from './../shared/GlobalManage';
-import FObjectKind from './../../webModels/FileManager/FObjectKind';
-import Layout from './Layout';
-import { isGuid } from '../../mylibraries/Utilities';
+import { JsonResponseStatus, JsonResponse } from '../../model_structure/JsonResponse'
+import { FObjectType } from './../../webModels/FileManager/FObjectType'
+import DataTransmitter from '../../Services/DataTransmitter'
+import UploadHandler from './UploadHandler'
+import { UrlData } from './../shared/GlobalManage'
+import FObjectKind from './../../webModels/FileManager/FObjectKind'
+import Layout from './Layout'
+import { isGuid } from '../../mylibraries/Utilities'
 import * as  globalManage from '../shared/GlobalManage'
+import { SearchItemHolder } from './TypeAndModules'
 
 export default class FileManager extends React.Component<FileManagerProps, FileManagerState>  {
     driveBar: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
     selectionElement: React.RefObject<HTMLDivElement> = React.createRef<HTMLInputElement>();
+    public get searchDrive(): HTMLInputElement {
+        return this.props.loaderCommunicator!.searchDrive!.current;
+    }
     nameFolderOrFile: FormModeInput = new FormModeInput(this.props.model.EditFolderOrFileForm, "Name");
     fObjectInfoFormHandler: FormHandler;
     contextMenuMiddleware: ModalOptions = new ModalOptions(ModalType.contextModal);
@@ -30,7 +34,11 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     uploadHandler?: UploadHandler;
     preventDeselectAll: boolean = false;
     events: Array<EventType> = [];
-
+    /** 
+      * every time some one search in search box 
+      * we count every second and put in this
+      * */
+    sendSearchRequestTimer?: NodeJS.Timer;
     rightBarItems: Array<RightBarItem> = [
         {
             text: <globalManage.localizorHtml txtKey={'PublicWord001.key012'}></globalManage.localizorHtml>,
@@ -47,7 +55,6 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
             refItem: React.createRef<HTMLDivElement>(),
             clickedSection: ClickedSection.driveBar,
             clicked: () => {
-                let t = <globalManage.localizorHtml txtKey={'PublicWord001.key016'}></globalManage.localizorHtml>
                 this.newData = new FObjectKindComponent({
                     FolderId: isGuid(this.queryString.id) ? this.queryString.id : null,
                     Name: "",
@@ -79,7 +86,6 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
             }
         }
     ];
-
     constructor(props: FileManagerProps) {
         super(props);
         this.fObjectInfoFormHandler = new FormHandler(this.nameFolderOrFile);
@@ -90,7 +96,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
 
     render() {
         return (
-            <Layout>
+            <Layout loaderCommunicator={this.props.loaderCommunicator} invokeEvent={this.invokeEvent.bind(this)}>
                 <>
                     <Row className="drive-bar" ref={this.driveBar}>
                         {this.state.fData.filter(f => f.model.FObjectType === FObjectType.Folder).map((fData, i) => (
@@ -135,7 +141,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
                             {this.rightBarItems.filter(x => x.clickedSection === this.state.clickedSection).map((item, key) =>
                                 <Col lg={12} className='contextlist-each' ref={item.refItem} key={key} >
                                     <div className='contextlist-hold'>
-                                        <div className="contextlist-item-text right-item">
+                                        <div className="contextlist-item-text">
                                             {item.text}
                                         </div>
                                         <div className='contextlist-item-icon'>
@@ -273,14 +279,9 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         if (folderOrFile && folderOrFile !== null) {
             this.fObjectMenuMiddleware.onLoaded = () => {
                 this.fObjectInfoFormHandler.setFormData(folderOrFile!!.model);
+                this.fObjectInfoFormHandler.init();
             }
         }
-        setTimeout(() => {
-            if (!this.nameFolderOrFile.refLabel.current ||
-                !this.nameFolderOrFile.refInput || !this.nameFolderOrFile.refError)
-                return;
-            this.fObjectInfoFormHandler.init();
-        }, 60);
     }
 
     /** get or refresh data */
@@ -326,8 +327,8 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         return elemet;
     }
 
-    invokeEvent<T>(name: string) {
-        let result = this.events.find(x => x.name === name).action();
+    invokeEvent<T>(name: string, ...params: Array<any>) {
+        let result = this.events.find(x => x.name === name).action(params);
         if (result !== undefined)
             return result as T;
     }
@@ -360,6 +361,7 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
     componentDidMount() {
         if (this.fObjectInfoFormHandler)
             this.fObjectInfoFormHandler.initRef(React.createRef);
+        this.contextMenuMiddleware.outClickClose = false;
         document.addEventListener("contextmenu", this.rightClick.bind(this));
         document.addEventListener("click", this.leftClick.bind(this));
         document.addEventListener("dblclick", this.leftDblClick.bind(this));
@@ -372,9 +374,12 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
             this.uploadHandler = new UploadHandler(this.driveBar, this.queryString, this.selectionElement, this.invokeEvent.bind(this));
             this.addEvent("SelectFObject", this.onselectFObject.bind(this));
             this.addEvent("UploadDone", this.onUploadDone.bind(this));
-            // this.addEvent("", this.onselectFObject.bind(this));
-
+            this.addEvent("SetFolderId", (async (params: Array<string>) => {
+                await this.setFolder(params[0]);
+                await this.loadData();
+            }).bind(this));
             await this.loadData();
+            this.searchDrive.addEventListener("keyup", this.search.bind(this));
         }, 1000);
     }
 
@@ -382,6 +387,27 @@ export default class FileManager extends React.Component<FileManagerProps, FileM
         if (this.queryString.id === preFolderId) {
             await this.loadData();
         }
+    }
+
+    search(ev: KeyboardEvent) {
+        let target = ev.target as HTMLInputElement;
+        if (target.value.length == 0) {
+            if (this.sendSearchRequestTimer)
+                clearInterval(this.sendSearchRequestTimer);
+        }
+        else if (!this.sendSearchRequestTimer) {
+            this.sendSearchRequestTimer = setInterval(this.sendSearchRequest.bind(this), 5000);
+        }
+    }
+    /**
+     * every time some one search in search box 
+     * first we get last time their search
+     * then if it not exist we clear search process
+     * if process is equal to  root and we aren't in root 
+     * we set folder to root and load data again
+     */
+    sendSearchRequest() {
+        console.log(this.searchDrive.value)
     }
 
     onselectFObject() {

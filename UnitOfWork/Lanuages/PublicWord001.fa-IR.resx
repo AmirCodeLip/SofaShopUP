@@ -157,12 +157,21 @@
     <value>فولدر جدید</value>
   </data>
   <data name="key014" xml:space="preserve">
-    <value />
+    <value>بله</value>
   </data>
   <data name="key015" xml:space="preserve">
     <value>تغییر نام</value>
   </data>
   <data name="key016" xml:space="preserve">
     <value>فولدر جدید</value>
+  </data>
+  <data name="key017" xml:space="preserve">
+    <value>خیر</value>
+  </data>
+  <data name="key018" xml:space="preserve">
+    <value>آیا مطمئن هستید که می خواهید حساب فعلی خود را از {0} به {1} تغییر دهید؟</value>
+  </data>
+  <data name="key019" xml:space="preserve">
+    <value>آیا مطمئن هستید که می خواهید از کاربر {0} خارج شوید؟</value>
   </data>
 </root>

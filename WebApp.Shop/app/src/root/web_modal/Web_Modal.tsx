@@ -43,6 +43,7 @@ export class ModalOptions {
         this._yPos = v;
     }
     headIsActive = true;
+    outClickClose = true;
     onLoaded?: () => void;
     onEnableChange?: emptyEvent<boolean>;
     onXPosChange?: emptyEvent<string>;
@@ -99,36 +100,38 @@ export class Web_Modal extends React.Component<ModalProps, ModalState> {
             else
                 this.modalRef.current.style.top = value;
         }
-        props.middleware.onEnableChange = (value, preValue) => {
+        (props.middleware.onEnableChange = (value, preValue) => {
             if (preValue === value) {
                 return;
             }
             this.modalRef = React.createRef<HTMLDivElement>();
             this.setState({ enable: value });
-        }
+        }).bind(this);
     }
+
     componentDidUpdate(prevProps: ModalProps) {
         if (this.state.enable) {
             if (this.props.middleware.onLoaded)
                 this.props.middleware.onLoaded();
         }
+
     }
     componentDidMount() {
+
     }
 
     componentWillUnmount() {
     }
-    eventonModalClicked = (ev: React.MouseEvent<HTMLDivElement, MouseEvent>) => this.onModalClicked(ev);
 
     onModalClicked(ev: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-        return;
-        if (ev.target === this.modalRef.current) {
-            this.setState({ enable: false });
+        let target = (ev.target as HTMLElement);
+        if (this.props.middleware.outClickClose && target === this.modalRef.current) {
+            this.props.middleware.enable = false
         }
     }
     render() {
         if (this.state.enable) {
-            return (<div className={this.className} ref={this.modalRef} onClick={this.eventonModalClicked}>
+            return (<div className={this.className} ref={this.modalRef} onClick={this.onModalClicked.bind(this)}>
                 <div className='web-modal-content'>
                     {this.props.middleware.headIsActive &&
                         <div className='web-modal-head'>

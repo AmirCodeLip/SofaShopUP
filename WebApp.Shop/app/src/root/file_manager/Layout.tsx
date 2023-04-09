@@ -1,24 +1,14 @@
 import * as React from 'react'
-import ChildItemModel from '../../model_structure/interfaces/ChildItemModel'
 import * as  globalManage from '../shared/GlobalManage'
 import { Loading } from '../shared/PageLoader'
 import { useNavigation, Route, Routes, Link } from "react-router-dom"
 import { BootstrapRecognizer, BTSizes } from "./../../mylibraries/BootstrapRecognizer"
 import { UserInfoFrame } from "./../shared/UserInfoFrame"
+import { LoaderCommunicator } from './../../model_structure/BaseLoader'
+import { LayoutState, PLayout } from './TypeAndModules'
 
 
-interface LayoutState {
-  navMode: "openFullSide" | "close",
-  sideWidth: number,
-  load: Boolean,
-  phoneOrTablet: boolean
-}
-
-interface SearchItemHolder {
-  val: string,
-  time: number
-}
-export default class Layout extends React.Component<ChildItemModel, LayoutState>
+export default class Layout extends React.Component<PLayout, LayoutState>
 {
   rootRegix = new RegExp('root(\/[a-zA-Z]{1,}){1,}');
   spaceDescription = '{0} used of {1}';
@@ -26,22 +16,12 @@ export default class Layout extends React.Component<ChildItemModel, LayoutState>
   // static displayName = Layout.name;
   bootstrapRecognizer = new BootstrapRecognizer();
   sideItemRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
-  /** search bar input element */
-  searchDrive: React.RefObject<HTMLInputElement> = React.createRef<HTMLInputElement>();
-  /** 
-       * every time some one search in search box 
-       * we count every second and put in this
-       * */
-  sendSearchRequestTimer?: NodeJS.Timer;
-  /**
-   * every time some one search in search box 
-   * we put their search in this
-   */
-  searchItems: Array<SearchItemHolder> = [];
+  loaderCommunicator: LoaderCommunicator;
 
-  constructor(props: ChildItemModel) {
+  constructor(props: PLayout) {
     super(props);
     this.state = { navMode: "openFullSide", sideWidth: 19, load: false, phoneOrTablet: false };
+    this.loaderCommunicator = props.loaderCommunicator;
     this.bootstrapRecognizer.events.push(((d: BTSizes) => { this.setState({ phoneOrTablet: d.phoneOrTablet }) }).bind(this));
     document.addEventListener("mousemove", this.checkSideNavMove.bind(this));
     document.addEventListener("mouseup", this.mouseup.bind(this));
@@ -52,37 +32,40 @@ export default class Layout extends React.Component<ChildItemModel, LayoutState>
       return (<Loading></Loading>);
 
     return (<>
-    {/* onKeyDown={this.checkPathKeys} onKeyUp={this.search.bind(this) */}
-      <UserInfoFrame isFileManager={true}></UserInfoFrame>
+      <UserInfoFrame loaderCommunicator={this.loaderCommunicator}></UserInfoFrame>
       <div className='shutter-view'>
         <div className='main-loader hide'><div className='main-loader-spin'></div></div>
         <div className={this.getClassItem("view-side-center")} style={this.getSideNavStyle()}>
           <div className='side-grid-center'>
             <div className='link-list'>
-              <Link className={this.getClassItem('link-list-item')} to={`/${window.cultureInfo?.cultureInfo.Culture}/manage_files/root`}>
+              <a className={this.getClassItem('link-list-item')} onClick={() => this.changeTab.bind(this)("root")}>
                 <i className={this.getClassItem("link-list-logo") + ' fa-solid fa-folder'}></i>
                 <span className={this.getClassItem('link-list-text')}>
+                  {/* root */}
                   <globalManage.localizorHtml txtKey={'PublicWord001.key008'}></globalManage.localizorHtml>
                 </span>
-              </Link>
-              <Link className={this.getClassItem('link-list-item')} to={`/${window.cultureInfo?.cultureInfo.Culture}/manage_files/images`}>
+              </a>
+              <a className={this.getClassItem('link-list-item')} onClick={() => this.changeTab.bind(this)("images")}>
                 <i className={this.getClassItem("link-list-logo") + ' fa-solid fa-image'}></i>
                 <span className={this.getClassItem('link-list-text')}>
+                  {/* images */}
                   <globalManage.localizorHtml txtKey={'PublicWord001.key009'}></globalManage.localizorHtml>
                 </span>
-              </Link>
-              <Link className={this.getClassItem('link-list-item')} to={`/${window.cultureInfo?.cultureInfo.Culture}/manage_files/videos`}>
+              </a>
+              <a className={this.getClassItem('link-list-item')} onClick={() => this.changeTab.bind(this)("videos")}>
                 <i className={this.getClassItem("link-list-logo") + ' fa-solid fa-video'}></i>
                 <span className={this.getClassItem('link-list-text')}>
+                  {/* videos */}
                   <globalManage.localizorHtml txtKey={'PublicWord001.key010'}></globalManage.localizorHtml>
                 </span>
-              </Link>
-              <Link className={this.getClassItem('link-list-item')} to={`/${window.cultureInfo?.cultureInfo.Culture}/manage_files/audios`}>
+              </a>
+              <a className={this.getClassItem('link-list-item')} onClick={() => this.changeTab.bind(this)("audios")}>
                 <i className={this.getClassItem("link-list-logo") + ' fa-solid fa-music'}></i>
                 <span className={this.getClassItem('link-list-text')}>
+                  {/* audios */}
                   <globalManage.localizorHtml txtKey={'PublicWord001.key011'}></globalManage.localizorHtml>
                 </span>
-              </Link>
+              </a>
               <div className={this.getClassItem('drive-info')} style={this.getDriveInfoStyle()}>
                 <div className='top-divider'></div>
                 <div className="progress-view">
@@ -221,27 +204,9 @@ export default class Layout extends React.Component<ChildItemModel, LayoutState>
     }
   }
 
-  search(e: any) {
-    let val = e.target.value;
-    if (!this.sendSearchRequestTimer) {
-      this.sendSearchRequestTimer = setInterval(this.sendSearchRequest.bind(this), 1500);
-    }
-    this.searchItems.push({
-      val: val,
-      time: new Date().getTime()
-    });
-  }
-  /**
-   * every time some one search in search box 
-   * first we get last time their search
-   * then if it not exist we clear search process
-   * if process is equal to  root and we aren't in root 
-   * we set folder to root and load data again
-   */
-  sendSearchRequest() {
-    let lastItem = this.searchItems[this.searchItems.length - 1];
-    this.searchItems = this.searchItems.filter(c => c.time > lastItem.time)
+  ///change page by click on side link
+  async changeTab(floderId: string) {
+    await this.props.invokeEvent("SetFolderId", floderId);
   }
 
 }
-

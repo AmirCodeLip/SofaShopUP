@@ -157,12 +157,21 @@
     <value>new folder</value>
   </data>
   <data name="key014" xml:space="preserve">
-    <value />
+    <value>yes</value>
   </data>
   <data name="key015" xml:space="preserve">
     <value>rename</value>
   </data>
   <data name="key016" xml:space="preserve">
     <value>new folder</value>
+  </data>
+  <data name="key017" xml:space="preserve">
+    <value>no</value>
+  </data>
+  <data name="key018" xml:space="preserve">
+    <value>are you sure that you want to change your current account from {0} to {1}?</value>
+  </data>
+  <data name="key019" xml:space="preserve">
+    <value>are you sure that want to logout from user {0}?</value>
   </data>
 </root>

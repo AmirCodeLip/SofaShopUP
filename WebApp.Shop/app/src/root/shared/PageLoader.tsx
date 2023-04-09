@@ -4,7 +4,9 @@ import PageLoaderState from './../../model_structure/interfaces/PageLoaderState'
 import { redirect } from "react-router-dom"
 import { UserInfoFrame } from "./../shared/UserInfoFrame"
 import { UrlData } from './../shared/GlobalManage'
-
+import { Web_Modal, ModalOptions, ModalType } from './../web_modal/Web_Modal'
+import * as  globalManage from '../shared/GlobalManage'
+import { LoaderCommunicator } from './../../model_structure/BaseLoader'
 
 export function Loading() {
     return (<div className="lds-ripple"><div></div><div></div></div>);
@@ -12,6 +14,11 @@ export function Loading() {
 
 export class PageLoader extends React.Component<PageLoaderModel, PageLoaderState>
 {
+    loaderCommunicator: LoaderCommunicator;
+    yesBtn = React.createRef<HTMLButtonElement>();
+    noBtn = React.createRef<HTMLButtonElement>();
+    makeSureText = React.createRef<HTMLDivElement>();
+    makeSureOptions = new ModalOptions(ModalType.defualtModal);
     queryString: UrlData = new UrlData();
     allowAnonymous = false;
     constructor(model: PageLoaderModel) {
@@ -21,6 +28,16 @@ export class PageLoader extends React.Component<PageLoaderModel, PageLoaderState
             isLoaded: false,
             pageName: ''
         };
+        this.loaderCommunicator = {
+            makeSure: this.makeSure.bind(this),
+        };
+        if (model.pageLoaderOtpions.hasSearchDrive) {
+            this.loaderCommunicator.searchDrive = React.createRef<HTMLInputElement>();
+        }
+        (async function () {
+            let cultureInfo = (await globalManage.CultureInfoImplement.Get())!!;
+            cultureInfo.GetStrings("PublicWord001.key014", "PublicWord001.key017", "PublicWord001.key018", "PublicWord001.key019");
+        }())
     }
 
     public get pageName(): string {
@@ -44,15 +61,40 @@ export class PageLoader extends React.Component<PageLoaderModel, PageLoaderState
                 <>
                     {
                         this.state.pageName !== "FileManager" &&
-                        <UserInfoFrame isFileManager={false}></UserInfoFrame>
+                        <UserInfoFrame loaderCommunicator={this.loaderCommunicator}></UserInfoFrame>
                     }
-                    <this.props.PageContainer model={this.state.model} />
+                    <this.props.PageContainer model={this.state.model} loaderCommunicator={this.loaderCommunicator} />
                 </>}
+            <Web_Modal middleware={this.makeSureOptions}>
+                <>
+                    <div className="epo-form" style={{ height: "150px" }} ref={this.makeSureText}></div>
+                    <div className="epo-btn-group epo-en-right">
+                        <button className="btn btn-outline-002 btn-well" ref={this.noBtn}>
+                            <globalManage.localizorHtml txtKey={'PublicWord001.key017'}></globalManage.localizorHtml>
+                        </button>
+                        <button className="btn btn-outline-001 btn-well" ref={this.yesBtn}>
+                            <globalManage.localizorHtml txtKey={'PublicWord001.key014'}></globalManage.localizorHtml>
+                        </button>
+                    </div>
+                </>
+            </Web_Modal>
         </>)
     }
 
-    showProfile() {
-        console.log(this);
+    makeSure(txt: string): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            this.makeSureOptions.enable = true;
+            let closeTab = (function (stateData: boolean) {
+                this.makeSureOptions.enable = false;
+                resolve(stateData);
+            }).bind(this);
+            setTimeout(() => {
+                this.makeSureText.current.innerHTML = txt;
+                this.yesBtn.current.onclick = () => { closeTab(true); };
+                this.noBtn.current.onclick = () => { closeTab(false); };
+            }, 200);
+
+        });
     }
 
     componentWillUnmount(): void {
@@ -64,6 +106,7 @@ export class PageLoader extends React.Component<PageLoaderModel, PageLoaderState
     }
 
     async componentDidMount() {
+        // console.log(await this.makeSure());
         await this.load();
     }
 
@@ -71,8 +114,11 @@ export class PageLoader extends React.Component<PageLoaderModel, PageLoaderState
         if (!this.props.pageLoaderOtpions) {
             this.setState({ model: null, isLoaded: true, pageName: this.pageName });
         }
-        else if (this.props.pageLoaderOtpions?.Loading) {
-            this.props.pageLoaderOtpions.Loading().then(data => {
+        else if (!this.props.pageLoaderOtpions?.loading) {
+            this.setState({ model: undefined, isLoaded: true, pageName: this.pageName })
+        }
+        else if (this.props.pageLoaderOtpions?.loading) {
+            this.props.pageLoaderOtpions.loading().then(data => {
                 if (data == null) {
                     redirect("/identity/login_register");
                     return;
