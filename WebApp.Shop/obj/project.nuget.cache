@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "jmIZ1P6iaoifNcDw2BrhAYkBiPHR0QFPdO9dOW461qw71KUW2r6PPjvlI9LXLhXLF1Q5BnvGTlbSDWQ9hv2ulg==",
+  "dgSpecHash": "5LuxfM4qdFt9p9oggRMqBV3WszouQEEk9e5go/FYJmrW3hMEQK8x1kQ4szSHgiQiFGB0OWTw2p1BzC/Ju1fooQ==",
   "success": true,
-  "projectFilePath": "D:\\SofaShop\\WebApp.Shop\\WebApp.Shop.csproj",
+  "projectFilePath": "C:\\Amir\\SofaShop\\WebApp.Shop\\WebApp.Shop.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\amir\\.nuget\\packages\\automapper\\11.0.1\\automapper.11.0.1.nupkg.sha512",
     "C:\\Users\\amir\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",

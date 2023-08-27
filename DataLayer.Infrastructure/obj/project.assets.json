@@ -9542,11 +9542,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\SofaShop\\DataLayer.Infrastructure\\DataLayer.Infrastructure.csproj",
+      "projectUniqueName": "C:\\Amir\\SofaShop\\DataLayer.Infrastructure\\DataLayer.Infrastructure.csproj",
       "projectName": "DataLayer.Infrastructure",
-      "projectPath": "D:\\SofaShop\\DataLayer.Infrastructure\\DataLayer.Infrastructure.csproj",
+      "projectPath": "C:\\Amir\\SofaShop\\DataLayer.Infrastructure\\DataLayer.Infrastructure.csproj",
       "packagesPath": "C:\\Users\\amir\\.nuget\\packages\\",
-      "outputPath": "D:\\SofaShop\\DataLayer.Infrastructure\\obj\\",
+      "outputPath": "C:\\Amir\\SofaShop\\DataLayer.Infrastructure\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -9569,11 +9569,11 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "D:\\SofaShop\\DataLayer.Access\\DataLayer.Access.csproj": {
-              "projectPath": "D:\\SofaShop\\DataLayer.Access\\DataLayer.Access.csproj"
+            "C:\\Amir\\SofaShop\\DataLayer.Access\\DataLayer.Access.csproj": {
+              "projectPath": "C:\\Amir\\SofaShop\\DataLayer.Access\\DataLayer.Access.csproj"
             },
-            "D:\\SofaShop\\UnitOfWork\\DataLayer.UnitOfWork.csproj": {
-              "projectPath": "D:\\SofaShop\\UnitOfWork\\DataLayer.UnitOfWork.csproj"
+            "C:\\Amir\\SofaShop\\UnitOfWork\\DataLayer.UnitOfWork.csproj": {
+              "projectPath": "C:\\Amir\\SofaShop\\UnitOfWork\\DataLayer.UnitOfWork.csproj"
             }
           }
         }
@@ -9633,7 +9633,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.202\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
       }
     }
   },

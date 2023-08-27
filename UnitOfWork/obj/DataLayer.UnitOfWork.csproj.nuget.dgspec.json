@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\SofaShop\\UnitOfWork\\DataLayer.UnitOfWork.csproj": {}
+    "C:\\Amir\\SofaShop\\UnitOfWork\\DataLayer.UnitOfWork.csproj": {}
   },
   "projects": {
-    "D:\\SofaShop\\UnitOfWork\\DataLayer.UnitOfWork.csproj": {
+    "C:\\Amir\\SofaShop\\UnitOfWork\\DataLayer.UnitOfWork.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\SofaShop\\UnitOfWork\\DataLayer.UnitOfWork.csproj",
+        "projectUniqueName": "C:\\Amir\\SofaShop\\UnitOfWork\\DataLayer.UnitOfWork.csproj",
         "projectName": "DataLayer.UnitOfWork",
-        "projectPath": "D:\\SofaShop\\UnitOfWork\\DataLayer.UnitOfWork.csproj",
+        "projectPath": "C:\\Amir\\SofaShop\\UnitOfWork\\DataLayer.UnitOfWork.csproj",
         "packagesPath": "C:\\Users\\amir\\.nuget\\packages\\",
-        "outputPath": "D:\\SofaShop\\UnitOfWork\\obj\\",
+        "outputPath": "C:\\Amir\\SofaShop\\UnitOfWork\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -61,7 +61,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.202\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
         }
       }
     }

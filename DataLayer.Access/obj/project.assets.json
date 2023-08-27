@@ -9318,11 +9318,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\SofaShop\\DataLayer.Access\\DataLayer.Access.csproj",
+      "projectUniqueName": "C:\\Amir\\SofaShop\\DataLayer.Access\\DataLayer.Access.csproj",
       "projectName": "DataLayer.Access",
-      "projectPath": "D:\\SofaShop\\DataLayer.Access\\DataLayer.Access.csproj",
+      "projectPath": "C:\\Amir\\SofaShop\\DataLayer.Access\\DataLayer.Access.csproj",
       "packagesPath": "C:\\Users\\amir\\.nuget\\packages\\",
-      "outputPath": "D:\\SofaShop\\DataLayer.Access\\obj\\",
+      "outputPath": "C:\\Amir\\SofaShop\\DataLayer.Access\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -9345,8 +9345,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "D:\\SofaShop\\DataLayer.Domin\\DataLayer.Domin.csproj": {
-              "projectPath": "D:\\SofaShop\\DataLayer.Domin\\DataLayer.Domin.csproj"
+            "C:\\Amir\\SofaShop\\DataLayer.Domin\\DataLayer.Domin.csproj": {
+              "projectPath": "C:\\Amir\\SofaShop\\DataLayer.Domin\\DataLayer.Domin.csproj"
             }
           }
         }
@@ -9394,7 +9394,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.202\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
       }
     }
   },

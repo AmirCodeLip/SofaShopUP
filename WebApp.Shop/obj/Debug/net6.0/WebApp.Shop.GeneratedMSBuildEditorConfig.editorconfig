@@ -9,13 +9,13 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = WebApp.Shop
 build_property.RootNamespace = WebApp.Shop
-build_property.ProjectDir = D:\SofaShop\WebApp.Shop\
+build_property.ProjectDir = C:\Amir\SofaShop\WebApp.Shop\
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = D:\SofaShop\WebApp.Shop
+build_property.MSBuildProjectDirectory = C:\Amir\SofaShop\WebApp.Shop
 build_property._RazorSourceGeneratorDebug = 
 
-[D:/SofaShop/WebApp.Shop/Views/Home/Index.cshtml]
+[C:/Amir/SofaShop/WebApp.Shop/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
