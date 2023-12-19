@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "t+5wEr7j2XPUTqyLrwwhH9ctJy5dJ7i7aM/uSjHfJ4dEBDPFfU4g9MjN3T+C4IuTQ0TLcJnBBM1qmHJgBs567Q==",
+  "dgSpecHash": "bmn3w/WKUHB8sdcPe3WSDNzO3rRCrLSkakmSmx1HT7ytba2VXHvMtgTq/pZ6U8uAyy+3gi4gFLBGW+jrtBtn8w==",
   "success": true,
   "projectFilePath": "C:\\Amir\\SofaShop\\DataLayer.Access\\DataLayer.Access.csproj",
   "expectedPackageFiles": [
@@ -194,12 +194,5 @@
     "C:\\Users\\amir\\.nuget\\packages\\system.xml.xpath\\4.3.0\\system.xml.xpath.4.3.0.nupkg.sha512",
     "C:\\Users\\amir\\.nuget\\packages\\system.xml.xpath.xdocument\\4.3.0\\system.xml.xpath.xdocument.4.3.0.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1803",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "You are running the 'restore' operation with an 'HTTP' source, 'http://api.nuget.org/v3/index.json'. Non-HTTPS access will be removed in a future version. Consider migrating to an 'HTTPS' source."
-    }
-  ]
+  "logs": []
 }

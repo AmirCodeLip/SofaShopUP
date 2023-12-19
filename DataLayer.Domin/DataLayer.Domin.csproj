@@ -21,8 +21,4 @@
 	<ItemGroup>
 	  <Folder Include="Works\Web\" />
 	</ItemGroup>
-	
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-		<DefineConstants><!--shop_project--></DefineConstants>
-	</PropertyGroup>
 </Project>
